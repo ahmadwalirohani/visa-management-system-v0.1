@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ModelActivisionController;
 use App\Http\Controllers\RequestGatewayController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,9 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/change_resource_status', [ModelActivisionController::class, 'Activission']);
 
     Route::get('/settings', function(){
-        return Inertia::render('Settings/User/User');
-    });
-    
+        return Inertia::render('Settings/Settings');
+    })->name('settings');
+
 });
 
 require __DIR__ . '/auth.php';

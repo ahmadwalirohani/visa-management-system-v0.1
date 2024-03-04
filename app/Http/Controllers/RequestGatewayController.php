@@ -26,8 +26,12 @@ class RequestGatewayController extends Controller implements HandleRequest
     public function handle_action_requests(Request $request)
     {
         return (new ActionsRequestWrapper(
-            [],
-            [],
+            [
+                'SettingsLogics' => \App\DomainsLogic\SettingsLogics::class
+            ],
+            [
+                'branch' => \App\Http\Requests\CreateBranchRequest::class,
+            ],
             $request
         ))
             ->handle($request);
@@ -45,7 +49,9 @@ class RequestGatewayController extends Controller implements HandleRequest
         // Decode the base64-encoded and URL-decoded payload.
         $decodedPayload = (object) json_decode(urldecode(base64_decode($payload)));
 
-        return (new ResourceRequestWrapper([], $decodedPayload))
+        return (new ResourceRequestWrapper([
+            'SettingsResources' => \App\Resources\SettingResources::class,
+        ], $decodedPayload))
             ->handle();
     }
 }
