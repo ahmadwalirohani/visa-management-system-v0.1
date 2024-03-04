@@ -8,6 +8,7 @@ import TabPanel from "@mui/joy/TabPanel";
 import Card from "@mui/joy/Card";
 import User from "./User/User";
 import Branch from "./Branch/Branch";
+import Currency from "./Currency/Currency";
 
 function Settings() {
     return (
@@ -111,7 +112,9 @@ function Settings() {
                             <TabPanel value={0}>
                                 <User></User>
                             </TabPanel>
-                            <TabPanel value={1}></TabPanel>
+                            <TabPanel value={1}>
+                                <Currency />
+                            </TabPanel>
                             <TabPanel value={2}></TabPanel>
                             <TabPanel value={3}>
                                 <Branch></Branch>

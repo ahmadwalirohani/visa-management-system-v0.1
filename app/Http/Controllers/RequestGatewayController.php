@@ -27,10 +27,13 @@ class RequestGatewayController extends Controller implements HandleRequest
     {
         return (new ActionsRequestWrapper(
             [
-                'SettingsLogics' => \App\DomainsLogic\SettingsLogics::class
+                'SettingsLogics' => \App\DomainsLogic\SettingsLogics::class,
+                'UsersLogics' => \App\DomainsLogic\UsersLogics::class,
             ],
             [
                 'branch' => \App\Http\Requests\CreateBranchRequest::class,
+                'CreateUser' => \App\Http\Requests\CreateUserRequest::class,
+                'currency' => \App\Http\Requests\CreateCurrencyRequest::class,
             ],
             $request
         ))

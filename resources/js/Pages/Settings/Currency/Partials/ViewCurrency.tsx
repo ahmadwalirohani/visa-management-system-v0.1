@@ -25,19 +25,19 @@ const resolveStatus = (status: number | boolean) => {
 };
 
 interface IViewProps {
-    branches: Array<object>;
+    currencies: Array<object>;
     fetchLoading: boolean;
-    editBranch(branch: object): void;
-    changeStatus(branch: object): void;
-    changeToMain(branch_id: number): void;
+    editCurrency(currency: object): void;
+    changeStatus(currency: object): void;
+    changeToDefault(currency_id: number): void;
 }
 
-function ViewBranch({
-    branches,
+function ViewCurrency({
+    currencies,
     fetchLoading,
-    editBranch,
+    editCurrency,
     changeStatus,
-    changeToMain,
+    changeToDefault,
 }: IViewProps) {
     return (
         <>
@@ -46,7 +46,7 @@ function ViewBranch({
             </div>
 
             <Table
-                aria-label="branch table"
+                aria-label="currency table"
                 stickyHeader
                 stickyFooter
                 hoverRow
@@ -58,19 +58,17 @@ function ViewBranch({
                     <tr>
                         <th style={{ textAlign: "right" }}>#</th>
                         <th style={{ textAlign: "right" }}>نوم</th>
-                        <th style={{ textAlign: "right" }}>ادرس</th>
-                        <th style={{ textAlign: "right" }}>مسؤل</th>
+                        <th style={{ textAlign: "right" }}>سمبول</th>
                         <th style={{ textAlign: "right" }}>حالت</th>
                         <th style={{ textAlign: "right" }}>عملیی</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {branches.map((row: any, index: number) => (
+                    {currencies.map((row: any, index: number) => (
                         <tr key={row.id}>
                             <td>{index + 1}</td>
                             <td>{row.name}</td>
-                            <td>{row.address}</td>
-                            <td>{row.admin}</td>
+                            <td>{row.symbol}</td>
                             <td style={{ width: 120 }}>
                                 <div
                                     style={{
@@ -79,15 +77,13 @@ function ViewBranch({
                                 >
                                     {resolveStatus(row.status)}
 
-                                    {row.is_main == 1 && (
+                                    {row.is_default == 1 && (
                                         <Chip
                                             variant="outlined"
                                             color="neutral"
                                             size="lg"
                                             endDecorator={<CheckIcon />}
-                                        >
-                                            عمومي
-                                        </Chip>
+                                        ></Chip>
                                     )}
                                 </div>
                             </td>
@@ -95,18 +91,18 @@ function ViewBranch({
                                 <ButtonGroup>
                                     <Button
                                         onClick={() => changeStatus(row)}
-                                        title="څانګه حالت تغیرول"
+                                        title="اسعار حالت تغیرول"
                                     >
                                         {row.status == 1 && <VisibilityOff />}
                                         {row.status == 0 && <Visibility />}
                                     </Button>
-                                    <Button onClick={() => editBranch(row)}>
+                                    <Button onClick={() => editCurrency(row)}>
                                         <Edit />
                                     </Button>
                                     <Button
-                                        disabled={row.is_main == 1}
-                                        onClick={() => changeToMain(row.id)}
-                                        title="څانګه د عمومي په حیث ثبتول"
+                                        disabled={row.is_default == 1}
+                                        onClick={() => changeToDefault(row.id)}
+                                        title="اسعار د عمومي په حیث ثبتول"
                                     >
                                         <DoneOutlineIcon />
                                     </Button>
@@ -120,4 +116,4 @@ function ViewBranch({
     );
 }
 
-export default ViewBranch;
+export default ViewCurrency;

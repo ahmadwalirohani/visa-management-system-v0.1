@@ -1,32 +1,27 @@
 import Sheet from "@mui/joy/Sheet";
 import Grid from "@mui/joy/Grid";
-import AddBranch from "./Partials/AddBranch";
-import ViewBranch from "./Partials/ViewBranch";
+import AddCurrency from "./Partials/AddCurrency";
+import ViewCurrency from "./Partials/ViewCurrency";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import ValidateNativeForm from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 
-interface IBranchFields {
+interface ICurrencyFields {
     name: string;
-    admin: string;
-    address: string;
+    symbol: string;
     id: number;
     status: number;
 }
 
-export default function Branch() {
+export default function Currency() {
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
             state: false,
             msg: "",
         },
-        address: {
-            state: false,
-            msg: "",
-        },
-        admin: {
+        symbol: {
             state: false,
             msg: "",
         },
@@ -39,16 +34,16 @@ export default function Branch() {
         state: "danger",
     });
 
-    // Function to load branches asynchronously from the server
-    const LoadBranches = async () => {
+    // Function to load currencies asynchronously from the server
+    const LoadCurrencies = async () => {
         setFetchLoading(true);
 
-        // Making a GET request to retrieve branch data
+        // Making a GET request to retrieve currency data
         axios
             .get(
                 SendResourceRequest({
                     _class: "SettingsResources",
-                    _method_name: "get_branches",
+                    _method_name: "get_currencies",
                 }),
             )
             .then((Response: AxiosResponse) => {
@@ -62,7 +57,7 @@ export default function Branch() {
     const [useFormFunctionalInfo, setFormFunctionalInfo] = useState({
         loading: false,
         is_update: false,
-        branch_id: 0,
+        currency_id: 0,
     });
 
     // Ref to reference the HTML form element
@@ -73,7 +68,7 @@ export default function Branch() {
         e.preventDefault();
 
         // Validating the form using a utility function
-        ValidateNativeForm(e.currentTarget, ["name", "address", "admin"])
+        ValidateNativeForm(e.currentTarget, ["name", "symbol"])
             .then((validated) => {
                 // Updating form validation state with validation results
                 setFormValidation((prevState) => ({
@@ -91,8 +86,8 @@ export default function Branch() {
                 const Config = SendActionRequest(
                     {
                         _class: "SettingsLogics",
-                        _method_name: "add_branch",
-                        _validation_class: "branch",
+                        _method_name: "add_currency",
+                        _validation_class: "currency",
                     },
                     Object.assign({}, validated.payload, useFormFunctionalInfo),
                 );
@@ -103,13 +98,13 @@ export default function Branch() {
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
                         setSnackbar({
-                            msg: "څانګه په بریالي سره ثبت سول",
+                            msg: "اسعار په بریالي سره ثبت سول",
                             state: "success",
                             is_open: true,
                         });
 
                         resetForm(); // Resetting the form
-                        LoadBranches(); // Reloading branches after successful submission
+                        LoadCurrencies(); // Reloading currencies after successful submission
                     })
                     .catch((Error): any => {
                         // Handling error by updating the Snackbar state with the error message
@@ -138,31 +133,27 @@ export default function Branch() {
     // State to manage the fetched rows of data
     const [rows, setRows] = useState<Array<object>>([]);
 
-    // State to manage loading state during branch data fetching
+    // State to manage loading state during currncy data fetching
     const [fetchLoading, setFetchLoading] = useState(true);
 
-    // useEffect hook to load branches when the component mounts
+    // useEffect hook to load currencies when the component mounts
     useEffect(() => {
-        LoadBranches();
+        LoadCurrencies();
     }, []);
 
-    const editBranch = (branch: IBranchFields): void => {
+    const editCurrency = (currency: ICurrencyFields): void => {
         (
             formRef.current?.elements.namedItem("name") as HTMLInputElement
-        ).value = branch.name;
+        ).value = currency.name;
 
         (
-            formRef.current?.elements.namedItem("admin") as HTMLInputElement
-        ).value = branch.admin;
-
-        (
-            formRef.current?.elements.namedItem("address") as HTMLInputElement
-        ).value = branch.address;
+            formRef.current?.elements.namedItem("symbol") as HTMLInputElement
+        ).value = currency.symbol;
 
         setFormFunctionalInfo({
             is_update: true,
             loading: false,
-            branch_id: branch.id,
+            currency_id: currency.id,
         });
     };
 
@@ -171,41 +162,41 @@ export default function Branch() {
         setFormFunctionalInfo({
             loading: false,
             is_update: false,
-            branch_id: 0,
+            currency_id: 0,
         });
     };
 
-    const changeBranchStatus = (branch: IBranchFields): void => {
+    const changeCurrencyStatus = (currency: ICurrencyFields): void => {
         setFetchLoading(true);
 
         axios
             .post("change_resource_status", {
-                id: branch.id,
-                model: "Branch",
-                status: branch.status,
+                id: currency.id,
+                model: "Currency",
+                status: currency.status,
             })
             .then((): void => {
                 setSnackbar({
-                    msg: `څانګه په بریالي سره ${branch.status ? "غیري فعاله" : "فعاله"} سول`,
+                    msg: `اسعار په بریالي سره ${currency.status ? "غیري فعاله" : "فعاله"} سول`,
                     state: "success",
                     is_open: true,
                 });
-                LoadBranches();
+                LoadCurrencies();
             })
             .finally(() => setFetchLoading(false));
     };
 
-    const changeBranchToMain = (branch_id: number): void => {
+    const changeCurrencyToDefault = (currency_id: number): void => {
         setFetchLoading(true);
 
         const Config = SendActionRequest(
             {
                 _class: "SettingsLogics",
-                _method_name: "set_branch_to_main",
+                _method_name: "set_currency_to_default",
                 _validation_class: null,
             },
             {
-                branch_id,
+                currency_id,
             },
         );
 
@@ -213,11 +204,11 @@ export default function Branch() {
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({
-                    msg: `څانګه په بریالي سره د عمومي په حیث سول`,
+                    msg: `اسعار په بریالي سره د عمومي په حیث سول`,
                     state: "success",
                     is_open: true,
                 });
-                LoadBranches();
+                LoadCurrencies();
             })
             .finally(() => setFetchLoading(false));
     };
@@ -225,7 +216,7 @@ export default function Branch() {
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddBranch
+                <AddCurrency
                     useSnackbar={useSnackbar}
                     closeSnackbar={() =>
                         setSnackbar((prevState) => ({
@@ -242,12 +233,12 @@ export default function Branch() {
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewBranch
-                        editBranch={editBranch}
+                    <ViewCurrency
+                        editCurrency={editCurrency}
                         fetchLoading={fetchLoading}
-                        branches={rows}
-                        changeStatus={changeBranchStatus}
-                        changeToMain={changeBranchToMain}
+                        currencies={rows}
+                        changeStatus={changeCurrencyStatus}
+                        changeToDefault={changeCurrencyToDefault}
                     />
                 </Sheet>
             </Grid>
