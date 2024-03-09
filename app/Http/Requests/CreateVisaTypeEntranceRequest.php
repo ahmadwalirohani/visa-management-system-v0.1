@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCurrencyRequest extends FormRequest
+class CreateVisaTypeEntranceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,16 @@ class CreateCurrencyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|unique:currencies,name' . (request()->input('is_update') ? ',' . request()->input("currency_id") . ',id' : ''),
-            'symbol' => 'required|max:255|string',
+            "name" => "required|string|max:255",
+            "visa_type_id" => "required|numeric|min:1",
+            "code" => "required|string|max:255|unique:visa_sub_types,code"  . (request()->input('is_update') ? ',' . request()->input("type_id") . ',id' : ''),
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.unique' => 'د اسعار نوم باید تکراري نه وي',
-
+            'code.unique' => 'د ویزي نوعیت دخول کود باید تکراري نه وي',
         ];
     }
 }

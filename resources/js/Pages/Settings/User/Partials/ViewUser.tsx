@@ -7,6 +7,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Edit from "@mui/icons-material/Edit";
 import Chip from "@mui/joy/Chip";
 import LinearProgress from "@mui/joy/LinearProgress";
+import { IconButton, ModalDialogProps } from "@mui/joy";
+import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
+import { useState } from "react";
+import ViewUserBranch from "./ViewUserBranch";
 
 const resolveStatus = (status: number | boolean) => {
     if (status)
@@ -23,14 +27,36 @@ const resolveStatus = (status: number | boolean) => {
         );
 };
 
+interface IUserInfo {
+    id: number;
+    name: string;
+    email: string;
+    privilege_branches: Array<object>;
+}
+
 interface IViewProps {
     users: Array<object>;
     fetchLoading: boolean;
     editUser(user: object): void;
     changeStatus(user: object): void;
 }
+let userInfo: IUserInfo = {
+    id: 0,
+    name: "",
+    email: "",
+    privilege_branches: [],
+};
 
 function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
+    const [layout, setLayout] = useState<
+        ModalDialogProps["layout"] | undefined
+    >(undefined);
+
+    const openBranchesViewDialog = (state: any, user: any): void => {
+        setLayout(state);
+        userInfo = user as IUserInfo;
+    };
+
     return (
         <>
             <div style={{ height: 5 }}>
@@ -40,7 +66,7 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
             <Table aria-label="user table" stickyHeader stickyFooter hoverRow>
                 <thead>
                     <tr>
-                        <th style={{ textAlign: "right" }}>#</th>
+                        <th style={{ textAlign: "right" }}></th>
                         <th style={{ textAlign: "right" }}>عکس</th>
                         <th style={{ textAlign: "right" }}>نوم</th>
                         <th style={{ textAlign: "right" }}> ایمیل ادرس</th>
@@ -51,7 +77,29 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
                 <tbody>
                     {users.map((row: any, index: number) => (
                         <tr key={row.id}>
-                            <td>{index + 1}</td>
+                            <td>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-around",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <IconButton
+                                        onClick={() =>
+                                            openBranchesViewDialog(
+                                                "center",
+                                                row,
+                                            )
+                                        }
+                                        title="یوزر و څانګي ته اضافه کول"
+                                    >
+                                        <AddToPhotosIcon />
+                                    </IconButton>
+
+                                    {index + 1}
+                                </div>
+                            </td>
                             <td>
                                 <Avatar alt="User Image" src={row.image} />
                             </td>
@@ -73,6 +121,12 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
                     ))}
                 </tbody>
             </Table>
+
+            <ViewUserBranch
+                setLayoutState={openBranchesViewDialog}
+                layout={layout}
+                userInfo={userInfo}
+            />
         </>
     );
 }

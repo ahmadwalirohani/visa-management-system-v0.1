@@ -34,6 +34,9 @@ class RequestGatewayController extends Controller implements HandleRequest
                 'branch' => \App\Http\Requests\CreateBranchRequest::class,
                 'CreateUser' => \App\Http\Requests\CreateUserRequest::class,
                 'currency' => \App\Http\Requests\CreateCurrencyRequest::class,
+                'eicode' => \App\Http\Requests\CreateEICodeRequest::class,
+                'VisaType' => \App\Http\Requests\CreateVisaTypeRequest::class,
+                'VisaTypeEntrance' => \App\Http\Requests\CreateVisaTypeEntranceRequest::class,
             ],
             $request
         ))

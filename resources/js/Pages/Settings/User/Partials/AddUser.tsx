@@ -5,7 +5,7 @@ import FormHelperText from "@mui/joy/FormHelperText";
 import Snackbar from "@mui/joy/Snackbar";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/joy/Button";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
 import AspectRatio from "@mui/joy/AspectRatio";
 import IconButton from "@mui/joy/IconButton";

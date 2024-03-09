@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCurrencyRequest extends FormRequest
+class CreateEICodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,15 @@ class CreateCurrencyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|unique:currencies,name' . (request()->input('is_update') ? ',' . request()->input("currency_id") . ',id' : ''),
-            'symbol' => 'required|max:255|string',
+            'code' => 'string|required|unique:e_i_codes,code' . (request()->input('is_update') ? ',' . request()->input("eicode_id") . ',id' : ''),
+            'name' => 'required|max:255|string',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.unique' => 'د اسعار نوم باید تکراري نه وي',
-
+            'code.unique' => 'د کود باید تکراري نه وي',
         ];
     }
 }

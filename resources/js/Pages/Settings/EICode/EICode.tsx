@@ -1,33 +1,32 @@
 import Sheet from "@mui/joy/Sheet";
 import Grid from "@mui/joy/Grid";
-import AddUser from "./Partials/AddUser";
-import ViewUser from "./Partials/ViewUser";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import AddEICode from "./Partials/AddEICode";
+import ViewEICode from "./Partials/ViewEICode";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 
-interface IUserFields {
+interface IEICodeFields {
     name: string;
-    email: string;
-    password: string;
+    type: string;
+    code: string;
     id: number;
     status: number;
-    image: string;
 }
 
-export default function User() {
+export default function EICode() {
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
             state: false,
             msg: "",
         },
-        email: {
+        type: {
             state: false,
             msg: "",
         },
-        password: {
+        code: {
             state: false,
             msg: "",
         },
@@ -40,16 +39,16 @@ export default function User() {
         state: "danger",
     });
 
-    // Function to load users asynchronously from the server
-    const Load = async () => {
+    // Function to load expense_income_codes asynchronously from the server
+    const LoadEICodes = async () => {
         setFetchLoading(true);
 
-        // Making a GET request to retrieve User data
+        // Making a GET request to retrieve currency data
         axios
             .get(
                 SendResourceRequest({
                     _class: "SettingsResources",
-                    _method_name: "get_users",
+                    _method_name: "get_expense_income_codes",
                 }),
             )
             .then((Response: AxiosResponse) => {
@@ -63,9 +62,14 @@ export default function User() {
     const [useFormFunctionalInfo, setFormFunctionalInfo] = useState({
         loading: false,
         is_update: false,
-        user_id: 0,
-        image: "/user-avator.png",
+        eicode_id: 0,
     });
+
+    const [selectedType, setSelectedType] = useState("EXPENSE");
+
+    const changeCodeType = (type: any) => {
+        setSelectedType(type);
+    };
 
     // Ref to reference the HTML form element
     const formRef = useRef<HTMLFormElement | null>(null);
@@ -73,11 +77,10 @@ export default function User() {
     // Function to handle form submission
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const fileInput = new FormData(e.currentTarget).get("image") as File;
 
         // Validating the form using a utility function
-        ValidateNativeForm(e.currentTarget, ["name", "email", "password"])
-            .then((validated) => {
+        ValidateNativeForm(e.currentTarget, ["name", "code"])
+            .then((validated): any => {
                 // Updating form validation state with validation results
                 setFormValidation((prevState) => ({
                     ...prevState,
@@ -93,15 +96,15 @@ export default function User() {
                 // Creating a configuration for sending an action request
                 const Config = SendActionRequest(
                     {
-                        _class: "UsersLogics",
-                        _method_name: "create_user",
-                        _validation_class: "CreateUser",
+                        _class: "SettingsLogics",
+                        _method_name: "add_expense_income_code",
+                        _validation_class: "eicode",
                     },
                     Object.assign(
                         {},
                         validated.payload,
                         {
-                            image: fileInput,
+                            type: selectedType,
                         },
                         useFormFunctionalInfo,
                     ),
@@ -109,17 +112,17 @@ export default function User() {
 
                 // Making a POST request to submit the form data
                 axios
-                    .postForm(Config.url, Config.payload)
+                    .post(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
                         setSnackbar({
-                            msg: "یوزر په بریالي سره ثبت سول",
+                            msg: "کود په بریالي سره ثبت سول",
                             state: "success",
                             is_open: true,
                         });
 
                         resetForm(); // Resetting the form
-                        Load(); // Reloading users after successful submission
+                        LoadEICodes(); // Reloading expense_income_codes after successful submission
                     })
                     .catch((Error): any => {
                         // Handling error by updating the Snackbar state with the error message
@@ -148,28 +151,29 @@ export default function User() {
     // State to manage the fetched rows of data
     const [rows, setRows] = useState<Array<object>>([]);
 
-    // State to manage loading state during user data fetching
+    // State to manage loading state during expense income code data fetching
     const [fetchLoading, setFetchLoading] = useState(true);
 
-    // useEffect hook to load users when the component mounts
+    // useEffect hook to load expense_income_codes when the component mounts
     useEffect(() => {
-        Load();
+        LoadEICodes();
     }, []);
 
-    const editUser = (user: IUserFields): void => {
+    const editEICode = (eicode: IEICodeFields): void => {
         (
             formRef.current?.elements.namedItem("name") as HTMLInputElement
-        ).value = user.name;
+        ).value = eicode.name;
 
         (
-            formRef.current?.elements.namedItem("email") as HTMLInputElement
-        ).value = user.email;
+            formRef.current?.elements.namedItem("code") as HTMLInputElement
+        ).value = eicode.code;
+
+        setSelectedType(eicode.type);
 
         setFormFunctionalInfo({
             is_update: true,
             loading: false,
-            user_id: user.id,
-            image: user.image,
+            eicode_id: eicode.id,
         });
     };
 
@@ -178,51 +182,34 @@ export default function User() {
         setFormFunctionalInfo({
             loading: false,
             is_update: false,
-            user_id: 0,
-            image: "/user-avator.png",
+            eicode_id: 0,
         });
     };
 
-    const changeUserStatus = (user: IUserFields): void => {
+    const changeEICodeStatus = (eicode: IEICodeFields): void => {
         setFetchLoading(true);
 
         axios
             .post("change_resource_status", {
-                id: user.id,
-                model: "User",
-                status: user.status,
+                id: eicode.id,
+                model: "ExpenseIncomeCode",
+                status: eicode.status,
             })
             .then((): void => {
                 setSnackbar({
-                    msg: `یوزر په بریالي سره ${user.status ? "غیري فعاله" : "فعاله"} سول`,
+                    msg: `کود په بریالي سره ${eicode.status ? "غیري فعاله" : "فعاله"} سول`,
                     state: "success",
                     is_open: true,
                 });
-                Load();
+                LoadEICodes();
             })
             .finally(() => setFetchLoading(false));
     };
 
-    const PreviewUploadImg = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setFormFunctionalInfo((prevState) => ({
-                    ...prevState,
-                    image: reader.result as string,
-                }));
-            };
-
-            reader.readAsDataURL(file);
-        }
-    };
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddUser
+                <AddEICode
                     useSnackbar={useSnackbar}
                     closeSnackbar={() =>
                         setSnackbar((prevState) => ({
@@ -234,18 +221,18 @@ export default function User() {
                     formRef={formRef}
                     formInfo={useFormFunctionalInfo}
                     onSubmit={onSubmit}
+                    selectedType={selectedType}
                     formValidation={useFormValidation}
-                    preImage={useFormFunctionalInfo.image}
-                    onImageUpload={PreviewUploadImg}
+                    changeCodeType={changeCodeType}
                 />
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewUser
-                        editUser={editUser}
+                    <ViewEICode
+                        editEICode={editEICode}
                         fetchLoading={fetchLoading}
-                        users={rows}
-                        changeStatus={changeUserStatus}
+                        expense_income_codes={rows}
+                        changeStatus={changeEICodeStatus}
                     />
                 </Sheet>
             </Grid>

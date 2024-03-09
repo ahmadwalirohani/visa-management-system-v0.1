@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Currency;
+use App\Models\EICodes;
 use App\Models\User;
+use App\Models\UserPrivilegeBranches;
+use App\Models\VisaSubType;
+use App\Models\VisaType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,6 +18,10 @@ class ModelActivisionController extends Controller
         'Branch' => Branch::class,
         'User' => User::class,
         'Currency' => Currency::class,
+        'ExpenseIncomeCode' => EICodes::class,
+        'UserPrivilegeBranch' => UserPrivilegeBranches::class,
+        'VisaType' => VisaType::class,
+        'VisaSubType' => VisaSubType::class
     ];
     public function Activission(Request $request): JsonResponse
     {

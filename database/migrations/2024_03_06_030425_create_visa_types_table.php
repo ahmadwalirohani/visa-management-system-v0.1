@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('e_i_codes', function (Blueprint $table) {
+        Schema::create('visa_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code');
-            $table->enum('type', ['EXPENSE', 'INCOME'])->default(('EXPENSE'));
-            $table->boolean('status')->default(1);
+            $table->string("code")->unique();
+            $table->boolean("status")->default(true);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('e_i_codes');
+        Schema::dropIfExists('visa_types');
     }
 };

@@ -11,7 +11,7 @@ interface IResolveObject {
     validated_payload: object;
 }
 
-export default function ValidateNativeForm(
+export function ValidateNativeForm(
     formData: HTMLFormElement,
     inputNames: Array<string>,
 ): Promise<IResolveObject> {
@@ -88,3 +88,5 @@ export default function ValidateNativeForm(
 //   .catch((error) => {
 //     console.error('Form validation failed:', error);
 //   });
+
+export function ValidateCustomForm(): void {}

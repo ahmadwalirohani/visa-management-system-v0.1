@@ -43,6 +43,7 @@ export default function Login({ status }: { status?: string }) {
                     <Input
                         name="email"
                         value={data.email}
+                        autoFocus
                         placeholder="example@gmail.com"
                         autoComplete="username"
                         onChange={(e) => setData("email", e.target.value)}

@@ -9,10 +9,15 @@ import Card from "@mui/joy/Card";
 import User from "./User/User";
 import Branch from "./Branch/Branch";
 import Currency from "./Currency/Currency";
+import EICode from "./EICode/EICode";
+import { Head } from "@inertiajs/react";
+import VisaType from "./VisaType/VisaType";
+import SystemInfo from "./SystemInfo/SystemInfo";
 
 function Settings() {
     return (
         <>
+            <Head title="تنظیمات" />
             <Box
                 component="main"
                 className="MainContent"
@@ -34,7 +39,6 @@ function Settings() {
                             position: "sticky",
                             top: { md: 5 },
                             bgcolor: "background.body",
-                            zIndex: 9995,
                         }}
                     >
                         <Box sx={{ px: { xs: 2, md: 6 } }}>
@@ -104,6 +108,13 @@ function Settings() {
                                 <Tab
                                     sx={{ borderRadius: "6px 6px 0 0" }}
                                     indicatorInset
+                                    value={5}
+                                >
+                                    ویزو ډولونه
+                                </Tab>
+                                <Tab
+                                    sx={{ borderRadius: "6px 6px 0 0" }}
+                                    indicatorInset
                                     value={4}
                                 >
                                     عایدو او مصارفو کوډونه
@@ -115,11 +126,18 @@ function Settings() {
                             <TabPanel value={1}>
                                 <Currency />
                             </TabPanel>
-                            <TabPanel value={2}></TabPanel>
+                            <TabPanel value={2}>
+                                <SystemInfo />
+                            </TabPanel>
                             <TabPanel value={3}>
                                 <Branch></Branch>
                             </TabPanel>
-                            <TabPanel value={4}></TabPanel>
+                            <TabPanel value={4}>
+                                <EICode />
+                            </TabPanel>
+                            <TabPanel value={5}>
+                                <VisaType />
+                            </TabPanel>
                         </Tabs>
                     </Box>
                 </Card>

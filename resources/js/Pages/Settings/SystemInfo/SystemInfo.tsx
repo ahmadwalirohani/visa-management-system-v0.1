@@ -1,37 +1,63 @@
 import Sheet from "@mui/joy/Sheet";
 import Grid from "@mui/joy/Grid";
-import AddUser from "./Partials/AddUser";
-import ViewUser from "./Partials/ViewUser";
+import AddSystemInfo from "./Partials/AddSystemInfo";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 
-interface IUserFields {
-    name: string;
-    email: string;
-    password: string;
-    id: number;
-    status: number;
-    image: string;
+interface ISystemInfoEntity {
+    company_ceo: string;
+    company_name: string;
+    company_address: string;
+    company_email: string;
+    company_phone1: string | null;
+    company_phone2: string | null;
+    company_logo: string;
+    voucher_no: number;
+    payment_no: number;
+    visa_no: number;
+    loading: boolean;
 }
 
-export default function User() {
+export default function SystemInfo() {
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
-        name: {
+        company_ceo: {
             state: false,
             msg: "",
         },
-        email: {
+        company_name: {
             state: false,
             msg: "",
         },
-        password: {
+        company_email: {
+            state: false,
+            msg: "",
+        },
+        company_address: {
             state: false,
             msg: "",
         },
     });
+
+    const [useSystemInfo, setSystemInfo] = useState<ISystemInfoEntity>({
+        company_ceo: "",
+        company_address: "",
+        company_email: "",
+        company_logo: "",
+        company_name: "",
+        company_phone1: "",
+        company_phone2: "",
+        voucher_no: 0,
+        payment_no: 0,
+        visa_no: 0,
+        loading: false,
+    });
+
+    useEffect(() => {
+        Load();
+    }, []);
 
     // State to manage Snackbar (notification)
     const [useSnackbar, setSnackbar] = useState({
@@ -42,30 +68,21 @@ export default function User() {
 
     // Function to load users asynchronously from the server
     const Load = async () => {
-        setFetchLoading(true);
-
         // Making a GET request to retrieve User data
         axios
             .get(
                 SendResourceRequest({
                     _class: "SettingsResources",
-                    _method_name: "get_users",
+                    _method_name: "get_system_infos",
                 }),
             )
             .then((Response: AxiosResponse) => {
                 // Setting the retrieved data to the 'rows' state
-                setRows(Response.data);
-            })
-            .finally(() => setFetchLoading(false));
+                setSystemInfo({
+                    ...Response.data,
+                });
+            });
     };
-
-    // State to manage form actions base states
-    const [useFormFunctionalInfo, setFormFunctionalInfo] = useState({
-        loading: false,
-        is_update: false,
-        user_id: 0,
-        image: "/user-avator.png",
-    });
 
     // Ref to reference the HTML form element
     const formRef = useRef<HTMLFormElement | null>(null);
@@ -76,7 +93,12 @@ export default function User() {
         const fileInput = new FormData(e.currentTarget).get("image") as File;
 
         // Validating the form using a utility function
-        ValidateNativeForm(e.currentTarget, ["name", "email", "password"])
+        ValidateNativeForm(e.currentTarget, [
+            "company_ceo",
+            "company_name",
+            "company_email",
+            "company_address",
+        ])
             .then((validated) => {
                 // Updating form validation state with validation results
                 setFormValidation((prevState) => ({
@@ -85,7 +107,7 @@ export default function User() {
                 }));
 
                 // Setting loading state to true during form submission
-                setFormFunctionalInfo((prevState) => ({
+                setSystemInfo((prevState) => ({
                     ...prevState,
                     loading: true,
                 }));
@@ -93,17 +115,17 @@ export default function User() {
                 // Creating a configuration for sending an action request
                 const Config = SendActionRequest(
                     {
-                        _class: "UsersLogics",
-                        _method_name: "create_user",
-                        _validation_class: "CreateUser",
+                        _class: "SettingsLogics",
+                        _method_name: "update_system_info",
+                        _validation_class: null,
                     },
                     Object.assign(
                         {},
                         validated.payload,
                         {
-                            image: fileInput,
+                            company_logo: fileInput,
                         },
-                        useFormFunctionalInfo,
+                        useSystemInfo,
                     ),
                 );
 
@@ -113,13 +135,12 @@ export default function User() {
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
                         setSnackbar({
-                            msg: "یوزر په بریالي سره ثبت سول",
+                            msg: "سیسټم معلومات په بریالي سره ثبت سول",
                             state: "success",
                             is_open: true,
                         });
 
                         resetForm(); // Resetting the form
-                        Load(); // Reloading users after successful submission
                     })
                     .catch((Error): any => {
                         // Handling error by updating the Snackbar state with the error message
@@ -130,7 +151,7 @@ export default function User() {
                         });
                     })
                     .finally(() =>
-                        setFormFunctionalInfo((prevState) => ({
+                        setSystemInfo((prevState) => ({
                             ...prevState,
                             loading: false,
                         })),
@@ -145,84 +166,20 @@ export default function User() {
             });
     };
 
-    // State to manage the fetched rows of data
-    const [rows, setRows] = useState<Array<object>>([]);
-
-    // State to manage loading state during user data fetching
-    const [fetchLoading, setFetchLoading] = useState(true);
-
-    // useEffect hook to load users when the component mounts
-    useEffect(() => {
-        Load();
-    }, []);
-
-    const editUser = (user: IUserFields): void => {
-        (
-            formRef.current?.elements.namedItem("name") as HTMLInputElement
-        ).value = user.name;
-
-        (
-            formRef.current?.elements.namedItem("email") as HTMLInputElement
-        ).value = user.email;
-
-        setFormFunctionalInfo({
-            is_update: true,
-            loading: false,
-            user_id: user.id,
-            image: user.image,
-        });
-    };
-
     const resetForm = (): void => {
         formRef.current?.reset();
-        setFormFunctionalInfo({
-            loading: false,
-            is_update: false,
-            user_id: 0,
-            image: "/user-avator.png",
-        });
     };
 
-    const changeUserStatus = (user: IUserFields): void => {
-        setFetchLoading(true);
-
-        axios
-            .post("change_resource_status", {
-                id: user.id,
-                model: "User",
-                status: user.status,
-            })
-            .then((): void => {
-                setSnackbar({
-                    msg: `یوزر په بریالي سره ${user.status ? "غیري فعاله" : "فعاله"} سول`,
-                    state: "success",
-                    is_open: true,
-                });
-                Load();
-            })
-            .finally(() => setFetchLoading(false));
-    };
-
-    const PreviewUploadImg = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setFormFunctionalInfo((prevState) => ({
-                    ...prevState,
-                    image: reader.result as string,
-                }));
-            };
-
-            reader.readAsDataURL(file);
-        }
+    const handleOnInputChange = (e: ChangeEvent, field: string): void => {
+        setSystemInfo((prevState) => ({
+            ...prevState,
+            [field]: (e.target as HTMLInputElement).value,
+        }));
     };
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddUser
+                <AddSystemInfo
                     useSnackbar={useSnackbar}
                     closeSnackbar={() =>
                         setSnackbar((prevState) => ({
@@ -232,22 +189,15 @@ export default function User() {
                     }
                     resetForm={resetForm}
                     formRef={formRef}
-                    formInfo={useFormFunctionalInfo}
+                    formInfo={useSystemInfo}
                     onSubmit={onSubmit}
                     formValidation={useFormValidation}
-                    preImage={useFormFunctionalInfo.image}
-                    onImageUpload={PreviewUploadImg}
+                    preImage={useSystemInfo.company_logo}
+                    handleOnInputChange={handleOnInputChange}
                 />
             </Grid>
             <Grid xs={8} md={8} sm={12}>
-                <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewUser
-                        editUser={editUser}
-                        fetchLoading={fetchLoading}
-                        users={rows}
-                        changeStatus={changeUserStatus}
-                    />
-                </Sheet>
+                <Sheet sx={{ height: "65vh", overflow: "auto" }}></Sheet>
             </Grid>
         </Grid>
     );

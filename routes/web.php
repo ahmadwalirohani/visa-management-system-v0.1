@@ -34,10 +34,13 @@ Route::middleware('auth')->group(function () {
      */
     Route::post('/change_resource_status', [ModelActivisionController::class, 'Activission']);
 
-    Route::get('/settings', function(){
+    Route::get('/settings', function () {
         return Inertia::render('Settings/Settings');
     })->name('settings');
 
+    Route::get('/human_resource', function () {
+        return Inertia::render('HumanResource/Customer');
+    })->name('human_resource.customer');
 });
 
 require __DIR__ . '/auth.php';

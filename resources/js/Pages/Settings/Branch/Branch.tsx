@@ -3,7 +3,7 @@ import Grid from "@mui/joy/Grid";
 import AddBranch from "./Partials/AddBranch";
 import ViewBranch from "./Partials/ViewBranch";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import ValidateNativeForm from "@/Utils/Validation";
+import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 

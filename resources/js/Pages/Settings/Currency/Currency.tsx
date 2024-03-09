@@ -3,7 +3,7 @@ import Grid from "@mui/joy/Grid";
 import AddCurrency from "./Partials/AddCurrency";
 import ViewCurrency from "./Partials/ViewCurrency";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import ValidateNativeForm from "@/Utils/Validation";
+import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 

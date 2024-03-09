@@ -4,7 +4,11 @@ namespace App\Resources;
 
 use App\Models\Branch;
 use App\Models\Currency;
+use App\Models\EICodes;
+use App\Models\SystemInfo;
 use App\Models\User;
+use App\Models\UserPrivilegeBranches;
+use App\Models\VisaType;
 use Illuminate\Http\JsonResponse;
 
 class SettingResources
@@ -16,11 +20,34 @@ class SettingResources
 
     public static function get_users(): JsonResponse
     {
-        return response()->json(User::all(), JsonResponse::HTTP_OK);
+        return response()->json(User::withPrivilegeBranches()->get(), JsonResponse::HTTP_OK);
     }
 
     public static function get_currencies(): JsonResponse
     {
         return response()->json(Currency::all(), JsonResponse::HTTP_OK);
+    }
+
+    public static function get_expense_income_codes(): JsonResponse
+    {
+        return response()->json(EICodes::all(), JsonResponse::HTTP_OK);
+    }
+
+    public static function get_user_privilege_branches(object | array $payload): JsonResponse
+    {
+        return response()->json(
+            UserPrivilegeBranches::whereUserId($payload->userId)->withBranch()->get(),
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_visa_types(): JsonResponse
+    {
+        return response()->json(VisaType::withEntranceTypes()->get(), JsonResponse::HTTP_OK);
+    }
+
+    public static function get_system_infos(): JsonResponse
+    {
+        return response()->json(SystemInfo::find(1), JsonResponse::HTTP_OK);
     }
 }

@@ -67,7 +67,7 @@ export default function Sidebar({ user }: any) {
                     md: "none",
                 },
                 transition: "transform 0.4s, width 0.4s",
-                zIndex: 10000,
+                zIndex: 10,
                 height: "100dvh",
                 width: "var(--Sidebar-width)",
                 top: 0,
@@ -95,7 +95,7 @@ export default function Sidebar({ user }: any) {
                 className="Sidebar-overlay"
                 sx={{
                     position: "fixed",
-                    zIndex: 9998,
+                    zIndex: 1,
                     top: 0,
                     left: 0,
                     width: "100vw",
@@ -186,7 +186,14 @@ export default function Sidebar({ user }: any) {
                     <ListItem nested>
                         <Toggler
                             renderToggle={({ open, setOpen }) => (
-                                <ListItemButton onClick={() => setOpen(!open)}>
+                                <ListItemButton
+                                    selected={
+                                        /\bhuman_resource\b/i.test(
+                                            route().current() as string,
+                                        ) == true
+                                    }
+                                    onClick={() => setOpen(!open)}
+                                >
                                     <AssignmentRoundedIcon />
                                     <ListItemContent>
                                         <Typography level="title-sm">
@@ -205,7 +212,19 @@ export default function Sidebar({ user }: any) {
                         >
                             <List sx={{ gap: 0.5 }}>
                                 <ListItem sx={{ mt: 0.5 }}>
-                                    <ListItemButton>مشتري</ListItemButton>
+                                    <Link
+                                        href={route("human_resource.customer")}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "human_resource.customer"
+                                            }
+                                        >
+                                            مشتري
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>کارمند</ListItemButton>
