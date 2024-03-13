@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Currency;
+use App\Models\Customer;
 use App\Models\EICodes;
 use App\Models\User;
 use App\Models\UserPrivilegeBranches;
@@ -21,7 +22,8 @@ class ModelActivisionController extends Controller
         'ExpenseIncomeCode' => EICodes::class,
         'UserPrivilegeBranch' => UserPrivilegeBranches::class,
         'VisaType' => VisaType::class,
-        'VisaSubType' => VisaSubType::class
+        'VisaSubType' => VisaSubType::class,
+        'Customer' => Customer::class,
     ];
     public function Activission(Request $request): JsonResponse
     {
