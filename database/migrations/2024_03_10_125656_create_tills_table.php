@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('tills', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
+            $table->foreignId('created_user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->boolean('status')->default(true);
+            $table->boolean('is_open')->default(true);
             $table->timestamps();
         });
     }

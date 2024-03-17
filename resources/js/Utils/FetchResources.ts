@@ -56,4 +56,79 @@ const GetCustomers = async (callback: JsonCallback): Promise<void> => {
         });
 };
 
-export { LoadCurrencies, GetCustomerLatestID, LoadBranches, GetCustomers };
+const GetVisaTypes = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "SettingsResources",
+                _method_name: "get_visa_types",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
+const GetCustomersAsItems = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "HRResources",
+                _method_name: "get_customers_as_items",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
+const GetTillLatestID = async (callback: AnyCallBack): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "FinancialResources",
+                _method_name: "get_till_latest_id",
+            }),
+        )
+        .then((Response: AxiosResponse<number>): void => {
+            callback(Response.data);
+        });
+};
+
+const GetVisaLatestID = async (callback: AnyCallBack): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "VisaResources",
+                _method_name: "get_visa_latest_id",
+            }),
+        )
+        .then((Response: AxiosResponse<number>): void => {
+            callback(Response.data);
+        });
+};
+
+const GetTills = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "FinancialResources",
+                _method_name: "get_tills",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
+export {
+    LoadCurrencies,
+    GetCustomerLatestID,
+    LoadBranches,
+    GetCustomers,
+    GetVisaTypes,
+    GetCustomersAsItems,
+    GetTillLatestID,
+    GetTills,
+    GetVisaLatestID,
+};

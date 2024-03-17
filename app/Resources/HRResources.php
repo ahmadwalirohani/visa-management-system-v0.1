@@ -16,4 +16,9 @@ class HRResources
     {
         return response()->json(Customer::withBranch()->withBalancies()->get(), JsonResponse::HTTP_OK);
     }
+
+    public static function get_customers_as_items(): JsonResponse
+    {
+        return response()->json(Customer::asItem()->withBalancies()->get(), JsonResponse::HTTP_OK);
+    }
 }

@@ -38,9 +38,26 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Settings/Settings');
     })->name('settings');
 
-    Route::get('/human_resource', function () {
+    Route::get('/human-resource', function () {
         return Inertia::render('HumanResource/Customer');
     })->name('human_resource.customer');
+
+    Route::get('/add-visa', function () {
+        return Inertia::render('Visa/AddVisa');
+    })->name('visa.add');
+
+    Route::get('/pending-visa', function () {
+        return Inertia::render('Visa/PendingVisa');
+    })->name('visa.pending');
+
+    Route::get('/journal-entry', function () {
+        return Inertia::render('Financial/JournalEntry');
+    })->name('financial.journal_entry');
+
+    Route::get('/tills', function () {
+        return Inertia::render('Financial/Tills');
+    })->name('financial.tills');
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/print.php';

@@ -30,6 +30,8 @@ class RequestGatewayController extends Controller implements HandleRequest
                 'SettingsLogics' => \App\DomainsLogic\SettingsLogics::class,
                 'UsersLogics' => \App\DomainsLogic\UsersLogics::class,
                 'HRLogics' => \App\DomainsLogic\HRLogics::class,
+                'VisaLogics' => \App\DomainsLogic\VisaLogics::class,
+                'FinancialLogics' => \App\DomainsLogic\FinancialLogics::class,
             ],
             [
                 'branch' => \App\Http\Requests\CreateBranchRequest::class,
@@ -39,6 +41,8 @@ class RequestGatewayController extends Controller implements HandleRequest
                 'VisaType' => \App\Http\Requests\CreateVisaTypeRequest::class,
                 'VisaTypeEntrance' => \App\Http\Requests\CreateVisaTypeEntranceRequest::class,
                 'CreateCustomer' => \App\Http\Requests\CreateCustomerRequest::class,
+                'CreateVisa' => \App\Http\Requests\CreateVisaRequest::class,
+                'CreateTill' => \App\Http\Requests\CreateTillRequest::class,
             ],
             $request
         ))
@@ -60,6 +64,8 @@ class RequestGatewayController extends Controller implements HandleRequest
         return (new ResourceRequestWrapper([
             'SettingsResources' => \App\Resources\SettingResources::class,
             'HRResources' => \App\Resources\HRResources::class,
+            'FinancialResources' => \App\Resources\FinancialResources::class,
+            'VisaResources' => \App\Resources\VisaResources::class,
         ], $decodedPayload))
             ->handle();
     }

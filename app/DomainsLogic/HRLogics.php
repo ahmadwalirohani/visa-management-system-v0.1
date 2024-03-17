@@ -24,11 +24,9 @@ class HRLogics
             $customer = $request->is_update ? Customer::find($request->customer_id) :  new Customer();
             $customer->setData((object) $request->all())->save();
 
+            $id = $customer->getConnection()->getPdo()->lastInsertId();
+
             if (!$request->is_update) {
-
-
-                $id = $customer->getConnection()->getPdo()->lastInsertId();
-
                 foreach ($request->balancies as $currency) {
                     (new CustomerAccountingActions($id))
                         ->createAccount(new CustomerAccount(), $currency['balance'], $currency['id'])

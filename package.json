@@ -35,5 +35,10 @@
         "tailwindcss": "^3.4.1",
         "typescript": "^5.4.2",
         "vite": "^5.1.5"
+    },
+    "dependencies": {
+        "jalali-moment": "^3.3.11",
+        "react-barcode": "^1.5.1",
+        "uuid": "^9.0.1"
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Customer extends Model
 {
@@ -49,5 +50,14 @@ class Customer extends Model
     public function scopeWithBranch($query): void
     {
         $query->with("branch");
+    }
+
+    public function scopeAsItem($query): void
+    {
+        $query->select(
+            env('db_connection') == 'sqlite'
+                ? DB::raw('id,province,branch_id, name || "   #" || code as name')
+                : DB::raw('id,province,branch_id, CONCAT(name,"     #",code) as name')
+        );
     }
 }

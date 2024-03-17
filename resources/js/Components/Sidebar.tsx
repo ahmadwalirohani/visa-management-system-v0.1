@@ -157,31 +157,44 @@ export default function Sidebar({ user }: any) {
                     </ListItem>
 
                     <ListItem>
-                        <ListItemButton>
-                            <ShoppingCartRoundedIcon />
-                            <ListItemContent>
-                                <Typography level="title-sm">
-                                    ویزي ثبت
-                                </Typography>
-                            </ListItemContent>
-                        </ListItemButton>
+                        <Link
+                            href={route("visa.add")}
+                            style={{ width: "100%" }}
+                        >
+                            <ListItemButton
+                                selected={route().current() == "add-visa"}
+                            >
+                                <ShoppingCartRoundedIcon />
+                                <ListItemContent>
+                                    <Typography level="title-sm">
+                                        ویزي ثبت
+                                    </Typography>
+                                </ListItemContent>
+                            </ListItemButton>
+                        </Link>
                     </ListItem>
                     <ListItem>
-                        <ListItemButton
-                            role="menuitem"
-                            component="a"
-                            //   href="/joy-ui/getting-started/templates/messages/"
+                        <Link
+                            href={route("visa.pending")}
+                            style={{ width: "100%" }}
                         >
-                            <QuestionAnswerRoundedIcon />
-                            <ListItemContent>
-                                <Typography level="title-sm">
-                                    معطلي ویزي
-                                </Typography>
-                            </ListItemContent>
-                            <Chip size="sm" color="primary" variant="solid">
-                                4
-                            </Chip>
-                        </ListItemButton>
+                            <ListItemButton
+                                role="menuitem"
+                                component="a"
+                                selected={route().current() == "visa.pending"}
+                                //   href="/joy-ui/getting-started/templates/messages/"
+                            >
+                                <QuestionAnswerRoundedIcon />
+                                <ListItemContent>
+                                    <Typography level="title-sm">
+                                        معطلي ویزي
+                                    </Typography>
+                                </ListItemContent>
+                                <Chip size="sm" color="primary" variant="solid">
+                                    4
+                                </Chip>
+                            </ListItemButton>
+                        </Link>
                     </ListItem>
                     <ListItem nested>
                         <Toggler
@@ -243,7 +256,14 @@ export default function Sidebar({ user }: any) {
                     <ListItem nested>
                         <Toggler
                             renderToggle={({ open, setOpen }) => (
-                                <ListItemButton onClick={() => setOpen(!open)}>
+                                <ListItemButton
+                                    selected={
+                                        /\bfinancial\b/i.test(
+                                            route().current() as string,
+                                        ) == true
+                                    }
+                                    onClick={() => setOpen(!open)}
+                                >
                                     <AssignmentRoundedIcon />
                                     <ListItemContent>
                                         <Typography level="title-sm">
@@ -262,12 +282,36 @@ export default function Sidebar({ user }: any) {
                         >
                             <List sx={{ gap: 0.5 }}>
                                 <ListItem sx={{ mt: 0.5 }}>
-                                    <ListItemButton>
-                                        روزنامچه رسول
-                                    </ListItemButton>
+                                    <Link
+                                        href={route("financial.journal_entry")}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "financial.journal_entry"
+                                            }
+                                        >
+                                            روزنامچه رسول
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>دخل / تجري</ListItemButton>
+                                    <Link
+                                        href={route("financial.tills")}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "financial.tills"
+                                            }
+                                        >
+                                            دخل / تجري
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>

@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\EICodes;
+use App\Models\Till;
 use App\Models\User;
 use App\Models\UserPrivilegeBranches;
 use App\Models\VisaSubType;
@@ -24,6 +25,7 @@ class ModelActivisionController extends Controller
         'VisaType' => VisaType::class,
         'VisaSubType' => VisaSubType::class,
         'Customer' => Customer::class,
+        'Till' => Till::class,
     ];
     public function Activission(Request $request): JsonResponse
     {
