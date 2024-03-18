@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SystemInfo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,4 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view("/print/visa-label-format", "printFormats.visa-label-format");
+Route::get("/print/visa-label-format/{visa_no}/{is_urgent}", function ($visa_no, $is_urgent) {
+    return view("printFormats.visa-label-format", [
+        "visa_no" => $visa_no,
+        'is_urgent' => $is_urgent
+    ]);
+});

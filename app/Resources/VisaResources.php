@@ -2,13 +2,15 @@
 
 namespace App\Resources;
 
+use App\Models\SystemInfo;
 use App\Models\Till;
+use App\Models\Visa;
 use Illuminate\Http\JsonResponse;
 
 class VisaResources
 {
     public static function get_visa_latest_id(): JsonResponse
     {
-        return response()->json((Till::latest()->first() ?? (object) ['id' => 0])->id + 1, JsonResponse::HTTP_OK);
+        return response()->json(SystemInfo::whereId(1)->first()->visa_no, JsonResponse::HTTP_OK);
     }
 }

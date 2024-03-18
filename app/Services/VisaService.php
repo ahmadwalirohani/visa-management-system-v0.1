@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\VisaStatus;
 use App\Enums\VisaType;
+use App\Models\SystemInfo;
 use Illuminate\Database\Eloquent\Model;
 
 class VisaService
@@ -42,6 +43,7 @@ class VisaService
         $this->visaModel->basic_type = $visaType;
         $this->visaModel->job = $job;
         $this->visaModel->created_user_id = auth()->user()->id;
+        $this->visaModel->visa_no = SystemInfo::whereId(1)->first()->visa_no;
 
         $this->visaModel->save();
 

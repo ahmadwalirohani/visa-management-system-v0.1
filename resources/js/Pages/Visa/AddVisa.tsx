@@ -14,6 +14,7 @@ import { IVisaProps } from "@/types";
 import { SendActionRequest } from "@/Utils/helpers";
 import axios from "axios";
 import { AxiosError } from "axios";
+import Printer from "@/Utils/Printer";
 
 interface ICurrency {
     id: number;
@@ -47,6 +48,7 @@ function AddVisa() {
         price: 0,
         name: "",
         remarks: "",
+        visa_qty: 1,
     });
 
     const [useAdvancePayment, setAdvancePayment] = useState({
@@ -124,7 +126,22 @@ function AddVisa() {
                     is_open: true,
                 });
 
-                resetAll();
+                Printer(
+                    `/print/visa-label-format/${useVisaId}/${useVisaForm.basic_type == "urgent" ? 1 : 0}`,
+                    {
+                        name: useVisaForm.name,
+                        customer: useVisaForm.customer?.name,
+                        type: `${
+                            useVisaTypes.filter(
+                                (t: any) => t.id == useVisaForm.visa_type,
+                            )[0]?.name
+                        } ${useVisaForm.visa_entrance_type?.name}`,
+                        dynamic_type: useVisaForm.block_no ? "بلاک" : "تفصیل",
+                        dynamic_value: useVisaForm.block_no
+                            ? useVisaForm.block_no
+                            : useVisaForm.remarks,
+                    },
+                ).then(() => resetAll());
             })
             .catch((Error: AxiosError<any>): void => {
                 setSnackbar({
@@ -137,22 +154,31 @@ function AddVisa() {
     };
 
     const resetAll = (): void => {
-        setVisaForm({
-            basic_type: "normal",
-            visa_type: 0,
-            visa_entrance_type: null,
-            customer: null,
-            province: "",
-            job: "",
-            passport_no: "",
-            block_no: "",
-            currency: 0,
-            price: 0,
-            name: "",
-            remarks: "",
-        });
-
         fetchVisaId();
+
+        setVisaForm((prevState) => ({
+            ...prevState,
+            ...{
+                customer: null,
+                province: "",
+                job: "",
+                passport_no: "",
+                block_no: "",
+                currency: 0,
+                price: 0,
+                name: "",
+                remarks: "",
+            },
+            ...(prevState.visa_qty <= 1
+                ? { visa_entrance_type: null, visa_type: 0, visa_qty: 0 }
+                : { visa_qty: prevState.visa_qty - 1 }),
+        }));
+
+        setAdvancePayment({
+            till: 0,
+            advance_amount: 0,
+            premarks: "",
+        });
     };
 
     useEffect(() => {

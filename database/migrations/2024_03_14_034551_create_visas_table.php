@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('entrance_type_id')->constrained('visa_sub_types')->cascadeOnDelete();
             $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnDelete();
             $table->enum('basic_type', ['normal', 'urgent'])->default('normal');
+            $table->bigInteger('visa_no')->unique();
             $table->string('province');
             $table->string('passport_no');
             $table->string('job')->nullable();

@@ -12,6 +12,7 @@ import {
     Input,
     Option,
     Select,
+    Sheet,
     ToggleButtonGroup,
     Typography,
 } from "@mui/joy";
@@ -52,9 +53,32 @@ function AddVisaInfo({
                     }}
                 >
                     <CardContent>
-                        <Typography level="h4" sx={{ mb: 2 }}>
-                            ویزي ثبت
-                        </Typography>
+                        <Sheet
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <Typography level="h4" sx={{ mb: 2 }}>
+                                ویزي ثبت
+                            </Typography>
+
+                            <Input
+                                size="sm"
+                                placeholder="د ویزو تعداد"
+                                sx={{ width: 100 }}
+                                type="number"
+                                value={formData.visa_qty}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                    onChange(
+                                        (e.target as HTMLInputElement)
+                                            .value as string,
+                                        "visa_qty",
+                                    )
+                                }
+                            />
+                        </Sheet>
+
                         <Grid container spacing={1}>
                             <Grid md={12}>
                                 <ToggleButtonGroup
@@ -79,6 +103,7 @@ function AddVisaInfo({
                                 <FormControl>
                                     <FormLabel>ویزي ډول</FormLabel>
                                     <Select
+                                        size="sm"
                                         value={formData.visa_type}
                                         onChange={(e: any, newValue: any) => {
                                             onChange(newValue, "visa_type");

@@ -18,6 +18,7 @@ export interface IVisaProps {
     visa_entrance_type: number | null;
     name: string;
     remarks: string | null;
+    visa_qty: number;
 }
 
 export type PageProps<
