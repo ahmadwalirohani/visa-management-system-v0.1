@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { SendResourceRequest } from "./helpers";
+import { IVisaPendingFilterProps } from "@/types";
 
 type JsonCallback = (response: Array<object>) => void;
 type AnyCallBack = (response: number | string | null | boolean) => void;
@@ -121,6 +122,44 @@ const GetTills = async (callback: JsonCallback): Promise<void> => {
         });
 };
 
+const getNonProcessedVisas = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "VisaResources",
+                _method_name: "get_non_processed_visas",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
+const getPendingVisas = async (
+    filter: IVisaPendingFilterProps,
+    callback: JsonCallback,
+): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest(
+                {
+                    _class: "VisaResources",
+                    _method_name: "get_pending_visas",
+                },
+                {
+                    c: filter.customer?.id,
+                    t: filter.type,
+                    s: filter.status,
+                    se: filter.search,
+                    b: filter.branch,
+                },
+            ),
+        )
+        .then((Response: AxiosResponse): void => {
+            callback(Response.data);
+        });
+};
+
 export {
     LoadCurrencies,
     GetCustomerLatestID,
@@ -130,5 +169,7 @@ export {
     GetCustomersAsItems,
     GetTillLatestID,
     GetTills,
+    getPendingVisas,
     GetVisaLatestID,
+    getNonProcessedVisas,
 };

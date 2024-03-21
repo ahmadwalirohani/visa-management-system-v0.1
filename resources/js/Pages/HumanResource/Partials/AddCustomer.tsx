@@ -262,7 +262,7 @@ function AddCustomer() {
     }, []);
 
     return (
-        <Grid xl={3} md={3} sm={12}>
+        <Grid xl={2} md={2} sm={12}>
             <form
                 onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
                     onSubmit(event)

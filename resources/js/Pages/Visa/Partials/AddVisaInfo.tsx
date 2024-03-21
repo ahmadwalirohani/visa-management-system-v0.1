@@ -216,7 +216,7 @@ function AddVisaInfo({
                                 <FormControl>
                                     <FormLabel>اسعار</FormLabel>
                                     <Select
-                                        value={formData.currency}
+                                        value={formData.currency as number}
                                         onChange={(e: any, newValue: any) =>
                                             onChange(newValue, "currency")
                                         }

@@ -1,279 +1,48 @@
 import * as React from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
-import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
+
 import Link from "@mui/joy/Link";
-import Input from "@mui/joy/Input";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
-import Checkbox from "@mui/joy/Checkbox";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
+import IconButton from "@mui/joy/IconButton";
 import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import Dropdown from "@mui/joy/Dropdown";
+import LinearProgress from "@mui/joy/LinearProgress";
 
-import SearchIcon from "@mui/icons-material/Search";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import BlockIcon from "@mui/icons-material/Block";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
 import { Head } from "@inertiajs/react";
-import { Card } from "@mui/joy";
-
-const rows = [
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-    {
-        id: "V-1234",
-        date: "Feb 3, 2023",
-        status: "Refunded",
-        customer: {
-            initial: "O",
-            name: "Olivia Ryhe",
-            email: "olivia@email.com",
-        },
-        job: "none",
-        type: "tegari",
-        entrance_type: "npting",
-        passport_no: "p-123123",
-        block_no: "B-12312",
-        remarks: "none",
-    },
-];
+import {
+    Card,
+    ColorPaletteProp,
+    ModalDialogProps,
+    Snackbar,
+    Typography,
+} from "@mui/joy";
+import { IPagination, IVisaPendingFilterProps, IVisaProps } from "@/types";
+import { getPendingVisas } from "@/Utils/FetchResources";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import Chip from "@mui/joy/Chip";
+import axios, { AxiosError } from "axios";
+import TablePagination from "@/Components/TablePagination";
+import PendingVisaFilter from "./Partials/PendingVisaFilter";
+import Edit from "@mui/icons-material/Edit";
+import Print from "@mui/icons-material/Print";
+import Printer from "@/Utils/Printer";
+import EditVisaInfo from "./Partials/EditVisaInfo";
+import { SendActionRequest } from "@/Utils/helpers";
+import { MenuList } from "@mui/material";
+import VisaBookingModel from "./Partials/VisaBookingModel";
+import VisaOrderingModel from "./Partials/VisaOrderingModel";
+import VisaCancelModel from "./Partials/VisaCancelMode";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -303,10 +72,7 @@ function getComparator<Key extends keyof any>(
 // stableSort() brings sort stability to non-modern browsers (notably IE11). If you
 // only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
 // with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(
-    array: readonly T[],
-    comparator: (a: T, b: T) => number,
-) {
+function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -318,69 +84,378 @@ function stableSort<T>(
     return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
-    return (
-        <Dropdown>
-            <MenuButton
-                slots={{ root: IconButton }}
-                slotProps={{
-                    root: { variant: "plain", color: "neutral", size: "sm" },
-                }}
-            >
-                <MoreHorizRoundedIcon />
-            </MenuButton>
-            <Menu size="sm" sx={{ minWidth: 140 }}>
-                <MenuItem>Edit</MenuItem>
-                <MenuItem>Rename</MenuItem>
-                <MenuItem>Move</MenuItem>
-                <Divider />
-                <MenuItem color="danger">Delete</MenuItem>
-            </Menu>
-        </Dropdown>
-    );
+interface Data extends IVisaProps {
+    customer: {
+        id: number;
+        name: string;
+    };
+    created_at: string;
+    id: number;
+    visa_no: number;
+    type: {
+        id: number;
+        name: string;
+    };
+    entrance_type: {
+        id: number;
+        name: string;
+    };
+    status: string;
 }
 
 export default function PendingVisa() {
+    const [useRows, setRows] = React.useState<Data[]>([]);
     const [order, setOrder] = React.useState<Order>("desc");
-    const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const renderFilters = () => (
-        <React.Fragment>
-            <FormControl size="sm">
-                <FormLabel>حالت</FormLabel>
-                <Select
-                    size="sm"
-                    placeholder="Filter by status"
-                    slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-                >
-                    <Option value="paid">معطلي</Option>
-                    <Option value="pending">ثبت نام شد</Option>
-                    <Option value="refunded">دستور</Option>
-                    <Option value="cancelled">لغوه</Option>
-                </Select>
-            </FormControl>
-            <FormControl size="sm">
-                <FormLabel>نوع ویزه</FormLabel>
-                <Select size="sm" placeholder="All">
-                    <Option value="all">All</Option>
-                    <Option value="refund">Refund</Option>
-                    <Option value="purchase">Purchase</Option>
-                    <Option value="debit">Debit</Option>
-                </Select>
-            </FormControl>
-            <FormControl size="sm">
-                <FormLabel>مشتري</FormLabel>
-                <Select size="sm" placeholder="All">
-                    <Option value="all">All</Option>
-                    <Option value="olivia">Olivia Rhye</Option>
-                    <Option value="steve">Steve Hampton</Option>
-                    <Option value="ciaran">Ciaran Murray</Option>
-                    <Option value="marina">Marina Macdonald</Option>
-                    <Option value="charles">Charles Fulton</Option>
-                    <Option value="jay">Jay Hoper</Option>
-                </Select>
-            </FormControl>
-        </React.Fragment>
-    );
+    const [useFetchLoader, setFetchLoading] = React.useState<boolean>(false);
+    const [usePagination, setPagination] = React.useState<IPagination>({
+        first_page_url: "",
+        last_page_url: "",
+        prev_page_url: "",
+        next_page_url: "",
+        path: "",
+        per_page: 0,
+        links: [],
+        last_page: 0,
+        current_page: 0,
+        from: 0,
+        to: 0,
+        total: 0,
+    });
+    const [useVisaStatusProps, setVisaStatusProps] = React.useState({
+        bookedLayout: false,
+        turn_date: new Date(),
+        orderLayout: false,
+        cancelLayout: false,
+    });
+    // State to manage Snackbar (notification)
+    const [useSnackbar, setSnackbar] = React.useState({
+        is_open: false,
+        msg: "",
+        state: "danger",
+    });
+    const [useVisaForm, setVisaForm] = React.useState<IVisaProps | any>({
+        basic_type: "normal",
+        visa_type: 0,
+        visa_entrance_type: null,
+        customer: null,
+        province: "",
+        job: "",
+        passport_no: "",
+        block_no: "",
+        currency: 0,
+        price: 0,
+        name: "",
+        remarks: "",
+        id: 0,
+    });
+
+    const [layout, setLayout] = React.useState<
+        ModalDialogProps["layout"] | undefined
+    >(undefined);
+    const [useFilterOptions, setFilterOptions] =
+        React.useState<IVisaPendingFilterProps>({
+            branch: 0,
+            search: "",
+            status: "",
+            type: 0,
+            customer: null,
+        });
+
+    const LoadRows = (url: string | null | boolean = false) => {
+        setFetchLoading(true);
+        const callback = (response: any): void => {
+            setRows(response.data as Data[]);
+            setPagination({
+                first_page_url: response.first_page_url,
+                last_page_url: response.last_page_url,
+                prev_page_url: response.prev_page_url,
+                next_page_url: response.next_page_url,
+                path: response.path,
+                per_page: response.per_page,
+                links: response.links,
+                last_page: response.last_page,
+                current_page: response.current_page,
+                from: response.from,
+                to: response.to,
+                total: response.total,
+            });
+            setFetchLoading(false);
+        };
+        if (url)
+            axios.get(url as string).then((Response: any) => {
+                callback(Response.data);
+            });
+        else
+            getPendingVisas(useFilterOptions, (response: any) =>
+                callback(response),
+            );
+    };
+
+    const handleOnChange = (newValue: any, field: string): void => {
+        setFilterOptions((prevState) => ({
+            ...prevState,
+            [field]: newValue,
+        }));
+    };
+
+    const handleFormChange = (
+        newValue: any,
+        field: string,
+        isAdvancePayment: boolean = false,
+    ): void => {
+        if (!isAdvancePayment)
+            setVisaForm((prevState: any) => ({
+                ...prevState,
+                [field]: newValue,
+            }));
+    };
+
+    const onPrint = (visa: Data): void => {
+        Printer(
+            `/print/visa-label-format/${visa.visa_no}/${visa.basic_type == "urgent" ? 1 : 0}`,
+            {
+                name: visa.name,
+                customer: visa.customer?.name,
+                type: `${visa.type.name} ${visa.entrance_type.name}`,
+                dynamic_type: visa.block_no ? "بلاک" : "تفصیل",
+                dynamic_value: visa.block_no ? visa.block_no : visa.remarks,
+            },
+        );
+    };
+
+    const openEditDialog = (state: any) => {
+        setLayout(state);
+    };
+
+    const openBookingDialog = (state: any, is_updated: boolean) => {
+        setVisaStatusProps((prevState) => ({
+            ...prevState,
+            bookedLayout: state as boolean,
+        }));
+
+        if (is_updated) {
+            setSnackbar({
+                msg: "معلومات په بریالي سره ثبت سول",
+                state: "success",
+                is_open: true,
+            });
+            LoadRows();
+        }
+    };
+
+    const openOrderingDialog = (state: any, is_updated: boolean) => {
+        setVisaStatusProps((prevState) => ({
+            ...prevState,
+            orderLayout: state as boolean,
+        }));
+
+        if (is_updated) {
+            setSnackbar({
+                msg: "معلومات په بریالي سره ثبت سول",
+                state: "success",
+                is_open: true,
+            });
+            LoadRows();
+        }
+    };
+
+    const openCancelDialog = (state: any, is_updated: boolean) => {
+        setVisaStatusProps((prevState) => ({
+            ...prevState,
+            cancelLayout: state as boolean,
+        }));
+
+        if (is_updated) {
+            setSnackbar({
+                msg: "معلومات په بریالي سره ثبت سول",
+                state: "success",
+                is_open: true,
+            });
+            LoadRows();
+        }
+    };
+
+    const onEditSubmit = () => {
+        const Config = SendActionRequest(
+            {
+                _class: "VisaLogics",
+                _method_name: "edit_visa",
+                _validation_class: "CreateVisa",
+            },
+            Object.assign({}, useVisaForm),
+        );
+        setFetchLoading(true);
+
+        axios
+            .post(Config.url, Config.payload)
+            .then((): void => {
+                setSnackbar({
+                    msg: "معلومات په بریالي سره ثبت سول",
+                    state: "success",
+                    is_open: true,
+                });
+
+                setVisaForm({
+                    basic_type: "normal",
+                    visa_type: 0,
+                    visa_entrance_type: null,
+                    customer: null,
+                    province: "",
+                    job: "",
+                    passport_no: "",
+                    block_no: "",
+                    currency: 0,
+                    price: 0,
+                    name: "",
+                    remarks: "",
+                    id: 1,
+                });
+
+                openEditDialog(undefined);
+
+                LoadRows();
+            })
+            .catch((Error: AxiosError<any>): void => {
+                setSnackbar({
+                    msg: Error.response?.data.message,
+                    state: "danger",
+                    is_open: true,
+                });
+            })
+            .finally(() => setFetchLoading(false));
+    };
+
+    React.useEffect(() => {
+        LoadRows();
+    }, [useFilterOptions]);
+
+    function RowMenu({ visa }: any) {
+        return (
+            <React.Fragment>
+                <Dropdown>
+                    <MenuButton
+                        slots={{ root: IconButton }}
+                        slotProps={{
+                            root: {
+                                variant: "plain",
+                                color: "neutral",
+                                size: "sm",
+                            },
+                        }}
+                    >
+                        <MoreHorizRoundedIcon />
+                    </MenuButton>
+                    <Menu size="sm" sx={{ minWidth: 140 }}>
+                        <MenuItem
+                            onClick={() => {
+                                openEditDialog("center");
+                                setVisaForm({
+                                    customer: visa.customer,
+                                    basic_type: visa.basic_type,
+                                    visa_type: visa.type_id,
+                                    visa_entrance_type: visa.entrance_type,
+                                    province: visa.province || "",
+                                    job: visa.job,
+                                    passport_no: visa.passport_no,
+                                    block_no: visa.block_no,
+                                    currency: visa.currency_id,
+                                    price: visa.price,
+                                    name: visa.name,
+                                    remarks: visa.remarks || "",
+                                    id: visa.id,
+                                });
+                            }}
+                        >
+                            <Edit />
+                            تغیر
+                        </MenuItem>
+                        <MenuItem onClick={() => onPrint(visa)}>
+                            <Print />
+                            چاپ
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setVisaForm((prevState: any) => ({
+                                    ...prevState,
+                                    id: visa.id,
+                                }));
+                                openBookingDialog(true, false);
+                            }}
+                            disabled={
+                                visa.status == "booked" ||
+                                visa.status == "ordered"
+                            }
+                        >
+                            <DoneAllIcon />
+                            ثبت شد
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                setVisaForm((prevState: any) => ({
+                                    ...prevState,
+                                    id: visa.id,
+                                }));
+                                openOrderingDialog(true, false);
+                            }}
+                            disabled={
+                                visa.status == "ordered" ||
+                                visa.status == "registration"
+                            }
+                        >
+                            <FactCheckIcon />
+                            دستور شد
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem
+                            color="danger"
+                            onClick={() => {
+                                setVisaForm((prevState: any) => ({
+                                    ...prevState,
+                                    id: visa.id,
+                                }));
+                                openCancelDialog(true, false);
+                            }}
+                        >
+                            <DoNotDisturbIcon />
+                            کنسل
+                        </MenuItem>
+
+                        <Divider />
+                        <MenuList>
+                            <Table
+                                size="sm"
+                                sx={{
+                                    width: "200px",
+                                    tableLayout: "auto",
+                                    "& tr > th": {
+                                        textAlign: "right",
+                                    },
+                                }}
+                            >
+                                <tbody>
+                                    <tr>
+                                        <th>پیشکي رسید مبلغ</th>
+                                        <td>
+                                            {visa.paid_amount}{" "}
+                                            {visa.currency.symbol}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>باقي مبلغ</th>
+                                        <td>
+                                            {visa.price - visa.paid_amount}{" "}
+                                            {visa.currency.symbol}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </MenuList>
+                    </Menu>
+                </Dropdown>
+            </React.Fragment>
+        );
+    }
+
     return (
         <>
             <Head title="معطلي ویزي" />
@@ -399,26 +474,16 @@ export default function PendingVisa() {
                     overflow: "auto",
                 }}
             >
-                <Card sx={{ m: 0, width: "100%", height: "90vh" }}>
-                    <Box
-                        className="SearchAndFilters-tabletUp"
-                        sx={{
-                            borderRadius: "sm",
-                            py: 2,
-                            display: { xs: "none", sm: "flex" },
-                            flexWrap: "wrap",
-                            gap: 1.5,
-                            "& > *": {
-                                minWidth: { xs: "100px", md: "150px" },
-                            },
-                        }}
-                    >
-                        <FormControl sx={{ flex: 1 }} size="sm">
-                            <FormLabel>ویزي پلټنه</FormLabel>
-                            <Input size="sm" startDecorator={<SearchIcon />} />
-                        </FormControl>
-                        {renderFilters()}
-                    </Box>
+                <Card sx={{ m: 0, width: "100%", height: "88vh" }}>
+                    <div style={{ height: 2 }}>
+                        {useFetchLoader == true && <LinearProgress size="sm" />}
+                    </div>
+
+                    <PendingVisaFilter
+                        onChange={handleOnChange}
+                        useFilter={useFilterOptions}
+                    />
+
                     <Sheet
                         className="OrderTableContainer"
                         variant="outlined"
@@ -456,36 +521,7 @@ export default function PendingVisa() {
                                             textAlign: "center",
                                             padding: "12px 6px",
                                         }}
-                                    >
-                                        <Checkbox
-                                            size="sm"
-                                            indeterminate={
-                                                selected.length > 0 &&
-                                                selected.length !== rows.length
-                                            }
-                                            checked={
-                                                selected.length === rows.length
-                                            }
-                                            onChange={(event) => {
-                                                setSelected(
-                                                    event.target.checked
-                                                        ? rows.map(
-                                                              (row) => row.id,
-                                                          )
-                                                        : [],
-                                                );
-                                            }}
-                                            color={
-                                                selected.length > 0 ||
-                                                selected.length === rows.length
-                                                    ? "primary"
-                                                    : undefined
-                                            }
-                                            sx={{
-                                                verticalAlign: "text-bottom",
-                                            }}
-                                        />
-                                    </th>
+                                    ></th>
                                     <th
                                         style={{
                                             width: 120,
@@ -518,7 +554,23 @@ export default function PendingVisa() {
                                             شماره لییل
                                         </Link>
                                     </th>
+                                    <th
+                                        style={{
+                                            width: 160,
+                                            padding: "12px 6px",
+                                        }}
+                                    >
+                                        تاریخ
+                                    </th>
 
+                                    <th
+                                        style={{
+                                            width: 240,
+                                            padding: "12px 6px",
+                                        }}
+                                    >
+                                        شرکت / مشتري
+                                    </th>
                                     <th
                                         style={{
                                             width: 140,
@@ -536,16 +588,14 @@ export default function PendingVisa() {
                                     >
                                         پاسپورټ
                                     </th>
-
                                     <th
                                         style={{
                                             width: 140,
                                             padding: "12px 6px",
                                         }}
                                     >
-                                        وظیفه
+                                        حالت
                                     </th>
-
                                     <th
                                         style={{
                                             width: 140,
@@ -553,6 +603,22 @@ export default function PendingVisa() {
                                         }}
                                     >
                                         پلیټ نمبر
+                                    </th>
+                                    <th
+                                        style={{
+                                            width: 140,
+                                            padding: "12px 6px",
+                                        }}
+                                    >
+                                        قیمت
+                                    </th>
+                                    <th
+                                        style={{
+                                            width: 140,
+                                            padding: "12px 6px",
+                                        }}
+                                    >
+                                        وظیفه
                                     </th>
 
                                     <th
@@ -571,220 +637,159 @@ export default function PendingVisa() {
                                     >
                                         نوعیت دخول
                                     </th>
+
                                     <th
                                         style={{
                                             width: 140,
                                             padding: "12px 6px",
                                         }}
                                     >
-                                        حالت
+                                        تفصیل
                                     </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        تاریخ
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 240,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        مشتري
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    ></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {stableSort(
-                                    rows,
+                                    useRows,
                                     getComparator(order, "id"),
                                 ).map((row) => (
                                     <tr key={row.id}>
-                                        <td
-                                            style={{
-                                                textAlign: "center",
-                                                width: 120,
-                                            }}
-                                        >
-                                            <Checkbox
-                                                size="sm"
-                                                checked={selected.includes(
-                                                    row.id,
+                                        <td>
+                                            <RowMenu visa={row as Data} />
+                                        </td>
+                                        <td>{row.visa_no}</td>
+                                        <td>
+                                            {row.created_at.substring(0, 10)}
+                                            <Typography
+                                                level="body-xs"
+                                                sx={{ display: "flex" }}
+                                            >
+                                                {row.status !=
+                                                    "registration" && (
+                                                    <Chip size="sm">
+                                                        {row.booked_date?.substring(
+                                                            0,
+                                                            10,
+                                                        )}
+                                                    </Chip>
                                                 )}
-                                                color={
-                                                    selected.includes(row.id)
-                                                        ? "primary"
-                                                        : undefined
-                                                }
-                                                onChange={(event) => {
-                                                    setSelected((ids) =>
-                                                        event.target.checked
-                                                            ? ids.concat(row.id)
-                                                            : ids.filter(
-                                                                  (itemId) =>
-                                                                      itemId !==
-                                                                      row.id,
-                                                              ),
-                                                    );
-                                                }}
-                                                slotProps={{
-                                                    checkbox: {
-                                                        sx: {
-                                                            textAlign: "left",
-                                                        },
-                                                    },
-                                                }}
-                                                sx={{
-                                                    verticalAlign:
-                                                        "text-bottom",
-                                                }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <Typography level="body-xs">
-                                                {row.id}
+                                                {row.status == "ordered" && (
+                                                    <Chip
+                                                        color="primary"
+                                                        size="sm"
+                                                    >
+                                                        {row.ordered_date?.substring(
+                                                            0,
+                                                            10,
+                                                        )}
+                                                    </Chip>
+                                                )}
                                             </Typography>
                                         </td>
-                                        <td>
-                                            <Typography level="body-xs">
-                                                {row.date}
-                                            </Typography>
-                                        </td>
+                                        <td>{row.customer.name}</td>
+                                        <td>{row.name}</td>
+                                        <td>{row.passport_no}</td>
                                         <td>
                                             <Chip
                                                 variant="soft"
-                                                size="sm"
                                                 startDecorator={
                                                     {
-                                                        Paid: (
-                                                            <CheckRoundedIcon />
+                                                        registration: (
+                                                            <TaskAltIcon />
                                                         ),
-                                                        Refunded: (
-                                                            <AutorenewRoundedIcon />
+                                                        ordered: (
+                                                            <PriceCheckIcon />
                                                         ),
-                                                        Cancelled: (
-                                                            <BlockIcon />
+                                                        booked: (
+                                                            <FactCheckIcon />
                                                         ),
                                                     }[row.status]
                                                 }
                                                 color={
                                                     {
-                                                        Paid: "success",
-                                                        Refunded: "neutral",
-                                                        Cancelled: "danger",
+                                                        registration: "success",
+                                                        ordered: "primary",
+                                                        booked: "neutral",
                                                     }[
                                                         row.status
                                                     ] as ColorPaletteProp
                                                 }
                                             >
-                                                {row.status}
+                                                {
+                                                    {
+                                                        registration: "راجسټر",
+                                                        booked: "ثبت شد",
+                                                        ordered: "دستور شد",
+                                                        completed: "جاري",
+                                                    }[row.status]
+                                                }
                                             </Chip>
                                         </td>
-
+                                        <td>{row.block_no}</td>
                                         <td>
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    gap: 2,
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <Link
-                                                    level="body-xs"
-                                                    component="button"
-                                                >
-                                                    Download
-                                                </Link>
-                                                <RowMenu />
-                                            </Box>
+                                            {new Intl.NumberFormat("en").format(
+                                                row.price,
+                                            )}{" "}
+                                            {(row.currency as any).symbol}
                                         </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    gap: 2,
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <Avatar size="sm">
-                                                    {row.customer.initial}
-                                                </Avatar>
-                                                <div>
-                                                    <Typography level="body-xs">
-                                                        {row.customer.name}
-                                                    </Typography>
-                                                    <Typography level="body-xs">
-                                                        {row.customer.email}
-                                                    </Typography>
-                                                </div>
-                                            </Box>
-                                        </td>
+                                        <td>{row.job}</td>
+                                        <td>{row.type.name}</td>
+                                        <td>{row.entrance_type.name}</td>
+                                        <td>{row.remarks}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </Table>
                     </Sheet>
-                    <Box
-                        className="Pagination-laptopUp"
-                        sx={{
-                            pt: 2,
-                            gap: 1,
-                            [`& .${iconButtonClasses.root}`]: {
-                                borderRadius: "50%",
-                            },
-                            display: {
-                                xs: "none",
-                                md: "flex",
-                            },
-                        }}
-                    >
-                        <Button
-                            size="sm"
-                            variant="outlined"
-                            color="neutral"
-                            startDecorator={<KeyboardArrowLeftIcon />}
-                        >
-                            Previous
-                        </Button>
-
-                        <Box sx={{ flex: 1 }} />
-                        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-                            <IconButton
-                                key={page}
-                                size="sm"
-                                variant={Number(page) ? "outlined" : "plain"}
-                                color="neutral"
-                            >
-                                {page}
-                            </IconButton>
-                        ))}
-                        <Box sx={{ flex: 1 }} />
-
-                        <Button
-                            size="sm"
-                            variant="outlined"
-                            color="neutral"
-                            endDecorator={<KeyboardArrowRightIcon />}
-                        >
-                            Next
-                        </Button>
-                    </Box>
+                    <TablePagination
+                        usePagination={usePagination}
+                        LoadRows={LoadRows}
+                    />
                 </Card>
             </Box>
+
+            <EditVisaInfo
+                formData={useVisaForm}
+                onChange={handleFormChange}
+                onSubmit={onEditSubmit}
+                loading={useFetchLoader}
+                setLayoutState={openEditDialog}
+                layout={layout}
+            />
+
+            <VisaBookingModel
+                setOpenState={openBookingDialog}
+                openState={useVisaStatusProps.bookedLayout}
+                id={useVisaForm.id}
+            />
+            <VisaOrderingModel
+                setOpenState={openOrderingDialog}
+                openState={useVisaStatusProps.orderLayout}
+                id={useVisaForm.id}
+            />
+
+            <VisaCancelModel
+                id={useVisaForm.id}
+                openState={useVisaStatusProps.cancelLayout}
+                setOpenState={openCancelDialog}
+            />
+
+            <Snackbar
+                variant="solid"
+                color={useSnackbar.state as ColorPaletteProp}
+                autoHideDuration={3000}
+                open={useSnackbar.is_open}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                onClose={() =>
+                    setSnackbar({
+                        is_open: false,
+                        state: "string",
+                        msg: "",
+                    })
+                }
+            >
+                {useSnackbar.msg}
+            </Snackbar>
         </>
     );
 }

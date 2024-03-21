@@ -7,6 +7,7 @@ import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/joy/Button";
 import React, { FormEvent } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
+import { Divider, Table } from "@mui/material";
 
 interface FormElements extends HTMLFormControlsCollection {
     name: HTMLInputElement;
@@ -102,6 +103,16 @@ function AddCurrency({
                     پاکول{" "}
                 </Button>
             </form>
+
+            <Divider />
+
+            <Table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                    </tr>
+                </thead>
+            </Table>
 
             <Snackbar
                 variant="solid"

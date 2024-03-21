@@ -141,7 +141,7 @@ export default function Sidebar({ user }: any) {
                     <ListItem>
                         <Link
                             href={route("dashboard")}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", textDecoration: "none" }}
                         >
                             <ListItemButton
                                 selected={route().current() == "dashboard"}
@@ -159,10 +159,10 @@ export default function Sidebar({ user }: any) {
                     <ListItem>
                         <Link
                             href={route("visa.add")}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", textDecoration: "none" }}
                         >
                             <ListItemButton
-                                selected={route().current() == "add-visa"}
+                                selected={route().current() == "visa.add"}
                             >
                                 <ShoppingCartRoundedIcon />
                                 <ListItemContent>
@@ -176,7 +176,7 @@ export default function Sidebar({ user }: any) {
                     <ListItem>
                         <Link
                             href={route("visa.pending")}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", textDecoration: "none" }}
                         >
                             <ListItemButton
                                 role="menuitem"
@@ -193,6 +193,23 @@ export default function Sidebar({ user }: any) {
                                 <Chip size="sm" color="primary" variant="solid">
                                     4
                                 </Chip>
+                            </ListItemButton>
+                        </Link>
+                    </ListItem>
+                    <ListItem>
+                        <Link
+                            href={route("visa.process")}
+                            style={{ width: "100%", textDecoration: "none" }}
+                        >
+                            <ListItemButton
+                                selected={route().current() == "visa.process"}
+                            >
+                                <ShoppingCartRoundedIcon />
+                                <ListItemContent>
+                                    <Typography level="title-sm">
+                                        ویزي جاري
+                                    </Typography>
+                                </ListItemContent>
                             </ListItemButton>
                         </Link>
                     </ListItem>
@@ -227,7 +244,10 @@ export default function Sidebar({ user }: any) {
                                 <ListItem sx={{ mt: 0.5 }}>
                                     <Link
                                         href={route("human_resource.customer")}
-                                        style={{ width: "100%" }}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
                                     >
                                         <ListItemButton
                                             selected={
@@ -284,7 +304,10 @@ export default function Sidebar({ user }: any) {
                                 <ListItem sx={{ mt: 0.5 }}>
                                     <Link
                                         href={route("financial.journal_entry")}
-                                        style={{ width: "100%" }}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
                                     >
                                         <ListItemButton
                                             selected={
@@ -386,7 +409,7 @@ export default function Sidebar({ user }: any) {
                     <ListItem>
                         <Link
                             href={route("settings")}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", textDecoration: "none" }}
                         >
                             <ListItemButton
                                 selected={route().current() == "settings"}

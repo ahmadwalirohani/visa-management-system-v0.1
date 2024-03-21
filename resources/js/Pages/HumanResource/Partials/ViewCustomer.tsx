@@ -438,7 +438,7 @@ export default function ViewCustomer() {
     };
 
     return (
-        <Grid xl={9} md={9} sm={12}>
+        <Grid xl={10} md={10} sm={12}>
             <Box
                 sx={{
                     px: { xs: 2, md: 0 },

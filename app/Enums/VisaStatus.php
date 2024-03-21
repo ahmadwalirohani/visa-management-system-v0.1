@@ -8,4 +8,6 @@ enum VisaStatus: string
     case BOOKED = "booked";
     case ORDERED = "ordered";
     case COMPLETED = "completed";
+
+    case CANCELED = "1";
 }

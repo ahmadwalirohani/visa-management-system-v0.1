@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tills', function () {
         return Inertia::render('Financial/Tills');
     })->name('financial.tills');
+
+    Route::get('/process-visa', function () {
+        return Inertia::render('Visa/ProcessVisa');
+    })->name('visa.process');
 });
 
 require __DIR__ . '/auth.php';

@@ -22,6 +22,7 @@
             border-radius: 10px;
             padding: 2px;
             box-sizing: border-box;
+            margin-top: 5px;
         }
 
         header,
@@ -79,53 +80,15 @@
     <div class="container">
         <header>
             <div class="company-info">
-                @if($is_urgent == 1)
-                <img src="/urgent.png" style="width: 100%; height: 50px; transform:rotate(350deg)" alt="">
-                @endif
-                <h3>p-1234567890</h3>
+
+                <h2 id="date">{{ $date }}</h2>
             </div>
             <div class="logo">
-
-                <img src="https://system.azizivisaservices.com/assets/images/Logo-images/azizi-logo.png" alt="Logo" width="130" />
-
+                @if($is_urgent)
+                <img src="/urgent.png" style="width: 100%; height: 50px; transform:rotate(350deg)" alt="">
+                @endif
             </div>
         </header>
-        <section>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>نام و تخلص</th>
-                        <td id="name">نذیر احمد یارزاده</td>
-                    </tr>
-                    <tr>
-                        <th>نوع ویزا</th>
-                        <td id="type">ورود شش ماه چند بار</td>
-                    </tr>
-                    <tr>
-                        <th id="dynamic_type">پالک</th>
-                        <td id="dynamic_value">نماینده شرکت</td>
-                    </tr>
-                    <tr>
-                        <th>مربوط</th>
-                        <td id="customer">شرکت نوروزی</td>
-                    </tr>
-                    <tr>
-                        <th>تاریخ</th>
-                        <td>{{ Morilog\Jalali\Jalalian::now()}}</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-        </section>
-        <footer>
-            <div class="barcode">
-                <div style="margin: auto;background:none;width:100%">
-                    {!!
-                    DNS1D::getBarcodeSVG((string)$visa_no, 'C128')
-                    !!}
-                </div>
-            </div>
-        </footer>
     </div>
 </body>
 

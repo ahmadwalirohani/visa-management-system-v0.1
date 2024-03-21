@@ -17,7 +17,12 @@ import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 interface IProps {
     formData: any;
     onChange(newValue: any, field: string, sourceType: boolean): void;
-    selectedCurrency: number;
+    selectedCurrency:
+        | number
+        | {
+              id: number;
+              symbol: string;
+          };
     selectedCustomer: any;
     price: number;
 }
@@ -45,7 +50,7 @@ function AddVisaAdvancePayment({
 
     const oldCustomerBalance = (): number => {
         if (
-            selectedCurrency > 0 &&
+            (selectedCurrency as number) > 0 &&
             selectedCustomer &&
             typeof selectedCustomer == "object"
         ) {
@@ -58,7 +63,7 @@ function AddVisaAdvancePayment({
     };
 
     const oldTillBalance = (): number => {
-        if (selectedCurrency > 0 && formData.till > 0) {
+        if ((selectedCurrency as number) > 0 && formData.till > 0) {
             return (
                 useTills
                     .filter((t: any) => t.id == formData.till)[0]

@@ -65,7 +65,7 @@ interface TypeAdditionFormElement extends HTMLFormElement {
     readonly elements: FormElements;
 }
 
-function ViewUserBranch({
+function AddVisaSubType({
     setLayoutState,
     layout,
     formValidation,
@@ -209,4 +209,4 @@ function ViewUserBranch({
     );
 }
 
-export default ViewUserBranch;
+export default AddVisaSubType;

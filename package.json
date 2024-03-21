@@ -39,6 +39,7 @@
     "dependencies": {
         "jalali-moment": "^3.3.11",
         "react-barcode": "^1.5.1",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "zaman": "^2.1.1"
     }
 }

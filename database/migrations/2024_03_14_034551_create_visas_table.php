@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnDelete();
             $table->enum('basic_type', ['normal', 'urgent'])->default('normal');
             $table->bigInteger('visa_no')->unique();
+            $table->string('name')->nullable();
+            $table->decimal('price', 20, 2)->default(0);
             $table->string('province');
             $table->string('passport_no');
             $table->string('job')->nullable();
@@ -31,6 +33,10 @@ return new class extends Migration
             $table->decimal('paid_amount', 18, 2)->default(0);
             $table->decimal('discount_amount', 18, 2)->default(0);
             $table->decimal('expense_amount', 18, 2)->default(0);
+            $table->dateTime('booked_date')->nullable();
+            $table->dateTime('ordered_date')->nullable();
+            $table->dateTime('completed_date')->nullable();
+            $table->text('cancel_reason')->nullable();
             $table->timestamps();
         });
     }
