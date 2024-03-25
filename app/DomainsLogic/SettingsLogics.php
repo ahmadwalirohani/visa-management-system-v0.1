@@ -10,6 +10,7 @@ use App\Http\Requests\CreateVisaTypeRequest;
 use App\Models\Branch;
 use App\Models\Currency;
 use App\Models\EICodes;
+use App\Models\ExchangeRates;
 use App\Models\SystemInfo;
 use App\Models\VisaSubType;
 use App\Models\VisaType;
@@ -129,6 +130,23 @@ class SettingsLogics
         }
 
         SystemInfo::whereId(1)->update($validated);
+
+        return response()->json([true], JsonResponse::HTTP_OK);
+    }
+
+    public static function add_currency_exchange_rates(Request $request): JsonResponse
+    {
+        $defaultCurrency = Currency::getDefault()->first()->id;
+        foreach ($request->rates as $currency) {
+            $currency = (object) $currency;
+
+            (new ExchangeRates())->addCurrencyRate((object)[
+                'amount' => $currency->amount,
+                "rate" => $currency->rate,
+                'currency_id' => $currency->id,
+                'default_currency_id' => $defaultCurrency,
+            ])->save();
+        }
 
         return response()->json([true], JsonResponse::HTTP_OK);
     }

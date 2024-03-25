@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Enums\VisaStatus;
 use App\Enums\VisaType;
+use App\Models\Currency;
 use App\Models\SystemInfo;
 use App\Models\Visa;
 use App\Models\VisaExpense;
@@ -37,6 +38,7 @@ class VisaActions extends VisaService
                 $basicVisaInfo->job,
                 $basicVisaInfo->name,
                 $basicVisaInfo->price,
+                $basicVisaInfo->advance_amount ?? 0,
             );
 
 
@@ -132,5 +134,82 @@ class VisaActions extends VisaService
             'is_canceled' => (int) VisaStatus::CANCELED->value,
             'cancel_reason' => $reason,
         ]);
+    }
+
+    public function createProcessedVisas(object | array $visas): self
+    {
+        $defaultCurrency = Currency::getDefault()->first()->id;
+        foreach ($visas as $visa) {
+            $visa = (object) $visa;
+
+            $this->setVisaId($visa->id)
+                ->proceedVisa($visa->price, $visa->expense)
+                ->createProceedVisa($visa->profit, $visa->expense, $defaultCurrency, $visa->serial_no ?? '', $visa->residence ?? '')
+                ->stebalizeVisaExpense($visa->expenses, collect($visa->expenses)->pluck('id')->toArray());
+
+            $this->debitVisaChargesToCustomer(
+                $visa->customer_id,
+                $visa->currency_id,
+                $visa->price,
+                $visa->id,
+            );
+
+            if ($visa->advance_payment > 0) $this->creditVisaAdvancePaymentToCustomer(
+                $visa->customer_id,
+                $visa->currency_id,
+                $visa->advance_payment,
+                $visa->id
+            );
+        }
+
+        return $this;
+    }
+
+    public function deductExpensesFromTill(int $till_id, object | array $expenses, string $visaIDs): self
+    {
+        $tillActions = new TillActions($till_id);
+
+        foreach ($expenses as $expense) {
+            $expense = (object) $expense;
+
+
+            $tillActions->debitAccount($expense->currency_id, $expense->amount)
+                ->financialService->setRemarks($visaIDs);
+
+            $tillActions->createDebitStatement(
+                'VISA-EXPENSES',
+                $expense->amount,
+            );
+        }
+
+        return $this;
+    }
+
+    public function debitVisaChargesToCustomer(int $customer_id, int $currency_id, float $amount, int $visa_id): self
+    {
+        (new CustomerAccountingActions($customer_id))
+            ->debitAccount($currency_id, $amount)
+            ->createDebitStatement(
+                'VISA-CHARGES',
+                $amount,
+                $visa_id,
+                '',
+            );
+
+        return $this;
+    }
+
+    public function creditVisaAdvancePaymentToCustomer(int $customer_id, int $currency_id, float $amount, int $visa_id): self
+    {
+        (new CustomerAccountingActions($customer_id))
+            ->creditAccount($currency_id, $amount)
+            ->createCreditStatement(
+                'VISA-ADVANCE-PAYMENT',
+                $amount,
+                $visa_id,
+                '',
+            );
+
+        return $this;
     }
 }

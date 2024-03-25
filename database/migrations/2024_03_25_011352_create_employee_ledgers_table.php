@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer_ledgers', function (Blueprint $table) {
+        Schema::create('employee_ledgers', function (Blueprint $table) {
             $table->id();
             $table->string("transactionType");
             $table->decimal("credit_amount", 18, 2)->default(0);
@@ -19,13 +19,12 @@ return new class extends Migration
             $table->decimal("balance", 20, 2)->default(0);
             $table->decimal("exchange_rate", 20, 2)->default(0);
             $table->decimal("exchange_amount", 20, 2)->default(0);
-            $table->foreignId('customer_id')->constrained("customers")->cascadeOnDelete();
+            $table->foreignId('employee_id')->constrained("employees")->cascadeOnDelete();
             $table->foreignId("currency_id")->constrained("currencies")->cascadeOnDelete();
             $table->foreignId("ex_currency_id")->constrained("currencies")->cascadeOnDelete();
             $table->foreignId("created_user_id")->constrained("users")->cascadeOnDelete();
             $table->foreignId("bank_id")->nullable()->constrained("banks")->cascadeOnDelete();
             $table->foreignId("till_id")->nullable()->constrained("tills")->cascadeOnDelete();
-            $table->foreignId("visa_id")->nullable()->constrained("visas")->cascadeOnDelete();
             $table->text("remarks")->nullable();
             $table->timestamps();
         });
@@ -36,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_ledgers');
+        Schema::dropIfExists('employee_ledgers');
     }
 };

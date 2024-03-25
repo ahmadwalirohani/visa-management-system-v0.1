@@ -47,6 +47,8 @@ trait HasTransactionalFields
         return false;
     }
 
+
+
     public function setId(int $id): self
     {
         $this->id = $id;
@@ -61,7 +63,7 @@ trait HasTransactionalFields
         return $this;
     }
 
-    public function setVisaId(int $visaId): self
+    public function setVisaId(int | null $visaId): self
     {
         $this->visa_id = $visaId;
 

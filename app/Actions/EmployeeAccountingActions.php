@@ -2,21 +2,21 @@
 
 namespace App\Actions;
 
-use App\Models\Customer;
-use App\Models\CustomerAccount;
-use App\Models\CustomerLedger;
+use App\Models\Employee;
+use App\Models\EmployeeAccount;
+use App\Models\EmployeeLedger;
 use App\Services\HRAccountingService;
 
-class CustomerAccountingActions
+class EmployeeAccountingActions
 {
     protected HRAccountingService $hrAccountingService;
 
     public function __construct(protected int $id)
     {
-        $this->hrAccountingService = new HRAccountingService(new Customer(), 'customer_id');
+        $this->hrAccountingService = new HRAccountingService(new Employee(), 'employee_id');
     }
 
-    public function createAccount(CustomerAccount $account, float $balance, int $currency_id): self
+    public function createAccount(EmployeeAccount $account, float $balance, int $currency_id): self
     {
         $this->hrAccountingService->setId($this->id)
             ->setBalance($balance)
@@ -37,7 +37,7 @@ class CustomerAccountingActions
             ->setDebitAmount($debit)
             ->setVisaId($visa_id)
             ->setRemarks($remarks)
-            ->createStatement(new CustomerLedger());
+            ->createStatement(new EmployeeLedger());
 
         return $this;
     }
@@ -53,7 +53,7 @@ class CustomerAccountingActions
             ->setCreditAmount($credit)
             ->setVisaId($visa_id)
             ->setRemarks($remarks)
-            ->createStatement(new CustomerLedger());
+            ->createStatement(new EmployeeLedger());
 
         return $this;
     }
@@ -64,7 +64,7 @@ class CustomerAccountingActions
             ->setId($this->id)
             ->setCurrencyId($currency_id)
             ->setDebitAmount($amount)
-            ->debitAmountFromAccount(new CustomerAccount());
+            ->debitAmountFromAccount(new EmployeeAccount());
 
         return $this;
     }
@@ -75,7 +75,7 @@ class CustomerAccountingActions
             ->setId($this->id)
             ->setCurrencyId($currency_id)
             ->setCreditAmount($amount)
-            ->creditAmountToAccount(new CustomerAccount());
+            ->creditAmountToAccount(new EmployeeAccount());
 
         return $this;
     }

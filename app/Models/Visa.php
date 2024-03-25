@@ -7,6 +7,7 @@ use App\Enums\VisaStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class Visa extends Model
@@ -36,7 +37,7 @@ class Visa extends Model
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class);
+        return $this->belongsTo(Currency::class)->select(['id', 'name', 'symbol']);
     }
 
     public function scopeWithCurrency($query): void
@@ -71,6 +72,16 @@ class Visa extends Model
     public function scopeWithEntranceType($query): void
     {
         $query->with('entrance_type');
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(VisaExpense::class)->select(['id', 'amount', 'currency_id', 'name', 'visa_id'])->with('currency');
+    }
+
+    public function scopeWithExpenses($query): void
+    {
+        $query->with('expenses');
     }
 
     public function scopeFilter($query, object $payload): void

@@ -61,10 +61,23 @@ class FinancialService
 
         $this->checkAccount($account, function () use ($account) {
             $_account = $account::find($this->id);
-            $_account->balance = $this->balance + $this->credit_amount;
+            $_account->balance = $_account->balance + $this->credit_amount;
             $_account->save();
 
-            $this->setBalance($_account->balance + $this->credit_amount);
+            $this->setBalance($_account->balance);
+        });
+        return $this;
+    }
+
+    public function debitAmountFromAccount(Model $account): self
+    {
+
+        $this->checkAccount($account, function () use ($account) {
+            $_account = $account::find($account->query()->where($this->fieldName, $this->id)->whereCurrencyId($this->currency_id)->first()->id);
+            $_account->balance = $_account->balance - $this->debit_amount;
+            $_account->save();
+
+            $this->setBalance($_account->balance);
         });
         return $this;
     }

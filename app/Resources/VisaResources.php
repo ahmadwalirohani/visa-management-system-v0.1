@@ -37,6 +37,8 @@ class VisaResources
                 ->withType()
                 ->withBranch()
                 ->getNonProcessed()
+                ->withExpenses()
+                ->withCurrency()
                 ->get(),
             JsonResponse::HTTP_OK
         );

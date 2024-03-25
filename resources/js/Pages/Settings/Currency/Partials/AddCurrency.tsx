@@ -5,9 +5,11 @@ import FormHelperText from "@mui/joy/FormHelperText";
 import Snackbar from "@mui/joy/Snackbar";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/joy/Button";
-import React, { FormEvent } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
-import { Divider, Table } from "@mui/material";
+import { Divider, Table } from "@mui/joy";
+import axios, { AxiosError } from "axios";
+import { SendActionRequest } from "@/Utils/helpers";
 
 interface FormElements extends HTMLFormControlsCollection {
     name: HTMLInputElement;
@@ -42,17 +44,85 @@ interface FormProps {
         currency_id: null | number;
     };
     resetForm(): void;
+    currencies: Array<object>;
 }
 
 function AddCurrency({
     formValidation,
     onSubmit,
-    useSnackbar,
-    closeSnackbar,
     formRef,
     formInfo,
     resetForm,
+    currencies,
 }: FormProps) {
+    const [useExchangeRates, setExchangeRates] = useState<Array<object>>([]);
+    const [useLoading, setLoading] = useState<boolean>(false);
+    // State to manage Snackbar (notification)
+    const [useSnackbar, setSnackbar] = useState({
+        is_open: false,
+        msg: "",
+        state: "danger",
+    });
+
+    const onRatesSubmit = () => {
+        setLoading(true);
+
+        const Config = SendActionRequest(
+            {
+                _class: "SettingsLogics",
+                _method_name: "add_currency_exchange_rates",
+                _validation_class: null,
+            },
+            {
+                rates: useExchangeRates,
+            },
+        );
+
+        axios
+            .post(Config.url, Config.payload)
+            .then(() => {
+                setSnackbar({
+                    msg: "نرخونه په بریالي سره ثبت سول",
+                    state: "success",
+                    is_open: true,
+                });
+            })
+            .catch((Error: AxiosError<any>) => {
+                setSnackbar({
+                    msg: Error.response?.data.message,
+                    state: "danger",
+                    is_open: true,
+                });
+            })
+            .finally(() => setLoading(false));
+    };
+
+    const handleInputChange = (
+        newValue: any,
+        index: number,
+        field: string,
+    ): void => {
+        const rates = [...useExchangeRates];
+
+        rates[index] = {
+            ...rates[index],
+            [field]: newValue,
+        };
+
+        setExchangeRates(rates);
+    };
+
+    useEffect(() => {
+        setExchangeRates([
+            ...currencies.map((currency: any) => ({
+                id: currency.id,
+                is_default: currency.is_default,
+                name: currency.name,
+                amount: currency.is_default == 1 ? 1 : currency.amount,
+                rate: currency.is_default == 1 ? 1 : currency.rate,
+            })),
+        ]);
+    }, [currencies]);
     return (
         <>
             <Typography level="h4" sx={{ mb: 3 }}>
@@ -104,15 +174,73 @@ function AddCurrency({
                 </Button>
             </form>
 
-            <Divider />
+            <Divider sx={{ mb: 2, mt: 3 }} />
 
-            <Table>
+            <Table
+                variant="soft"
+                sx={{
+                    "& tr  > *": {
+                        textAlign: "center",
+                    },
+                }}
+            >
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th style={{ width: 50 }}>#</th>
+                        <th>اسعار</th>
+                        <th>مبلغ</th>
+                        <th>معادل نرخ</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {useExchangeRates.map((currency: any, index: number) => (
+                        <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{currency.name}</td>
+                            <td>
+                                <Input
+                                    value={currency.amount}
+                                    size="sm"
+                                    type="number"
+                                    disabled={currency.is_default}
+                                    onChange={(
+                                        e: ChangeEvent<HTMLInputElement>,
+                                    ) =>
+                                        handleInputChange(
+                                            e.target.value,
+                                            index,
+                                            "amount",
+                                        )
+                                    }
+                                />
+                            </td>
+                            <td>
+                                <Input
+                                    value={currency.rate}
+                                    size="sm"
+                                    type="number"
+                                    disabled={currency.is_default}
+                                    onChange={(
+                                        e: ChangeEvent<HTMLInputElement>,
+                                    ) =>
+                                        handleInputChange(
+                                            e.target.value,
+                                            index,
+                                            "rate",
+                                        )
+                                    }
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
             </Table>
+
+            <Divider sx={{ mb: 2, mt: 3 }} />
+
+            <Button onClick={onRatesSubmit} loading={useLoading} variant="soft">
+                ثبت
+            </Button>
 
             <Snackbar
                 variant="solid"
@@ -120,7 +248,12 @@ function AddCurrency({
                 autoHideDuration={2000}
                 open={useSnackbar.is_open}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                onClose={() => closeSnackbar()}
+                onClose={() =>
+                    setSnackbar((prevState) => ({
+                        ...prevState,
+                        is_open: false,
+                    }))
+                }
             >
                 {useSnackbar.msg}
             </Snackbar>

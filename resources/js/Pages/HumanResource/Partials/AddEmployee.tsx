@@ -10,25 +10,25 @@ import { ValidateCustomForm } from "@/Utils/Validation";
 import InputField from "@/Components/InputField";
 import { Grid, Option, Select, Sheet, Table } from "@mui/joy";
 import {
-    GetCustomerLatestID,
+    GetEmployeeLatestID,
     LoadBranches,
     LoadCurrencies,
 } from "@/Utils/FetchResources";
-import { useEventEmitter } from "../Customer";
+import { useEventEmitter } from "../Employee";
 
-interface ICustomerFormFields {
+interface IEmployeeFormFields {
     name: string;
     phone: string;
     email: string;
     branch: number | null;
     address: string | null;
-    province: string | null;
-    agent_name: string | null;
+    salary: number | null;
+    job: string | null;
     code: string | null;
     balancies: Array<object>;
 }
 
-function AddCustomer() {
+function AddEmployee() {
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
@@ -39,7 +39,7 @@ function AddCustomer() {
             state: false,
             msg: "",
         },
-        province: {
+        salary: {
             state: false,
             msg: "",
         },
@@ -49,14 +49,14 @@ function AddCustomer() {
         },
     });
 
-    const [useFormFields, setFormFields] = useState<ICustomerFormFields>({
+    const [useFormFields, setFormFields] = useState<IEmployeeFormFields>({
         name: "",
         phone: "",
         email: "",
-        province: "",
+        salary: null,
         address: "",
         code: "",
-        agent_name: "",
+        job: "",
         branch: 0,
         balancies: [],
     });
@@ -75,7 +75,7 @@ function AddCustomer() {
     const [useFormFunctionalInfo, setFormFunctionalInfo] = useState({
         loading: false,
         is_update: false,
-        customer_id: 0,
+        Employee_id: 0,
     });
 
     // Ref to reference the HTML form element
@@ -103,7 +103,7 @@ function AddCustomer() {
         e.preventDefault();
 
         // Validating the form using a utility function
-        ValidateCustomForm(useFormFields, ["name", "phone", "province", "code"])
+        ValidateCustomForm(useFormFields, ["name", "phone", "salary", "code"])
             .then((validated): any => {
                 // Updating form validation state with validation results
                 setFormValidation((prevState) => ({
@@ -120,8 +120,8 @@ function AddCustomer() {
                 const Config = SendActionRequest(
                     {
                         _class: "HRLogics",
-                        _method_name: "add_customer",
-                        _validation_class: "CreateCustomer",
+                        _method_name: "add_employee",
+                        _validation_class: "CreateEmployee",
                     },
                     Object.assign(
                         {},
@@ -137,7 +137,7 @@ function AddCustomer() {
                     .then((Response: AxiosResponse<any>): any => {
                         // Handling success by updating the Snackbar state and resetting the form
                         setSnackbar({
-                            msg: "مشتري په بریالي سره ثبت سول",
+                            msg: "کارمند په بریالي سره ثبت سول",
                             state: "success",
                             is_open: true,
                         });
@@ -147,7 +147,7 @@ function AddCustomer() {
                             code: `C-${Response.data.original}`,
                         }));
 
-                        emitEvent("ReloadCustomersEvent", true);
+                        emitEvent("ReloadEmployeesEvent", true);
 
                         resetForm(); // Resetting the form
                     })
@@ -185,10 +185,10 @@ function AddCustomer() {
             name: "",
             phone: "",
             email: "",
-            province: "",
+            salary: null,
             address: "",
             code: prevState.code,
-            agent_name: "",
+            job: "",
             branch: 0,
             balancies: updatedBalancies,
         }));
@@ -196,7 +196,7 @@ function AddCustomer() {
         setFormFunctionalInfo({
             loading: false,
             is_update: false,
-            customer_id: 0,
+            Employee_id: 0,
         });
     };
 
@@ -207,17 +207,17 @@ function AddCustomer() {
             name: eventData.name,
             phone: eventData.phone,
             email: eventData.email,
-            province: eventData.province,
+            salary: eventData.salary,
             address: eventData.address,
             code: eventData.code,
-            agent_name: eventData.agent_name,
+            job: eventData.job,
             branch: eventData.branch_id,
         }));
 
         setFormFunctionalInfo({
             loading: false,
             is_update: true,
-            customer_id: eventData.id,
+            Employee_id: eventData.id,
         });
     };
 
@@ -238,7 +238,7 @@ function AddCustomer() {
             });
         });
 
-        GetCustomerLatestID(function (
+        GetEmployeeLatestID(function (
             id: number | null | string | boolean,
         ): void {
             setFormFields((prevState) => ({
@@ -262,7 +262,7 @@ function AddCustomer() {
     }, []);
 
     return (
-        <Grid xl={2} md={2} sm={12}>
+        <Grid xl={3} md={3} sm={12}>
             <form
                 onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
                     onSubmit(event)
@@ -274,7 +274,7 @@ function AddCustomer() {
                 }}
             >
                 <InputField
-                    placeHolder="مشتري نوم *"
+                    placeHolder="کارمند نوم *"
                     name="name"
                     type="text"
                     value={useFormFields.name as string}
@@ -283,15 +283,15 @@ function AddCustomer() {
                 />
 
                 <InputField
-                    placeHolder="شرکت مسؤل *"
-                    name="agent_name"
+                    placeHolder="شرکت وظیفه *"
+                    name="job"
                     type="text"
-                    value={useFormFields.agent_name as string}
+                    value={useFormFields.job as string}
                     onValChange={handleOnInputChange}
                     validation={false}
                 />
                 <InputField
-                    placeHolder="مشتري تلیفون نمبر *"
+                    placeHolder="کارمند تلیفون نمبر *"
                     name="phone"
                     type="text"
                     value={useFormFields.phone as string}
@@ -299,7 +299,7 @@ function AddCustomer() {
                     validation={useFormValidation.phone}
                 />
                 <InputField
-                    placeHolder="مشتري ایمیل ادرس *"
+                    placeHolder="کارمند ایمیل ادرس *"
                     name="email"
                     type="text"
                     value={useFormFields.email as string}
@@ -307,15 +307,15 @@ function AddCustomer() {
                     validation={false}
                 />
                 <InputField
-                    placeHolder="مشتري ولایت *"
-                    name="province"
-                    type="text"
-                    value={useFormFields.province as string}
+                    placeHolder="کارمند معاش *"
+                    name="salary"
+                    type="number"
+                    value={useFormFields.salary as any}
                     onValChange={handleOnInputChange}
-                    validation={useFormValidation.province}
+                    validation={useFormValidation.salary}
                 />
                 <InputField
-                    placeHolder="مشتري ادرس *"
+                    placeHolder="کارمند ادرس *"
                     name="address"
                     type="text"
                     value={useFormFields.address as string}
@@ -323,7 +323,7 @@ function AddCustomer() {
                     validation={false}
                 />
                 <InputField
-                    placeHolder="مشتري کود *"
+                    placeHolder="کارمند کود *"
                     name="code"
                     type="text"
                     readonly={true}
@@ -464,4 +464,4 @@ function AddCustomer() {
     );
 }
 
-export default AddCustomer;
+export default AddEmployee;

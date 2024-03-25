@@ -52,6 +52,13 @@ function ProcessVisaPendingSection() {
 
     useEffect(() => {
         LoadResource();
+
+        addEventListener("reloadPendingVisas", LoadResource);
+
+        // Cleanup by removing the event listener when the component unmounts
+        return () => {
+            addEventListener("reloadPendingVisas", LoadResource);
+        };
     }, []);
 
     const isSelected = (visa: IVisa): boolean => {
@@ -255,7 +262,7 @@ function ProcessVisaPendingSection() {
                     </Sheet>
                     <Divider />
                     <Typography level="body-sm" fontWeight={"bolder"}>
-                        جمله ویزي: {123}
+                        جمله ویزي: {usePendingVisas.length}
                     </Typography>
                 </CardContent>
             </Card>

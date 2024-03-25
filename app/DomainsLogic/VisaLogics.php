@@ -5,6 +5,7 @@ namespace App\DomainsLogic;
 use App\Actions\VisaActions;
 use App\Http\Requests\CreateVisaRequest;
 use App\Models\Visa;
+use App\Models\VisaExpense;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +100,43 @@ class VisaLogics
         ]);
 
         VisaActions::cancelVisa($request->visa_id, $request->reason);
+
+        return response()->json([true], JsonResponse::HTTP_OK);
+    }
+
+    public static function delete_visa_expense(Request $request): JsonResponse
+    {
+        VisaExpense::destroy($request->id);
+
+        return response()->json([true], JsonResponse::HTTP_OK);
+    }
+
+    public static function proceed_pending_visas(Request $request): JsonResponse
+    {
+        $request->validate([
+            'visas' => 'required|array',
+            'till_id' => 'required|numeric|min:1',
+            'expenses' => 'required|array'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            (new VisaActions(new Visa()))
+                ->createProcessedVisas($request->visas)
+                ->deductExpensesFromTill(
+                    $request->till_id,
+                    $request->expenses,
+                    collect($request->visas)->pluck('visa_no')->join(', ', ' and ')
+                );
+        } catch (\Exception $th) {
+
+            DB::rollBack();
+            throw $th;
+        }
+
+        DB::commit();
 
         return response()->json([true], JsonResponse::HTTP_OK);
     }

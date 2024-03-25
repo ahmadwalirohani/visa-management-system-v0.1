@@ -47,5 +47,7 @@ function SendActionRequest(config: IActionConfig, parameters = {}) {
     };
 }
 
+//function exchangeToDefault();
+
 // Exporting the functions for use in other parts of the application
 export { SendActionRequest, SendResourceRequest };

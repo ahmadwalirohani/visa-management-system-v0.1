@@ -15,4 +15,9 @@ class Currency extends Model
         "is_default",
         "status",
     ];
+
+    public function scopeGetDefault($query): void
+    {
+        $query->whereIsDefault(true);
+    }
 }

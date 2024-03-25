@@ -57,6 +57,32 @@ const GetCustomers = async (callback: JsonCallback): Promise<void> => {
         });
 };
 
+const GetEmployeeLatestID = async (callback: AnyCallBack): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "HRResources",
+                _method_name: "get_employee_latest_id",
+            }),
+        )
+        .then((Response: AxiosResponse<number>): void => {
+            callback(Response.data);
+        });
+};
+
+const GetEmployees = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "HRResources",
+                _method_name: "get_employees",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
 const GetVisaTypes = async (callback: JsonCallback): Promise<void> => {
     axios
         .get(
@@ -172,4 +198,6 @@ export {
     getPendingVisas,
     GetVisaLatestID,
     getNonProcessedVisas,
+    GetEmployeeLatestID,
+    GetEmployees,
 };

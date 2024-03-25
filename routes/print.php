@@ -21,6 +21,10 @@ Route::get("/print/visa-label-format/{visa_no}/{is_urgent}", function ($visa_no,
     ]);
 });
 
-Route::get('/print/visa=sticker-format/{is_urgent}/{date}', function ($is_urgent, $date) {
+Route::get('/print/visa-sticker-format/{is_urgent}/{date}', function ($is_urgent, $date) {
     return view('printFormats.visa-sticker-format', ['is_urgent' => $is_urgent, 'date' => $date]);
+});
+
+Route::get('/print/visa-processed-format', function () {
+    return view('printFormats.visa-processed-format');
 });

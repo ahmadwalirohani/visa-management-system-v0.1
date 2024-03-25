@@ -27,6 +27,7 @@ class CustomerLedger extends Model
         $this->exchange_rate = $transaction->exchange_rate;
         $this->exchange_amount = $transaction->exchange_amount;
         $this->customer_id = $transaction->customer_id;
+        $this->visa_id = $transaction->visa_id;
         $this->created_user_id = auth()->user()->id;
 
         return $this;

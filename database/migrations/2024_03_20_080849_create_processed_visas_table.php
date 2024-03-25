@@ -14,6 +14,13 @@ return new class extends Migration
         Schema::create('processed_visas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('visa_id')->constrained('visas')->cascadeOnDelete();
+            $table->foreignId('created_user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('currency_id')->constrained('currencies')->cascadeOnDelete();
+            $table->string('residence')->nullable();
+            $table->string('serial_no')->nullable();
+            $table->decimal('price', 20, 2)->default(0);
+            $table->decimal('expenses', 20, 2)->default(0);
+            $table->decimal('profit', 20, 2)->default(0);
             $table->timestamps();
         });
     }

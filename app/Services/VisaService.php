@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Enums\VisaStatus;
 use App\Enums\VisaType;
+use App\Models\ProcessedVisa;
 use App\Models\SystemInfo;
 use App\Models\Visa;
+use App\Models\VisaExpense;
 use Illuminate\Database\Eloquent\Model;
 
 class VisaService
@@ -28,8 +30,18 @@ class VisaService
     ) {
     }
 
-    protected function create(VisaType $visaType, int | null $currency_id, string | null $block_no, string $remarks, string $passport_no, string $province, string $job, string | null $name, float $price): self
-    {
+    protected function create(
+        VisaType $visaType,
+        int | null $currency_id,
+        string | null $block_no,
+        string $remarks,
+        string $passport_no,
+        string $province,
+        string $job,
+        string | null $name,
+        float $price,
+        float $advance_payment = 0
+    ): self {
 
 
         $this->visaModel->currency_id = $currency_id;
@@ -41,6 +53,7 @@ class VisaService
         $this->visaModel->job = $job;
         $this->visaModel->name = $name;
         $this->visaModel->price = $price;
+        $this->visaModel->paid_amount = $advance_payment ?? 0;
         $this->visaModel->status = $this->status;
 
 
@@ -102,6 +115,49 @@ class VisaService
         $this->visaModel->branch_id = $this->branch_id;
         $this->visaModel->created_user_id = auth()->user()->id;
         $this->visaModel->save();
+    }
+
+    protected function createProceedVisa(float $price, float $expense, int $currency_id, string $serial_no, string $residence): self
+    {
+        $visa = new ProcessedVisa();
+        $visa->price = $price;
+        $visa->expenses = $expense;
+        $visa->profit = $price - $expense;
+        $visa->currency_id = $currency_id;
+        $visa->serial_no = $serial_no;
+        $visa->residence = $residence;
+        $visa->visa_id = $this->visa_id;
+        $visa->created_user_id = auth()->user()->id;
+        $visa->save();
+
+        return $this;
+    }
+
+    protected function proceedVisa(float $price, float $expense_amount): self
+    {
+        $this->visaModel = Visa::find($this->visa_id);
+        $this->visaModel->price = $price;
+        $this->visaModel->expense_amount = $expense_amount;
+        $this->visaModel->status = VisaStatus::COMPLETED;
+        $this->visaModel->save();
+
+        return $this;
+    }
+
+    protected function stebalizeVisaExpense(object | array $expenses, array $expenseIDs): self
+    {
+        foreach ($expenses as $expense) {
+            $expense  = (object) $expense;
+            $expenseModel = VisaExpense::find($expense->id);
+            $expenseModel->currency_id = $expense->currency_id;
+            $expenseModel->amount = $expense->amount;
+            $expenseModel->name = $expense->name;
+            $expenseModel->save();
+        }
+
+        VisaExpense::whereNotIn('id', $expenseIDs)->whereVisaId($this->visa_id)->delete();
+
+        return $this;
     }
 
     protected function setCustomerId(int $id): self

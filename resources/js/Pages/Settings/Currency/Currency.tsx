@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
+import { ColorPaletteProp, Snackbar } from "@mui/joy";
 
 interface ICurrencyFields {
     name: string;
@@ -229,6 +230,7 @@ export default function Currency() {
                     formInfo={useFormFunctionalInfo}
                     onSubmit={onSubmit}
                     formValidation={useFormValidation}
+                    currencies={rows}
                 />
             </Grid>
             <Grid xs={8} md={8} sm={12}>
@@ -242,6 +244,22 @@ export default function Currency() {
                     />
                 </Sheet>
             </Grid>
+
+            <Snackbar
+                variant="solid"
+                color={useSnackbar.state as ColorPaletteProp}
+                autoHideDuration={2000}
+                open={useSnackbar.is_open}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                onClose={() =>
+                    setSnackbar((prevState) => ({
+                        ...prevState,
+                        is_open: false,
+                    }))
+                }
+            >
+                {useSnackbar.msg}
+            </Snackbar>
         </Grid>
     );
 }

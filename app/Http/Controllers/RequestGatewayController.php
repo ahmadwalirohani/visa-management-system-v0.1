@@ -43,6 +43,7 @@ class RequestGatewayController extends Controller implements HandleRequest
                 'CreateCustomer' => \App\Http\Requests\CreateCustomerRequest::class,
                 'CreateVisa' => \App\Http\Requests\CreateVisaRequest::class,
                 'CreateTill' => \App\Http\Requests\CreateTillRequest::class,
+                'CreateEmployee' => \App\Http\Requests\CreateEmployeeRequest::class,
             ],
             $request
         ))

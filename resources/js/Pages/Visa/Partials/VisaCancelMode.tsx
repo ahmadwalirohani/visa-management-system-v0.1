@@ -98,6 +98,7 @@ export default function VisaCancelModel({
                         <Button
                             variant="solid"
                             color="danger"
+                            autoFocus
                             loading={useData.loading}
                             onClick={() => onSubmit()}
                         >

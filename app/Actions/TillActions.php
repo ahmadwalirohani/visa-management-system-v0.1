@@ -48,6 +48,16 @@ class TillActions
         return $this;
     }
 
+    public function createDebitStatement(string $transactionType, float $debit_amount): self
+    {
+        $this->financialService
+            ->setTransactionType($transactionType)
+            ->setDebitAmount($debit_amount)
+            ->createStatement();
+
+        return $this;
+    }
+
     public function creditAccount(int $currency_id, float $amount): self
     {
         $this->financialService
@@ -55,6 +65,17 @@ class TillActions
             ->setCurrencyId($currency_id)
             ->setCreditAmount($amount)
             ->creditAmountToAccount(new TillAccount());
+
+        return $this;
+    }
+
+    public function debitAccount(int $currency_id, float $amount): self
+    {
+        $this->financialService
+            ->setId($this->id)
+            ->setCurrencyId($currency_id)
+            ->setDebitAmount($amount)
+            ->debitAmountFromAccount(new TillAccount());
 
         return $this;
     }

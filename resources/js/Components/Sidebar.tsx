@@ -259,8 +259,23 @@ export default function Sidebar({ user }: any) {
                                         </ListItemButton>
                                     </Link>
                                 </ListItem>
-                                <ListItem>
-                                    <ListItemButton>کارمند</ListItemButton>
+                                <ListItem sx={{ mt: 0.5 }}>
+                                    <Link
+                                        href={route("human_resource.employee")}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "human_resource.employee"
+                                            }
+                                        >
+                                            کارمند
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>مشتري کهاته</ListItemButton>

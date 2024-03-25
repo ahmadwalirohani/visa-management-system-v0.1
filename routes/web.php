@@ -38,9 +38,13 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Settings/Settings');
     })->name('settings');
 
-    Route::get('/human-resource', function () {
+    Route::get('/human-resource/customer', function () {
         return Inertia::render('HumanResource/Customer');
     })->name('human_resource.customer');
+
+    Route::get('/human-resource/employee', function () {
+        return Inertia::render('HumanResource/Employee');
+    })->name('human_resource.employee');
 
     Route::get('/add-visa', function () {
         return Inertia::render('Visa/AddVisa');
