@@ -3,8 +3,8 @@ import { Box, Card, Grid } from "@mui/joy";
 import { Head } from "@inertiajs/react";
 
 import { createContext, useContext, useState } from "react";
-import AddTill from "./Partials/AddTill";
-import ViewTill from "./Partials/ViewTill";
+import AddBank from "./Partials/AddBank";
+import ViewBank from "./Partials/ViewBank";
 
 // Define the context
 interface EventEmitterContextType {
@@ -32,7 +32,7 @@ export const useEventEmitter = () => {
     return context;
 };
 
-function Till() {
+function Bank() {
     const [eventListeners, setEventListeners] = useState<{
         [eventName: string]: Array<(eventData?: any) => void>;
     }>({});
@@ -60,7 +60,7 @@ function Till() {
     return (
         <EventEmitterContext.Provider value={contextValue}>
             <>
-                <Head title="دخل" />
+                <Head title="بانک /صرافي" />
                 <Box
                     component="main"
                     className="MainContent"
@@ -90,8 +90,8 @@ function Till() {
                                 }}
                             >
                                 <Grid container spacing={2}>
-                                    <AddTill />
-                                    <ViewTill />
+                                    <AddBank />
+                                    <ViewBank />
                                 </Grid>
                             </Box>
                         </Box>
@@ -102,4 +102,4 @@ function Till() {
     );
 }
 
-export default Till;
+export default Bank;

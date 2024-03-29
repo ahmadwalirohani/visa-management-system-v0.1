@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\Branch;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\EICodes;
+use App\Models\Employee;
 use App\Models\Till;
 use App\Models\User;
 use App\Models\UserPrivilegeBranches;
@@ -26,6 +28,8 @@ class ModelActivisionController extends Controller
         'VisaSubType' => VisaSubType::class,
         'Customer' => Customer::class,
         'Till' => Till::class,
+        'Bank' => Bank::class,
+        'Employee' => Employee::class,
     ];
     public function Activission(Request $request): JsonResponse
     {

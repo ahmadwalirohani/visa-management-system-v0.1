@@ -55,7 +55,7 @@ class HRLogics
 
         try {
 
-            $employee = $request->is_update ? Employee::find($request->employee_id) :  new Employee();
+            $employee = $request->is_update ? Employee::find($request->Employee_id) :  new Employee();
             $employee->setData((object) $request->all())->save();
 
             $id = $employee->getConnection()->getPdo()->lastInsertId();

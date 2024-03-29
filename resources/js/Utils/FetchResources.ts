@@ -122,6 +122,19 @@ const GetTillLatestID = async (callback: AnyCallBack): Promise<void> => {
         });
 };
 
+const GetBankLatestID = async (callback: AnyCallBack): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "FinancialResources",
+                _method_name: "get_bank_latest_id",
+            }),
+        )
+        .then((Response: AxiosResponse<number>): void => {
+            callback(Response.data);
+        });
+};
+
 const GetVisaLatestID = async (callback: AnyCallBack): Promise<void> => {
     axios
         .get(
@@ -148,12 +161,38 @@ const GetTills = async (callback: JsonCallback): Promise<void> => {
         });
 };
 
+const GetBanks = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "FinancialResources",
+                _method_name: "get_banks",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
 const getNonProcessedVisas = async (callback: JsonCallback): Promise<void> => {
     axios
         .get(
             SendResourceRequest({
                 _class: "VisaResources",
                 _method_name: "get_non_processed_visas",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(Response.data);
+        });
+};
+
+const getProcessedVisas = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "VisaResources",
+                _method_name: "get_processed_visas",
             }),
         )
         .then((Response: AxiosResponse<Array<object>>): void => {
@@ -200,4 +239,7 @@ export {
     getNonProcessedVisas,
     GetEmployeeLatestID,
     GetEmployees,
+    GetBankLatestID,
+    GetBanks,
+    getProcessedVisas,
 };

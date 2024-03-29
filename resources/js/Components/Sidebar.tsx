@@ -352,9 +352,21 @@ export default function Sidebar({ user }: any) {
                                     </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>
-                                        بانک / صرافي
-                                    </ListItemButton>
+                                    <Link
+                                        href={route("financial.banks")}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "financial.banks"
+                                            }
+                                        >
+                                            بانک / صرافي
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                             </List>
                         </Toggler>

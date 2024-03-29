@@ -62,6 +62,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Financial/Tills');
     })->name('financial.tills');
 
+    Route::get('/banks', function () {
+        return Inertia::render('Financial/Bank');
+    })->name('financial.banks');
+
     Route::get('/process-visa', function () {
         return Inertia::render('Visa/ProcessVisa');
     })->name('visa.process');

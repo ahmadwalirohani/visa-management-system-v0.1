@@ -12,7 +12,7 @@ export default function (resource: IParameters): void {
     resource.onSend();
 
     axios
-        .post("change_resource_status", {
+        .post("/change_resource_status", {
             id: resource.id,
             model: resource.model,
             status: resource.status,

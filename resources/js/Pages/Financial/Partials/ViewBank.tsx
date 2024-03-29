@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/joy/Box";
 import Table from "@mui/joy/Table";
 import Typography from "@mui/joy/Typography";
-import { GetTills } from "@/Utils/FetchResources";
+import { GetBanks } from "@/Utils/FetchResources";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LinearProgress from "@mui/joy/LinearProgress";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -16,7 +16,7 @@ import {
     Sheet,
     Snackbar,
 } from "@mui/joy";
-import { useEventEmitter } from "../Tills";
+import { useEventEmitter } from "../Bank";
 import Edit from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -26,13 +26,16 @@ interface Data {
     id: number;
     name: string;
     code: string;
+    address: string;
+    email: string;
+    phone: string;
     status: number;
     created_at: string;
     branch: any;
     actions: string;
 }
 
-export default function ViewTill() {
+export default function ViewBank() {
     const [rows, setRows] = React.useState<Data[]>([]);
     const [useFetchLoader, setFetchLoading] = React.useState<boolean>(false);
 
@@ -43,49 +46,49 @@ export default function ViewTill() {
         state: "danger",
     });
 
-    const LoadTills = () => {
+    const LoadBanks = () => {
         setFetchLoading(true);
-        GetTills((tills: Array<object>): void => {
-            setRows([...(tills as Data[])]);
+        GetBanks((banks: Array<object>): void => {
+            setRows([...(banks as Data[])]);
             setFetchLoading(false);
         });
     };
 
     const { emitEvent, addEventListener } = useEventEmitter();
 
-    const SendTillToForm = (payload: any) => {
+    const SendBankToForm = (payload: any) => {
         emitEvent("SendPayloadToFormEvent", payload);
     };
 
     React.useEffect(() => {
-        addEventListener("ReloadTillsEvent", function (isFetch = false): void {
-            if (isFetch) LoadTills();
+        addEventListener("ReloadBanksEvent", function (isFetch = false): void {
+            if (isFetch) LoadBanks();
         });
-        if (!rows.length) LoadTills();
+        if (!rows.length) LoadBanks();
         // Cleanup by removing the event listener when the component unmounts
         return () => {
             addEventListener(
-                "ReloadTillsEvent",
+                "ReloadBanksEvent",
                 function (isFetch = false): void {
-                    if (isFetch) LoadTills();
+                    if (isFetch) LoadBanks();
                 },
             );
         };
     }, []);
 
-    const onTillStatusChange = (till: any): void => {
+    const onBankStatusChange = (bank: any): void => {
         ChangeResourceStatus({
-            id: till.id,
-            model: "Till",
-            status: till.status as number,
+            id: bank.id,
+            model: "Bank",
+            status: bank.status as number,
             onSend() {},
             afterChange() {
                 setSnackbar({
-                    msg: `دخل په بریالي سره ${till.status ? "غیري فعاله" : "فعاله"} سول`,
+                    msg: `بانک / صرافي په بریالي سره ${bank.status ? "غیري فعاله" : "فعاله"} سول`,
                     state: "success",
                     is_open: true,
                 });
-                LoadTills();
+                LoadBanks();
             },
         });
     };
@@ -124,6 +127,9 @@ export default function ViewTill() {
                     <td>{row.name}</td>
                     <td>{row.branch.name}</td>
                     <td>{row.code}</td>
+                    <td>{row.address}</td>
+                    <td>{row.phone}</td>
+                    <td>{row.email}</td>
                     <td style={{ width: 120 }}>
                         {row.status == 1 && (
                             <Chip variant="outlined" color="success">
@@ -139,13 +145,13 @@ export default function ViewTill() {
                     <td dir="ltr" style={{ width: 100 }}>
                         <ButtonGroup>
                             <Button
-                                onClick={() => onTillStatusChange(row)}
-                                title="دخل ډول حالت تغیرول"
+                                onClick={() => onBankStatusChange(row)}
+                                title="بانک / صرافي ډول حالت تغیرول"
                             >
                                 {row.status == 1 && <VisibilityOff />}
                                 {row.status == 0 && <Visibility />}
                             </Button>
-                            <Button onClick={() => SendTillToForm(row)}>
+                            <Button onClick={() => SendBankToForm(row)}>
                                 <Edit />
                             </Button>
                         </ButtonGroup>
@@ -164,7 +170,7 @@ export default function ViewTill() {
                                 }}
                             >
                                 <Typography level="body-lg" component="div">
-                                    دخل موجودي
+                                    بانک / صرافي حسابونه
                                 </Typography>
                                 <Table
                                     borderAxis="bothBetween"
@@ -217,7 +223,7 @@ export default function ViewTill() {
     return (
         <Grid xl={9} md={9} sm={12}>
             <Typography level="h3" component="h1" sx={{ mt: 0, mb: 0 }}>
-                دخلونه
+                بانک / صرافی
             </Typography>
             <div style={{ height: 5 }}>
                 {useFetchLoader && <LinearProgress />}
@@ -250,6 +256,9 @@ export default function ViewTill() {
                             <th style={{ textAlign: "right" }}>نوم</th>
                             <th style={{ textAlign: "right" }}>څانګه</th>
                             <th style={{ textAlign: "right" }}>کود</th>
+                            <th style={{ textAlign: "right" }}>ادرس</th>
+                            <th style={{ textAlign: "right" }}>تلیفون نمبر</th>
+                            <th style={{ textAlign: "right" }}>ایمیل</th>
                             <th style={{ textAlign: "right" }}>حالت</th>
                             <th style={{ textAlign: "right" }}>عملیی</th>
                         </tr>

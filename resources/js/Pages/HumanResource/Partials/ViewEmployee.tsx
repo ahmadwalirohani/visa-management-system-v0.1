@@ -43,8 +43,8 @@ import ChangeResourceStatus from "@/Utils/ChangeResourceStatus";
 interface Data {
     id: number;
     name: string;
-    agent_name: string;
-    province: string;
+    salary: string;
+    job: string;
     address: string;
     phone: string;
     email: string;
@@ -134,10 +134,10 @@ const headCells: readonly HeadCell[] = [
         width: 200,
     },
     {
-        id: "agent_name",
+        id: "job",
         numeric: true,
         disablePadding: false,
-        label: "مسؤل نوم",
+        label: " وظیفه",
         width: 150,
     },
     {
@@ -148,10 +148,10 @@ const headCells: readonly HeadCell[] = [
         width: 120,
     },
     {
-        id: "province",
+        id: "salary",
         numeric: true,
         disablePadding: false,
-        label: "ولایت",
+        label: "وظیفه",
         width: 120,
     },
 
@@ -622,9 +622,9 @@ export default function ViewEmployee() {
                                         </td>
                                         <td>{index + 1}</td>
                                         <td> {row.name} </td>
-                                        <td> {row.agent_name} </td>
+                                        <td> {row.job} </td>
                                         <td> {row.phone} </td>
-                                        <td> {row.province} </td>
+                                        <td> {row.salary} </td>
                                         <td>
                                             {" "}
                                             <Chip color="primary">

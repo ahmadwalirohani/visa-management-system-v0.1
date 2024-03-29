@@ -108,4 +108,9 @@ class Visa extends Model
     {
         $query->whereStatus(VisaStatus::ORDERED);
     }
+
+    public function scopeGetProcessed($query): void
+    {
+        $query->whereStatus(VisaStatus::COMPLETED);
+    }
 }

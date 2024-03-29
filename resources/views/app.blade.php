@@ -21,6 +21,47 @@
     body {
         user-select: none
     }
+
+
+    /* width */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* button */
+    ::-webkit-scrollbar-button {
+        background: var(--main-temp-bg);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: rgba(196, 196, 196, 0.925);
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #333333;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* The track NOT covered by the handle.
+::-webkit-scrollbar-track-piece {
+background: #000;
+}
+
+/* Corner */
+    ::-webkit-scrollbar-corner {
+        background: gray;
+    }
+
+    /* Resizer */
+    ::-webkit-resizer {
+        background: gray;
+    }
 </style>
 
 <body class="font-sans antialiased">

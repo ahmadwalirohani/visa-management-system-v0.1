@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateEmployeeRequest extends FormRequest
+class CreateBankRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,11 @@ class CreateEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string|max:255",
-            "phone" => "required|string|max:11",
-            "code" => "required|unique:employees,code" . (request()->input('is_update') ? ',' . request()->input("Employee_id") . ',id' : ''),
-            "branch" => "required|min:1|numeric",
-            "salary" => "required|min:1|numeric",
-            "job" => "required|string|max:255",
-            "balancies" => "required|array",
+            'name' => 'required|string|max:255',
+            'code' => 'required|unique:banks,code' . (request()->input('is_update') ? ',' . request()->input("bank_id") . ',id' : ''),
+            'email' => 'required|email|unique:banks,email' . (request()->input('is_update') ? ',' . request()->input("bank_id") . ',id' : ''),
+            'balancies' => 'required|array',
+            'branch' => "required|numeric|min:1"
         ];
     }
 }

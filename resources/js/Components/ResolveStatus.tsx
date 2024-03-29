@@ -1,4 +1,5 @@
 import { Chip } from "@mui/joy";
+import React from "react";
 
 interface IProps {
     status: number;
@@ -6,7 +7,7 @@ interface IProps {
 
 function ResolveStatus({ status }: IProps) {
     return (
-        <>
+        <React.Fragment>
             {status == 1 && (
                 <Chip variant="outlined" color="success">
                     فعاله
@@ -17,7 +18,7 @@ function ResolveStatus({ status }: IProps) {
                     غیري فعاله
                 </Chip>
             )}
-        </>
+        </React.Fragment>
     );
 }
 
