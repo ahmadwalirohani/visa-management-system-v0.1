@@ -28,3 +28,11 @@ Route::get('/print/visa-sticker-format/{is_urgent}/{date}', function ($is_urgent
 Route::get('/print/visa-processed-format', function () {
     return view('printFormats.visa-processed-format');
 });
+
+Route::get('/print/general-format', function () {
+    return view('printFormats.general_format');
+});
+
+Route::get('/print/payment-format', function () {
+    return view('printFormats.payment_format')->with('system_info', SystemInfo::find(1));
+});

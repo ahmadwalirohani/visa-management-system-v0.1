@@ -69,6 +69,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/process-visa', function () {
         return Inertia::render('Visa/ProcessVisa');
     })->name('visa.process');
+
+    Route::get('/human-resource/customer-ledger', function () {
+        return Inertia::render('Reports/CustomerLedger');
+    })->name('human_resource.customer_ledger');
+
+    Route::get('/reports/till-ledger', function () {
+        return Inertia::render('Reports/TillLedger');
+    })->name('reports.till_ledger');
+
+    Route::get('/reports/bank-ledger', function () {
+        return Inertia::render('Reports/BankLedger');
+    })->name('reports.bank_ledger');
 });
 
 require __DIR__ . '/auth.php';

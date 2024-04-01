@@ -29,7 +29,7 @@ return new class extends Migration
             $table->foreignId('till_id')->nullable()->constrained('tills')->cascadeOnDelete();
             $table->foreignId('bank_id')->nullable()->constrained('banks')->cascadeOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained('customers')->cascadeOnDelete();
-            //$table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
+            $table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
             $table->foreignId('created_user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('code_id')->nullable()->constrained('e_i_codes')->cascadeOnDelete();
             $table->timestamps();

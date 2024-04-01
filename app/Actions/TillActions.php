@@ -30,30 +30,68 @@ class TillActions
     public function createOpeningStatement(string $transactionType, float $credit): self
     {
 
-        $this->financialService->setTransactionType($transactionType)
+        $this->financialService
+            ->setCreditType("till")
+            ->setTransactionType($transactionType)
             ->createStatement();
 
         return $this;
     }
 
-    public function createCreditStatement(string $transactionType, float $credit_amount, int | null $visa_id = null, string | null $remarks = null): self
-    {
+    public function createCreditStatement(
+        string $transactionType,
+        float $credit_amount,
+        int | null $visa_id = null,
+        string | null $remarks = null,
+        ?int $ex_currency_id = null,
+        ?float $exchange_rate = 0,
+        ?float $exchanged_amount = 0,
+        ?int $customer_id = null,
+        ?int $bank_id = null,
+        ?int $employee_id = null,
+        ?int $eicode_id = null,
+        ?string $debitType = null,
+    ): self {
         $this->financialService
             ->setTransactionType($transactionType)
             ->setCreditAmount($credit_amount)
             ->setRemarks($remarks)
             ->setVisaId($visa_id)
-            ->createStatement();
+            ->setExchangeAmount($exchanged_amount)
+            ->setExCurrencyId($ex_currency_id)
+            ->setExchangeRate($exchange_rate)
+            ->setCreditType('till')
+            ->setDebitType($debitType)
+            ->createStatement($bank_id, null, $customer_id, $employee_id, $eicode_id);
 
         return $this;
     }
 
-    public function createDebitStatement(string $transactionType, float $debit_amount): self
-    {
+    public function createDebitStatement(
+        string $transactionType,
+        float $debit_amount,
+        int | null $visa_id = null,
+        string | null $remarks = null,
+        ?int $ex_currency_id = null,
+        ?float $exchange_rate = 0,
+        ?float $exchanged_amount = 0,
+        ?int $customer_id = null,
+        ?int $bank_id = null,
+        ?int $employee_id = null,
+        ?int $eicode_id = null,
+        ?string $creditType = null,
+    ): self {
         $this->financialService
             ->setTransactionType($transactionType)
             ->setDebitAmount($debit_amount)
-            ->createStatement();
+            ->setRemarks($remarks)
+            ->setVisaId($visa_id)
+            ->setExchangeAmount($exchanged_amount)
+            ->setExCurrencyId($ex_currency_id)
+            ->setExchangeRate($exchange_rate)
+            ->setCreditType($creditType)
+            ->setDebitType('till')
+            ->createStatement($bank_id, null, $customer_id, $employee_id, $eicode_id);
 
         return $this;
     }

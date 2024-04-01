@@ -61,6 +61,14 @@ class VisaActions extends VisaService
             $advanceAmount,
             $this->visa_id,
             $remarks,
+            null,
+            0,
+            0,
+            null,
+            null,
+            null,
+            null,
+            'visa'
         );
 
         return $this;

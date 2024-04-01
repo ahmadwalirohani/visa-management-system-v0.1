@@ -30,14 +30,23 @@ class EmployeeAccountingActions
         string $transactionType,
         float $debit,
         ?int $visa_id = null,
-        ?string $remarks = ''
+        ?string $remarks = '',
+        ?int $ex_currency_id = null,
+        ?float $exchange_rate = 0,
+        ?float $exchanged_amount = 0,
+        ?int $till_id = null,
+        ?int $bank_id = null,
     ): self {
 
         $this->hrAccountingService->setTransactionType($transactionType)
             ->setDebitAmount($debit)
             ->setVisaId($visa_id)
             ->setRemarks($remarks)
-            ->createStatement(new EmployeeLedger());
+            ->setExchangeAmount($exchanged_amount)
+            ->setExCurrencyId($ex_currency_id)
+            ->setExchangeRate($exchange_rate)
+
+            ->createStatement(new EmployeeLedger(), $bank_id, $till_id);
 
         return $this;
     }
@@ -46,14 +55,23 @@ class EmployeeAccountingActions
         string $transactionType,
         float $credit,
         ?int $visa_id = null,
-        ?string $remarks = ''
+        ?string $remarks = '',
+        ?int $ex_currency_id = null,
+        ?float $exchange_rate = 0,
+        ?float $exchanged_amount = 0,
+        ?int $till_id = null,
+        ?int $bank_id = null,
     ): self {
 
         $this->hrAccountingService->setTransactionType($transactionType)
             ->setCreditAmount($credit)
             ->setVisaId($visa_id)
             ->setRemarks($remarks)
-            ->createStatement(new EmployeeLedger());
+            ->setExchangeAmount($exchanged_amount)
+            ->setExCurrencyId($ex_currency_id)
+            ->setExchangeRate($exchange_rate)
+
+            ->createStatement(new EmployeeLedger(), $bank_id, $till_id);
 
         return $this;
     }

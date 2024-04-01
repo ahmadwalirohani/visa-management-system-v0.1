@@ -3,7 +3,9 @@
 namespace App\DomainsLogic;
 
 use App\Actions\BankActions;
+use App\Actions\JournalEntryActions;
 use App\Actions\TillActions;
+use App\Enums\TransactionTypes;
 use App\Http\Requests\CreateBankRequest;
 use App\Http\Requests\CreateJournalEntryRequest;
 use App\Http\Requests\CreateTillRequest;
@@ -36,7 +38,7 @@ class FinancialLogics
                         $currency->id,
                     )
                         ->createOpeningStatement(
-                            'OPENING-BALANCE',
+                            'TILL-OPENING-BALANCE',
                             (float) $currency->balance,
                         );
                 }
@@ -71,7 +73,7 @@ class FinancialLogics
                         $currency->id,
                     )
                         ->createOpeningStatement(
-                            'OPENING-BALANCE',
+                            'BANK-OPENING-BALANCE',
                             (float) $currency->balance,
                         );
                 }
@@ -89,21 +91,22 @@ class FinancialLogics
 
     public static function add_journal_entry(CreateJournalEntryRequest $request): JsonResponse
     {
+
         DB::beginTransaction();
 
         try {
-            //code...
+            (new JournalEntryActions(
+                $request->creditType,
+                $request->debitType,
+                (object) $request->all()
+            ))
+                ->serializeTransactions();
         } catch (\Exception $th) {
-
             DB::rollBack();
             throw $th;
         }
 
         DB::commit();
         return response()->json([true], JsonResponse::HTTP_OK);
-    }
-
-    protected function serializeRequest(string $creditType, string $debitType, object |array $payload): void
-    {
     }
 }

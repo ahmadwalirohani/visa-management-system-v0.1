@@ -19,7 +19,7 @@ class HRAccountingService //  implements ICustomerService
     ) {
     }
 
-    public function createStatement(Model $creditLedger): self
+    public function createStatement(Model $creditLedger, int | null $bank_id = null, int | null $till_id = null): self
     {
         ($creditLedger)->setData((object)[
             $this->fieldName => $this->id,
@@ -32,7 +32,9 @@ class HRAccountingService //  implements ICustomerService
             "ex_currency_id" => $this->ex_currency_id ?? $this->currency_id,
             "exchange_rate" => $this->exchange_rate,
             "exchange_amount" => $this->exchange_amount,
-            'visa_id' => $this->visa_id ?? null
+            'visa_id' => $this->visa_id ?? null,
+            'till_id' => $till_id ?? null,
+            'bank_id' => $bank_id ?? null,
         ])
             ->save();
 
@@ -60,8 +62,8 @@ class HRAccountingService //  implements ICustomerService
     {
 
         $this->checkAccount($account, function () use ($account) {
-            $_account = $account::find($this->id);
-            $_account->balance = $_account->balance - $this->credit_amount;
+            $_account = $account::find($account->query()->where($this->fieldName, $this->id)->whereCurrencyId($this->currency_id)->first()->id);
+            $_account->balance = $_account->balance + $this->credit_amount;
             $_account->save();
 
             $this->setBalance($_account->balance);
@@ -74,7 +76,7 @@ class HRAccountingService //  implements ICustomerService
 
         $this->checkAccount($account, function () use ($account) {
             $_account = $account::find($account->query()->where($this->fieldName, $this->id)->whereCurrencyId($this->currency_id)->first()->id);
-            $_account->balance = $_account->balance + $this->debit_amount;
+            $_account->balance = $_account->balance - $this->debit_amount;
             $_account->save();
 
             $this->setBalance($_account->balance);

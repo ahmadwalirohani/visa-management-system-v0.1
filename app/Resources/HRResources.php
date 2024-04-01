@@ -3,6 +3,7 @@
 namespace App\Resources;
 
 use App\Models\Customer;
+use App\Models\CustomerLedger;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 
@@ -31,5 +32,13 @@ class HRResources
     public static function get_employees(): JsonResponse
     {
         return response()->json(Employee::withBranch()->withBalancies()->get(), JsonResponse::HTTP_OK);
+    }
+
+    public static function get_customer_ledger(object $payload): JsonResponse
+    {
+        return response()->json(
+            CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50),
+            JsonResponse::HTTP_OK
+        );
     }
 }

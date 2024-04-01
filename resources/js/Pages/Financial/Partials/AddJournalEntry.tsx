@@ -257,7 +257,9 @@ function AddJournalEntry() {
                 _method_name: "add_journal_entry",
                 _validation_class: "CreateJournalEntry",
             },
-            useJournalForm,
+            Object.assign({}, useJournalForm, {
+                selectedVisas: selectedVisas,
+            }),
         );
 
         setFormSettings((prevState) => ({
@@ -273,6 +275,7 @@ function AddJournalEntry() {
                     state: "success",
                     is_open: true,
                 });
+                clearForm();
             })
             .catch((Error: AxiosError<any>) =>
                 setSnackbar({
@@ -282,6 +285,35 @@ function AddJournalEntry() {
                 }),
             )
             .finally(() => setFormSettings((p) => ({ ...p, loading: false })));
+    };
+
+    const clearForm = () => {
+        setFormSettings({
+            creditAccountLoader: false,
+            debitAccountLoader: false,
+            creditOldBalance: 0,
+            debitOldBalance: 0,
+            viewVisaDialog: false,
+            loading: false,
+        });
+
+        setJournalForm({
+            creditType: null,
+            debitType: null,
+            creditAccount: {},
+            debitAccount: {},
+            creditCurrency: _currencies.filter((c) => c.is_default == 1)[0],
+            debitCurrency: _currencies.filter((c) => c.is_default == 1)[0],
+            exchange_rate: 0,
+            exchanged_amount: 0,
+            amount: 0,
+            exchange_type: false,
+            remarks: "",
+            creditLabel: "",
+            debitLabel: "",
+        });
+
+        setSelectedVisas([]);
     };
 
     useEffect(() => {

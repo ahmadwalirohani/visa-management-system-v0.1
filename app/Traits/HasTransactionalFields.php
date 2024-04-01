@@ -9,7 +9,7 @@ trait HasTransactionalFields
 
     public int $id;
     public int $currency_id;
-    public int $ex_currency_id;
+    public int | null $ex_currency_id = null;
     public string $transactionType;
     public string | null $remarks = null;
 
@@ -77,7 +77,7 @@ trait HasTransactionalFields
         return $this;
     }
 
-    public function setExCurrencyId(int $ex_currency_id): self
+    public function setExCurrencyId(int | null $ex_currency_id): self
     {
         $this->ex_currency_id = $ex_currency_id;
 

@@ -278,7 +278,24 @@ export default function Sidebar({ user }: any) {
                                     </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>مشتري کهاته</ListItemButton>
+                                    <Link
+                                        href={route(
+                                            "human_resource.customer_ledger",
+                                        )}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "human_resource.customer_ledger"
+                                            }
+                                        >
+                                            مشتري کهاته
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>
@@ -375,7 +392,14 @@ export default function Sidebar({ user }: any) {
                     <ListItem nested>
                         <Toggler
                             renderToggle={({ open, setOpen }) => (
-                                <ListItemButton onClick={() => setOpen(!open)}>
+                                <ListItemButton
+                                    selected={
+                                        /\breports\b/i.test(
+                                            route().current() as string,
+                                        ) == true
+                                    }
+                                    onClick={() => setOpen(!open)}
+                                >
                                     <GroupRoundedIcon />
                                     <ListItemContent>
                                         <Typography level="title-sm">
@@ -394,16 +418,40 @@ export default function Sidebar({ user }: any) {
                         >
                             <List sx={{ gap: 0.5 }}>
                                 <ListItem sx={{ mt: 0.5 }}>
-                                    <ListItemButton
-                                        role="menuitem"
-                                        component="a"
-                                        // href="/joy-ui/getting-started/templates/profile-dashboard/"
+                                    <Link
+                                        href={route("reports.bank_ledger")}
+                                        style={{
+                                            width: "100%",
+                                        }}
                                     >
-                                        دخل کهاته
-                                    </ListItemButton>
+                                        <ListItemButton
+                                            role="menuitem"
+                                            component="a"
+                                            selected={
+                                                route().current() ==
+                                                "reports.till_ledger"
+                                            }
+                                        >
+                                            دخل کهاته
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>صرافي کهاته</ListItemButton>
+                                    <Link
+                                        href={route("reports.till_ledger")}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "reports.till_ledger"
+                                            }
+                                        >
+                                            صرافي کهاته
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>

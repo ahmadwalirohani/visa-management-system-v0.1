@@ -98,10 +98,8 @@ function AddEICode({
                     <Select
                         value={selectedType}
                         name="type"
-                        onChange={(e) =>
-                            changeCodeType(
-                                (e?.target as HTMLSelectElement).selectedIndex,
-                            )
+                        onChange={(e: any, newValue: any) =>
+                            changeCodeType(newValue)
                         }
                         placeholder="کود  *"
                     >
