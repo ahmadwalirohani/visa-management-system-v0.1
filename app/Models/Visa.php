@@ -55,6 +55,11 @@ class Visa extends Model
         return $this->belongsTo(Branch::class);
     }
 
+    public function history(): HasMany
+    {
+        return $this->hasMany(CustomerLedger::class, 'visa_id')->with(['currency']);
+    }
+
     public function entrance_type(): BelongsTo
     {
         return $this->belongsTo(VisaSubType::class, 'entrance_type_id');
@@ -72,6 +77,11 @@ class Visa extends Model
     public function scopeWithEntranceType($query): void
     {
         $query->with('entrance_type');
+    }
+
+    public function scopeWithHistory($query): void
+    {
+        $query->with('history');
     }
 
     public function expenses(): HasMany

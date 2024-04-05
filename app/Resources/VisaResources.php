@@ -57,4 +57,22 @@ class VisaResources
             JsonResponse::HTTP_OK
         );
     }
+
+    public static function get_proceed_visa_report(object $payload): JsonResponse
+    {
+
+        return response()->json(
+            Visa::getProcessed()
+                // ->filter($payload)
+                ->withCustomer()
+                ->withCurrency()
+                ->withType()
+                ->withBranch()
+                ->withEntranceType()
+                ->withHistory()
+                ->orderByDesc("created_at")
+                ->paginate(50),
+            JsonResponse::HTTP_OK
+        );
+    }
 }

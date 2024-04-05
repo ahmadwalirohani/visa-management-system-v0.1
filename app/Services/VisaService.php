@@ -138,6 +138,7 @@ class VisaService
         $this->visaModel = Visa::find($this->visa_id);
         $this->visaModel->price = $price;
         $this->visaModel->expense_amount = $expense_amount;
+        $this->visaModel->completed_date = now();
         $this->visaModel->status = VisaStatus::COMPLETED;
         $this->visaModel->save();
 

@@ -184,9 +184,9 @@ function ViewCustomerLedger() {
         setPrintLoading(true);
         getCustomerLedger(
             useFilterOptions,
-            function (entries: Array<any>) {
+            function (statements: Array<any>) {
                 Printer("/print/general-format", {
-                    title: "روزنامچه راپور",
+                    title: " مشتري صورت حساب",
                     info: ` <div>
                 <li>
                     <span class="i-title">چاپ تاریخ</span> :-
@@ -229,12 +229,12 @@ function ViewCustomerLedger() {
             </div>
             `,
                     Header: function () {
-                        return `<tr><th>#</th><th>تاریخ</th><th>معاملي ډول</th><th>رسید ډول</th><th>برد ډول</th><th>تفصیل</th><th>تبادله</th><th>رسیدګي</th><th>بردګي</th></tr>`;
+                        return `<tr><th>#</th><th>تاریخ</th><th>معاملي ډول</th><th>ویزه </th><th>تفصیل</th><th>تبادله</th><th>رسیدګي</th><th>بردګي</th><th>بیلانس</th></tr>`;
                     },
                     Data: function () {
                         let _Rows = "";
 
-                        entries.forEach((entry: Data, index: number) => {
+                        statements.forEach((entry: Data, index: number) => {
                             _Rows += "<tr>";
                             _Rows += `<td>${index + 1}</td>`;
                             _Rows += `<td>${entry.created_at}</td>`;
@@ -244,6 +244,7 @@ function ViewCustomerLedger() {
                             _Rows += `<td>${entry.ex_currency.symbol}  ${entry.exchange_amount}  (${entry.exchange_rate})</td>`;
                             _Rows += `<td>${new Intl.NumberFormat("en").format(entry.credit_amount)} ${entry.currency.symbol}</td>`;
                             _Rows += `<td>${new Intl.NumberFormat("en").format(entry.debit_amount)} ${entry.currency.symbol}</td>`;
+                            _Rows += `<td>${new Intl.NumberFormat("en").format(entry.balance)} ${entry.currency.symbol}</td>`;
                             _Rows += "</tr>";
                         });
 
@@ -293,7 +294,6 @@ function ViewCustomerLedger() {
                             stickyFooter
                             hoverRow
                             stripe={"even"}
-                            size="sm"
                             sx={{
                                 "--TableCell-headBackground":
                                     "var(--joy-palette-background-level1)",
@@ -387,25 +387,26 @@ function ViewCustomerLedger() {
                                             )}
                                             )
                                         </td>
+
                                         <td>
-                                            {row.credit_amount != 0 && (
+                                            {row.debit_amount != 0 && (
                                                 <Chip color="success">
                                                     {new Intl.NumberFormat(
                                                         "en",
                                                     ).format(
-                                                        row.credit_amount,
+                                                        row.debit_amount,
                                                     )}{" "}
                                                     {row.currency.symbol}
                                                 </Chip>
                                             )}
                                         </td>
                                         <td>
-                                            {row.debit_amount != 0 && (
+                                            {row.credit_amount != 0 && (
                                                 <Chip color="danger">
                                                     {new Intl.NumberFormat(
                                                         "en",
                                                     ).format(
-                                                        row.debit_amount,
+                                                        row.credit_amount,
                                                     )}{" "}
                                                     {row.currency.symbol}
                                                 </Chip>

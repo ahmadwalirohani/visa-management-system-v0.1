@@ -3,24 +3,15 @@ import Box from "@mui/joy/Box";
 import Table from "@mui/joy/Table";
 import Typography from "@mui/joy/Typography";
 import { GetTills } from "@/Utils/FetchResources";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
 import LinearProgress from "@mui/joy/LinearProgress";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import {
-    Button,
-    ButtonGroup,
-    Chip,
-    ColorPaletteProp,
-    Grid,
-    IconButton,
-    Sheet,
-    Snackbar,
-} from "@mui/joy";
+
+import { ColorPaletteProp, Grid, Snackbar } from "@mui/joy";
 import { useEventEmitter } from "../Tills";
-import Edit from "@mui/icons-material/Edit";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 import ChangeResourceStatus from "@/Utils/ChangeResourceStatus";
+import TillRow from "../Components/TillRow";
+import TillOpenCloseView from "../Components/TillOpenCloseView";
 
 interface Data {
     id: number;
@@ -35,6 +26,17 @@ interface Data {
 export default function ViewTill() {
     const [rows, setRows] = React.useState<Data[]>([]);
     const [useFetchLoader, setFetchLoading] = React.useState<boolean>(false);
+    const [useDialogState, setDialogState] = React.useState<{
+        state: boolean;
+        id: number;
+        is_open: number;
+        balancies: Array<any>;
+    }>({
+        state: false,
+        id: 0,
+        is_open: 0,
+        balancies: [],
+    });
 
     // State to manage Snackbar (notification)
     const [useSnackbar, setSnackbar] = React.useState({
@@ -42,6 +44,20 @@ export default function ViewTill() {
         msg: "",
         state: "danger",
     });
+
+    const openViewTillDialog = (
+        state: any,
+        id: number = 0,
+        is_open: number = 0,
+        balancies: Array<any> = [],
+    ) => {
+        setDialogState({
+            state,
+            id,
+            is_open,
+            balancies,
+        });
+    };
 
     const LoadTills = () => {
         setFetchLoading(true);
@@ -90,130 +106,6 @@ export default function ViewTill() {
         });
     };
 
-    function Row(props: { row: any; initialOpen?: boolean }) {
-        const { row } = props;
-        const [open, setOpen] = React.useState(props.initialOpen || false);
-
-        return (
-            <React.Fragment>
-                <tr>
-                    <td>
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                                alignItems: "center",
-                            }}
-                        >
-                            <IconButton
-                                aria-label="expand row"
-                                variant="plain"
-                                color="neutral"
-                                size="sm"
-                                onClick={() => setOpen(!open)}
-                            >
-                                {open ? (
-                                    <KeyboardArrowUpIcon />
-                                ) : (
-                                    <KeyboardArrowDownIcon />
-                                )}
-                            </IconButton>
-                            <div>{row.id}</div>
-                        </div>
-                    </td>
-                    <td>{row.name}</td>
-                    <td>{row.branch.name}</td>
-                    <td>{row.code}</td>
-                    <td style={{ width: 120 }}>
-                        {row.status == 1 && (
-                            <Chip variant="outlined" color="success">
-                                فعاله
-                            </Chip>
-                        )}
-                        {row.status == 0 && (
-                            <Chip variant="outlined" color="danger">
-                                غیري فعاله
-                            </Chip>
-                        )}
-                    </td>
-                    <td dir="ltr" style={{ width: 100 }}>
-                        <ButtonGroup>
-                            <Button
-                                onClick={() => onTillStatusChange(row)}
-                                title="دخل ډول حالت تغیرول"
-                            >
-                                {row.status == 1 && <VisibilityOff />}
-                                {row.status == 0 && <Visibility />}
-                            </Button>
-                            <Button onClick={() => SendTillToForm(row)}>
-                                <Edit />
-                            </Button>
-                        </ButtonGroup>
-                    </td>
-                </tr>
-                <tr>
-                    <td style={{ height: 0, padding: 0 }} colSpan={6}>
-                        {open && (
-                            <Sheet
-                                variant="soft"
-                                sx={{
-                                    p: 1,
-                                    pl: 6,
-                                    boxShadow:
-                                        "inset 0 3px 6px 0 rgba(0 0 0 / 0.08)",
-                                }}
-                            >
-                                <Typography level="body-lg" component="div">
-                                    دخل موجودي
-                                </Typography>
-                                <Table
-                                    borderAxis="bothBetween"
-                                    size="sm"
-                                    aria-label="purchases"
-                                    sx={{
-                                        "& > thead > tr > th": {
-                                            textAlign: "right",
-                                        },
-                                        "--TableCell-paddingX": "0.5rem",
-                                    }}
-                                >
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>مبلغ</th>
-                                            <th>اسعار</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {row.balancies?.map(
-                                            (balance: any, pi: number) => (
-                                                <tr key={pi}>
-                                                    <td scope="row">
-                                                        {balance.id}
-                                                    </td>
-                                                    <td>
-                                                        {new Intl.NumberFormat(
-                                                            "en",
-                                                        ).format(
-                                                            balance.balance,
-                                                        )}
-                                                    </td>
-                                                    <td>
-                                                        {balance.currency.name}
-                                                    </td>
-                                                </tr>
-                                            ),
-                                        )}
-                                    </tbody>
-                                </Table>
-                            </Sheet>
-                        )}
-                    </td>
-                </tr>
-            </React.Fragment>
-        );
-    }
-
     return (
         <Grid xl={9} md={9} sm={12}>
             <Typography level="h3" component="h1" sx={{ mt: 0, mb: 0 }}>
@@ -256,15 +148,34 @@ export default function ViewTill() {
                     </thead>
                     <tbody>
                         {rows.map((row: any, index: number) => (
-                            <Row
+                            <TillRow
                                 key={row.name}
                                 row={row}
+                                onTillStatusChange={onTillStatusChange}
+                                sendTillData={SendTillToForm}
                                 initialOpen={index === 0}
+                                openTillActionsView={openViewTillDialog}
                             />
                         ))}
                     </tbody>
                 </Table>
             </Box>
+
+            <TillOpenCloseView
+                setOpenState={openViewTillDialog}
+                openState={useDialogState}
+                showSnackbar={function (
+                    is_open: boolean,
+                    state: string,
+                    msg: string,
+                ): void {
+                    setSnackbar({
+                        msg,
+                        is_open,
+                        state,
+                    });
+                }}
+            />
 
             <Snackbar
                 variant="solid"

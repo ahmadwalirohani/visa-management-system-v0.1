@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tills', function (Blueprint $table) {
+        Schema::create('till_opening_closings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
+            $table->foreignId('till_id')->constrained('tills')->cascadeOnDelete();
             $table->foreignId('created_user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->boolean('status')->default(true);
-            $table->boolean('is_open')->default(false);
+            $table->date('opened_date');
+            $table->date('closed_date')->nullable();
+            $table->text('remarks');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tills');
+        Schema::dropIfExists('till_opening_closings');
     }
 };

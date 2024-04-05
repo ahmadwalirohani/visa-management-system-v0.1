@@ -81,6 +81,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/bank-ledger', function () {
         return Inertia::render('Reports/BankLedger');
     })->name('reports.bank_ledger');
+
+    Route::get('/reports/proceed-visa-report', function () {
+        return Inertia::render('Reports/ProceedVisaReport');
+    })->name('reports.proceed_visa_report');
 });
 
 require __DIR__ . '/auth.php';

@@ -37,7 +37,9 @@ class HRResources
     public static function get_customer_ledger(object $payload): JsonResponse
     {
         return response()->json(
-            CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50),
+            $payload->is_paginate ?
+                CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50)
+                : CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->get(),
             JsonResponse::HTTP_OK
         );
     }

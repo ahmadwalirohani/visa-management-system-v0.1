@@ -120,6 +120,12 @@
         text-decoration: underline dashed aliceblue;
 
     }
+
+    @page {
+        @bottom-left {
+            content: counter(page) ' of ' counter(pages);
+        }
+    }
 </style>
 
 <body>

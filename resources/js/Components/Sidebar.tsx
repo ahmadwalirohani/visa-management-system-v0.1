@@ -455,8 +455,35 @@ export default function Sidebar({ user }: any) {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>
-                                        جاري ویزو راپور
+                                        کنسل ویزو راپور
                                     </ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton>
+                                        تسلیم ویزو راپور
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <Link
+                                        href={route(
+                                            "reports.proceed_visa_report",
+                                        )}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "reports.proceed_visa_report"
+                                            }
+                                        >
+                                            جاري ویزو راپور
+                                        </ListItemButton>
+                                    </Link>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton>پورونه</ListItemButton>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>بیلانس شیټ</ListItemButton>

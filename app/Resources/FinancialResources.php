@@ -8,7 +8,9 @@ use App\Models\EICodes;
 use App\Models\Employee;
 use App\Models\JournalEntry;
 use App\Models\Till;
+use App\Models\TillOpeningClosing;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Morilog\Jalali\Jalalian;
 
@@ -65,7 +67,6 @@ class FinancialResources
 
     public static function get_journal_entries(object $payload): JsonResponse
     {
-
         return response()->json(
             $payload->is_paginate == true ? JournalEntry::getJournalRelations()
                 ->filter($payload)
@@ -74,6 +75,43 @@ class FinancialResources
                 ->filter($payload)
                 ->orderByDesc('created_at')
                 ->get(),
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_journal_balancies(object $payload): JsonResponse
+    {
+        //
+        return response()->json(
+            [
+                "old_balancies" => false,
+
+            ],
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_till_opening_close(object $payload): JsonResponse
+    {
+        $report = TillOpeningClosing::withBalancies()->whereClosedDate(null)->whereTillId($payload->id)->latest('id')->first();
+        foreach ($report->balancies as $balance) {
+            $balance->credit_amount = JournalEntry::whereTillId($report->till_id)
+                ->whereBetween(DB::raw('DATE(created_at)'), [
+                    substr($report->opened_date, 0, 10),
+                    substr(now(), 0, 10)
+                ])
+                ->whereCurrencyId($balance->currency_id)
+                ->sum('credit_amount');
+            $balance->debit_amount = JournalEntry::whereTillId($report->till_id)
+                ->whereBetween(DB::raw('DATE(created_at)'), [
+                    substr($report->opened_date, 0, 10),
+                    substr(now(), 0, 10)
+                ])
+                ->whereCurrencyId($balance->currency_id)
+                ->sum('debit_amount');
+        }
+        return response()->json(
+            $report,
             JsonResponse::HTTP_OK
         );
     }

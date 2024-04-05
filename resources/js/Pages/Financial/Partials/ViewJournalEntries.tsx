@@ -84,14 +84,14 @@ interface Data {
 
 const PashtoTypes = {
     till: "دخل",
-    bank: "بانک / صرافي",
-    employee: "کارمند",
-    code: "کود",
-    expense: "مصرف",
-    income: "عاید",
-    customer: "مشتري",
-    extra: "متفرقه",
-    visa: "ویزه",
+    Bank: "بانک / صرافي",
+    Employee: "کارمند",
+    Code: "کود",
+    Income: "عاید",
+    Expense: "عاید",
+    Customer: "مشتري",
+    Extra: "متفرقه",
+    Visa: "ویزه",
 };
 
 const TransactionTypes = {
@@ -147,7 +147,7 @@ function ViewJournalEntries() {
         start_date: new Date().toLocaleDateString("en-ZA"),
         end_date: new Date().toLocaleDateString("en-ZA"),
         currency: [],
-        branch: 0,
+        till: 0,
     });
 
     const LoadRows = (url: string | null | boolean = false) => {
@@ -204,8 +204,8 @@ function ViewJournalEntries() {
                     <span class="i-value"> ${moment().locale("fa").format("YYYY/MM/DD")} </span>
                 </li>
                 <li>
-                    <span class="i-title">څانګه</span> :-
-                    <span class="i-value"> ${useFilterOptions.branch || ""}  </span>
+                    <span class="i-title">روزنامچه</span> :-
+                    <span class="i-value"> ${useFilterOptions.till || ""}  </span>
                 </li>
             </div>
             <div>
@@ -278,10 +278,10 @@ function ViewJournalEntries() {
     ): string => {
         const account =
             statement[
-                statement[type + "_type"] == "expense" ||
-                statement[type + "_type"] == "income"
+                statement[type + "_type"] == "Expense" ||
+                statement[type + "_type"] == "Income"
                     ? "code"
-                    : statement[type + "_type"]
+                    : (statement[type + "_type"] as string).toLowerCase()
             ];
         return account
             ? statement[type + "_type"] == "visa"
@@ -311,11 +311,13 @@ function ViewJournalEntries() {
                         onPrint={onReportPrint}
                         usePrintLoader={usePrintLoader}
                     />
+
                     <Sheet
                         sx={{
-                            height: "70dvh",
+                            height: "50dvh",
                             overflow: "auto",
                             width: "100%",
+                            mt: 1,
                         }}
                     >
                         <Table

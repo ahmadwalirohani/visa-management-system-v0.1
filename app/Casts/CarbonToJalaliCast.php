@@ -15,7 +15,7 @@ class CarbonToJalaliCast implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return Jalalian::fromDateTime($value)->toString();
+        return Jalalian::fromDateTime($value)->format('Y-m-d');
     }
 
     /**

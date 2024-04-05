@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\TransactionTypes;
+use App\Models\Visa;
 
 final class JournalEntryActions
 {
@@ -83,6 +84,8 @@ final class JournalEntryActions
                 );
         } else {
             foreach ($this->payload->selectedVisas as $visa) {
+                $visa  = (object) $visa;
+
                 (new CustomerAccountingActions($this->payload->debitAccount['id']))
                     ->debitAccount(
                         $this->payload->debitCurrency['id'],
@@ -96,9 +99,13 @@ final class JournalEntryActions
                         $this->payload->creditCurrency['id'],
                         $this->payload->exchange_rate,
                         $this->payload->exchanged_amount,
-                        ($this->payload->creditType == 'Till' ? $this->payload->creditAccount['id'] : null),
-                        ($this->payload->creditType == 'Bank' ? $this->payload->creditAccount['id'] : null),
+                        $this->payload->creditType == 'Till' ? $this->payload->creditAccount['id'] : null,
+                        $this->payload->creditType == 'Bank' ? $this->payload->creditAccount['id'] : null,
                     );
+
+                $_visa  = Visa::find($visa->id);
+                $_visa->paid_amount +=  $this->payload->exchanged_amount;
+                $_visa->save();
             }
         }
         return $this;

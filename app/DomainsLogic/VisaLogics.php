@@ -140,4 +140,23 @@ class VisaLogics
 
         return response()->json([true], JsonResponse::HTTP_OK);
     }
+
+    public static function add_visa_discount(Request $request): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+
+            (new VisaActions(new Visa()))
+                ->addVisaDiscount($request->visa_id, $request->discount_amount)
+                ->createVisaDiscountStatement($request->customer_id, $request->currency_id, $request->visa_id, $request->discount_amount, $request->remarks);
+        } catch (\Exception $th) {
+
+            DB::rollBack();
+            throw $th;
+        }
+
+        DB::commit();
+        return response()->json([true], JsonResponse::HTTP_OK);
+    }
 }

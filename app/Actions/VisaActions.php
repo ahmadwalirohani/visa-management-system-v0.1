@@ -196,8 +196,8 @@ class VisaActions extends VisaService
     public function debitVisaChargesToCustomer(int $customer_id, int $currency_id, float $amount, int $visa_id): self
     {
         (new CustomerAccountingActions($customer_id))
-            ->debitAccount($currency_id, $amount)
-            ->createDebitStatement(
+            ->creditAccount($currency_id, $amount)
+            ->createCreditStatement(
                 'VISA-CHARGES',
                 $amount,
                 $visa_id,
@@ -210,12 +210,36 @@ class VisaActions extends VisaService
     public function creditVisaAdvancePaymentToCustomer(int $customer_id, int $currency_id, float $amount, int $visa_id): self
     {
         (new CustomerAccountingActions($customer_id))
-            ->creditAccount($currency_id, $amount)
-            ->createCreditStatement(
+            ->debitAccount($currency_id, $amount)
+            ->createDebitStatement(
                 'VISA-ADVANCE-PAYMENT',
                 $amount,
                 $visa_id,
                 '',
+            );
+
+        return $this;
+    }
+
+    public function addVisaDiscount(int $id, float $discount): self
+    {
+        $visa  = Visa::find($id);
+        $visa->discount_amount += $discount;
+        $visa->paid_amount += $discount;
+        $visa->save();
+
+        return $this;
+    }
+
+    public function createVisaDiscountStatement(int $customer_id, int $currency_id, int $visa_id, float $discount, string | null $remarks): self
+    {
+        (new CustomerAccountingActions($customer_id))
+            ->debitAccount($currency_id, $discount)
+            ->createDebitStatement(
+                'VISA-DISCOUNT',
+                $discount,
+                $visa_id,
+                $remarks ?? '',
             );
 
         return $this;

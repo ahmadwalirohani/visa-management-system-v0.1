@@ -1,4 +1,5 @@
 import { getProcessedVisas } from "@/Utils/FetchResources";
+import { SendActionRequest } from "@/Utils/helpers";
 import Search from "@mui/icons-material/Search";
 import {
     Card,
@@ -10,8 +11,10 @@ import {
     ModalDialog,
     Modal,
     Sheet,
+    Button,
 } from "@mui/joy";
 import { Table } from "@mui/joy";
+import axios, { AxiosError } from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface IVisa {
@@ -41,6 +44,8 @@ interface IProps {
     setOpenState(state: boolean): void;
     selected: Array<any>;
     setSelected(visas: Array<any>): void;
+
+    setSnackbar(state: any, is_open: boolean, msg: string): void;
 }
 
 function ViewVisaSelection({
@@ -48,9 +53,13 @@ function ViewVisaSelection({
     setOpenState,
     selected,
     setSelected,
+    setSnackbar,
 }: IProps) {
     const [useProceedVisas, setProceedVisas] = useState<IVisa[]>([]);
     const [filter, setFilter] = useState<string>("");
+    const [useDiscount, setDiscount] = useState<number | null>(null);
+    const [useRemarks, setRemarks] = useState<string>("");
+    const [useLoader, setLoader] = useState<boolean>(false);
 
     const LoadResource = () => {
         getProcessedVisas((visa: Array<object>) => {
@@ -112,6 +121,41 @@ function ViewVisaSelection({
 
         return true;
     };
+
+    const onDiscountSubmit = () => {
+        if (
+            useDiscount &&
+            useDiscount <= selected[0].price - selected[0].paid_amount
+        ) {
+            const Config = SendActionRequest(
+                {
+                    _class: "VisaLogics",
+                    _method_name: "add_visa_discount",
+                    _validation_class: null,
+                },
+                {
+                    visa_id: selected[0].id,
+                    customer_id: selected[0].customer_id,
+                    currency_id: selected[0].currency_id,
+                    discount_amount: useDiscount,
+                    remarks: useRemarks,
+                },
+            );
+            setLoader(true);
+            axios
+                .post(Config.url, Config.payload)
+                .then(() => {
+                    setSnackbar("success", true, "عملیه په بریالي سره ثبت سول");
+                    LoadResource();
+                    setDiscount(0);
+                    setRemarks("");
+                })
+                .catch((Error: AxiosError<any>) => {
+                    setSnackbar("danger", true, Error.response?.data.message);
+                })
+                .finally(() => setLoader(false));
+        }
+    };
     return (
         <Modal
             open={openState}
@@ -148,6 +192,40 @@ function ViewVisaSelection({
                                             setFilter(e.target.value as string)
                                         }
                                     />
+                                </div>
+
+                                <div style={{ display: "flex" }}>
+                                    <Input
+                                        placeholder="تخفیف پر ویزه"
+                                        type="number"
+                                        size="sm"
+                                        sx={{ ml: 5 }}
+                                        value={useDiscount as any}
+                                        onChange={(
+                                            e: ChangeEvent<HTMLInputElement>,
+                                        ) => setDiscount(e.target.value as any)}
+                                    />
+                                    <Input
+                                        placeholder="  توضیحات"
+                                        type="text"
+                                        size="sm"
+                                        value={useRemarks}
+                                        sx={{ ml: 5 }}
+                                        onChange={(
+                                            e: ChangeEvent<HTMLInputElement>,
+                                        ) => setRemarks(e.target.value as any)}
+                                    />
+                                    <Button
+                                        size="sm"
+                                        loading={useLoader}
+                                        onClick={() => onDiscountSubmit()}
+                                        disabled={
+                                            selected.length > 1 ||
+                                            selected.length == 0
+                                        }
+                                    >
+                                        ثبت
+                                    </Button>
                                 </div>
                             </Sheet>
 

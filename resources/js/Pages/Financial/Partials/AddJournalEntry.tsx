@@ -430,22 +430,6 @@ function AddJournalEntry() {
                     <Grid container spacing={1} sx={{ overflow: "hidden" }}>
                         <Grid md={6}>
                             <FormControl size="sm">
-                                <FormLabel>رسید ډول</FormLabel>
-                                <Autocomplete
-                                    size="sm"
-                                    options={creditDebitTypes}
-                                    onChange={(e: any, newValue): any => {
-                                        onTransactionType("credit", newValue);
-                                        setJournalForm((prevState) => ({
-                                            ...prevState,
-                                            creditType: newValue?.name as any,
-                                        }));
-                                    }}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid md={6}>
-                            <FormControl size="sm">
                                 <FormLabel>برد ډول</FormLabel>
                                 <Autocomplete
                                     color="danger"
@@ -461,64 +445,24 @@ function AddJournalEntry() {
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid md={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid md={8}>
+                        <Grid md={6}>
                             <FormControl size="sm">
-                                <FormLabel>رسید اکاونټ</FormLabel>
+                                <FormLabel>رسید ډول</FormLabel>
                                 <Autocomplete
-                                    options={useCreditAccounts}
                                     size="sm"
-                                    inputValue={useJournalForm.creditLabel}
-                                    onChange={(e: any, newValue: any) => {
-                                        handleOnChange(
-                                            newValue,
-                                            "creditAccount",
-                                        );
+                                    options={creditDebitTypes}
+                                    onChange={(e: any, newValue): any => {
+                                        onTransactionType("credit", newValue);
+                                        setJournalForm((prevState) => ({
+                                            ...prevState,
+                                            creditType: newValue?.name as any,
+                                        }));
                                     }}
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid md={4}>
-                            <Button
-                                variant="solid"
-                                color="primary"
-                                fullWidth
-                                size="sm"
-                                sx={{ mt: 3 }}
-                                onClick={() => onCurrencyChange("credit")}
-                                loading={useFormSettings.creditAccountLoader}
-                            >
-                                {useJournalForm.creditCurrency.name}
-                            </Button>
-                        </Grid>
-                        <Grid
-                            md={12}
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                            }}
-                        >
-                            <Chip color="success">
-                                <b>زوړ حساب :</b>{" "}
-                                <code>
-                                    {new Intl.NumberFormat("en").format(
-                                        useFormSettings.creditOldBalance,
-                                    )}{" "}
-                                    {useJournalForm.creditCurrency.symbol}
-                                </code>
-                            </Chip>
-
-                            <Chip color="success">
-                                <b>نوی حساب :</b>{" "}
-                                <code>
-                                    {new Intl.NumberFormat("en").format(
-                                        calcNewBalancies().credit_new_balance,
-                                    )}{" "}
-                                    {useJournalForm.creditCurrency.symbol}
-                                </code>
-                            </Chip>
+                        <Grid md={12}>
+                            <Divider />
                         </Grid>
                         <Grid md={8}>
                             <FormControl size="sm">
@@ -576,6 +520,63 @@ function AddJournalEntry() {
                                 </code>
                             </Chip>
                         </Grid>
+                        <Grid md={8}>
+                            <FormControl size="sm">
+                                <FormLabel>رسید اکاونټ</FormLabel>
+                                <Autocomplete
+                                    options={useCreditAccounts}
+                                    size="sm"
+                                    inputValue={useJournalForm.creditLabel}
+                                    onChange={(e: any, newValue: any) => {
+                                        handleOnChange(
+                                            newValue,
+                                            "creditAccount",
+                                        );
+                                    }}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid md={4}>
+                            <Button
+                                variant="solid"
+                                color="primary"
+                                fullWidth
+                                size="sm"
+                                sx={{ mt: 3 }}
+                                onClick={() => onCurrencyChange("credit")}
+                                loading={useFormSettings.creditAccountLoader}
+                            >
+                                {useJournalForm.creditCurrency.name}
+                            </Button>
+                        </Grid>
+                        <Grid
+                            md={12}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                            }}
+                        >
+                            <Chip color="success">
+                                <b>زوړ حساب :</b>{" "}
+                                <code>
+                                    {new Intl.NumberFormat("en").format(
+                                        useFormSettings.creditOldBalance,
+                                    )}{" "}
+                                    {useJournalForm.creditCurrency.symbol}
+                                </code>
+                            </Chip>
+
+                            <Chip color="success">
+                                <b>نوی حساب :</b>{" "}
+                                <code>
+                                    {new Intl.NumberFormat("en").format(
+                                        calcNewBalancies().credit_new_balance,
+                                    )}{" "}
+                                    {useJournalForm.creditCurrency.symbol}
+                                </code>
+                            </Chip>
+                        </Grid>
+
                         <Grid md={4}>
                             <FormControl size="sm">
                                 <FormLabel>مبلغ</FormLabel>
@@ -825,6 +826,13 @@ function AddJournalEntry() {
                 setOpenState={openViewVisaDialog}
                 selected={selectedVisas}
                 setSelected={setSelectedVisas}
+                setSnackbar={(state: any, is_open: boolean, msg: string) => {
+                    setSnackbar({
+                        msg,
+                        is_open,
+                        state,
+                    });
+                }}
             />
 
             <Snackbar

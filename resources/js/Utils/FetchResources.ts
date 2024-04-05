@@ -14,7 +14,7 @@ async function LoadCurrencies(callback: JsonCallback): Promise<void> {
             }),
         )
         .then((Response: AxiosResponse<Array<object>>): void => {
-            callback(Response.data);
+            callback(Response.data.filter((c: any) => c.status == 1));
         });
 }
 
