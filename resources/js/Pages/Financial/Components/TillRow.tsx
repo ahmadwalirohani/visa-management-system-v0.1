@@ -13,6 +13,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import React from "react";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 function TillRow(props: {
     row: any;
@@ -27,6 +28,8 @@ function TillRow(props: {
     ): void;
 }) {
     const { row } = props;
+    const { privileges } = useUserBranchesContext();
+
     const [open, setOpen] = React.useState(props.initialOpen || false);
 
     return (
@@ -35,7 +38,8 @@ function TillRow(props: {
                 onClick={(e) => {
                     if (
                         (e.target as any).tagName != "BUTTON" &&
-                        (e.target as any).tagName != "svg"
+                        (e.target as any).tagName != "svg" &&
+                        privileges.till.actions.opening_closing == true
                     ) {
                         props.openTillActionsView(
                             true,
@@ -94,7 +98,10 @@ function TillRow(props: {
                             {row.status == 1 && <VisibilityOff />}
                             {row.status == 0 && <Visibility />}
                         </Button>
-                        <Button onClick={() => props.sendTillData(row)}>
+                        <Button
+                            disabled={privileges.till.actions.edit == false}
+                            onClick={() => props.sendTillData(row)}
+                        >
                             <Edit />
                         </Button>
                     </ButtonGroup>

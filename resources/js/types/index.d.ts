@@ -66,3 +66,103 @@ export type PageProps<
         user: User;
     };
 };
+
+export interface IUserAuthorityControl {
+    visa: {
+        actions: {
+            add: boolean;
+            edit: boolean;
+            cancel: boolean;
+            add_expense: boolean;
+            proceed: boolean;
+            commit: boolean;
+        };
+        reports: {
+            pending: boolean;
+            proceed: boolean;
+            committed: boolean;
+        };
+    };
+    customer: {
+        actions: {
+            add: boolean;
+            edit: boolean;
+            delete: boolean;
+        };
+        reports: {
+            list: boolean;
+            ledger: boolean;
+        };
+    };
+    employee: {
+        actions: {
+            add: boolean;
+            edit: boolean;
+            delete: boolean;
+        };
+        reports: {
+            list: boolean;
+            ledger: boolean;
+        };
+    };
+    bank: {
+        actions: {
+            add: boolean;
+            edit: boolean;
+            delete: boolean;
+        };
+        reports: {
+            list: boolean;
+            ledger: boolean;
+        };
+    };
+    till: {
+        actions: {
+            add: boolean;
+            edit: boolean;
+            delete: boolean;
+            opening_closing: boolean;
+        };
+        reports: {
+            list: boolean;
+            open_closed: boolean;
+        };
+    };
+    settings: {
+        users: {
+            add: boolean;
+            edit: boolean;
+            branch_control: boolean;
+            list: boolean;
+        };
+        branches: {
+            add: boolean;
+            list: boolean;
+        };
+        ei_codes: {
+            add: boolean;
+            list: boolean;
+        };
+        system_infos: {
+            add: boolean;
+        };
+        visa_types: {
+            add: boolean;
+            list: boolean;
+        };
+        currencies: {
+            add: boolean;
+            add_exchange_rate: boolean;
+            list: boolean;
+        };
+    };
+    misc: {
+        add_journal_entry: boolean;
+        view_journal_entries: boolean;
+        user_logs: boolean;
+        ei_codes_ledger: boolean;
+        balance_sheet: boolean;
+        loans: boolean;
+        other_branches_control: boolean;
+    };
+}

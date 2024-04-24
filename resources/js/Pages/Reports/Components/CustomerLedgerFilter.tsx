@@ -30,6 +30,7 @@ interface IProps {
     onSearch(): void;
     useLoader: boolean;
     onPrint(): void;
+    onCustomPrint(): void;
     usePrintLoader: boolean;
 }
 
@@ -40,6 +41,7 @@ function CustomerLedgerFilter({
     useLoader,
     onPrint,
     usePrintLoader,
+    onCustomPrint,
 }: IProps) {
     const [useCurrencies, setCurrencies] = useState<Array<object>>([]);
     const [useCustomers, setCustomers] = useState<Array<any>>([]);
@@ -171,6 +173,19 @@ function CustomerLedgerFilter({
 
             <div style={{ width: "fit-content" }} dir="ltr">
                 <ButtonGroup>
+                    <Button
+                        loading={usePrintLoader}
+                        variant="outlined"
+                        size="sm"
+                        onClick={() => onCustomPrint()}
+                        disabled={
+                            useFilter.currency.length == 0 ||
+                            !useFilter.customer
+                        }
+                    >
+                        {" "}
+                        صورت حساب چاپ <Print />
+                    </Button>
                     <Button
                         loading={usePrintLoader}
                         variant="outlined"

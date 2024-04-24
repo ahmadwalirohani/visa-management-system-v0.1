@@ -103,7 +103,7 @@ class JournalEntry extends Model
             ->when($payload->c && !empty($payload->c), function ($query) use ($payload) {
                 $query->whereIn('currency_id', $payload->c);
             })
-            ->when($payload->t != 0 && $payload->t != null, function ($query) use ($payload) {
+            ->when(isset($payload->t) && $payload->t != 0 && $payload->t != null, function ($query) use ($payload) {
                 $query->whereRaw(DB::raw('transactionType LIKE ?'), ["%" . strtoupper($payload->t) . "%",]);
             })
             ->whereBetween(DB::raw('DATE(created_at)'), [

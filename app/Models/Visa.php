@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
 class Visa extends Model
@@ -22,7 +23,7 @@ class Visa extends Model
 
     public function scopeGetPending($query): void
     {
-        $query->where('status', '!=', VisaStatus::COMPLETED)->whereIsCanceled(0);
+        $query->where('status', '!=', VisaStatus::COMPLETED);
     }
 
     public function customer(): BelongsTo
@@ -60,9 +61,19 @@ class Visa extends Model
         return $this->hasMany(CustomerLedger::class, 'visa_id')->with(['currency']);
     }
 
+    public function proceed_visa(): HasOne
+    {
+        return $this->hasOne(ProcessedVisa::class)->select(['id', 'visa_id', 'serial_no', 'residence']);
+    }
+
     public function entrance_type(): BelongsTo
     {
         return $this->belongsTo(VisaSubType::class, 'entrance_type_id');
+    }
+
+    public function scopeWithProceedVisa($query): void
+    {
+        $query->with('proceed_visa');
     }
 
     public function scopeWithType($query): void
@@ -100,17 +111,25 @@ class Visa extends Model
             ->when(isset($payload->c) && $payload->c != "" && $payload->c != null, function ($query) use ($payload) {
                 $query->whereCustomerId($payload->c);
             })
-            ->when($payload->t != 0 && $payload->t != null, function ($query) use ($payload) {
+            ->when(isset($payload->cu) && $payload->cu != "" && $payload->cu != null, function ($query) use ($payload) {
+                $query->whereCurrencyId($payload->cu);
+            })
+            ->when(isset($payload->t) && $payload->t != 0 && $payload->t != null, function ($query) use ($payload) {
                 $query->whereTypeId($payload->t);
             })
-            ->when($payload->b != 0 && $payload->b != null, function ($query) use ($payload) {
+            ->when(isset($payload->b) && $payload->b != 0 && $payload->b != null, function ($query) use ($payload) {
                 $query->whereBranchId($payload->b);
             })
-            ->when($payload->se != 0 && $payload->se != null, function ($query) use ($payload) {
+            ->when(isset($payload->type), function ($query) use ($payload) {
+                if ($payload->type == 'remaining') $query->whereRaw(DB::raw('paid_amount < price'));
+                else if ($payload->type == 'paid') $query->whereRaw(DB::raw('paid_amount == price'));
+            })
+            ->when($payload->se != 0 && $payload->se && $payload->se != null, function ($query) use ($payload) {
                 $query->whereRaw(DB::raw('passport_no LIKE ? OR remarks LIKE ? OR name LIKE ? OR block_no LIKE ? OR visa_no LIKE ?'), ["%" . $payload->se . "%", "%" . $payload->se . "%", "%" . $payload->se . "%", "%" . $payload->se . "%", "%" . $payload->se . "%"]);
             })
             ->when(isset($payload->s) && $payload->s, function ($query) use ($payload) {
-                $query->whereStatus($payload->s);
+                if ($payload->s == 'cancelled') $query->where('is_canceled', 1);
+                else $query->whereStatus($payload->s)->where('is_canceled', 0);
             });
     }
 

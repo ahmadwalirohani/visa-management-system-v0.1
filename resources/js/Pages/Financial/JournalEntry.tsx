@@ -3,6 +3,7 @@ import { Box, Grid } from "@mui/joy";
 import AddJournalEntry from "./Partials/AddJournalEntry";
 import { createContext, useContext, useState } from "react";
 import ViewJournalEntries from "./Partials/ViewJournalEntries";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -54,7 +55,7 @@ function JournalEntry() {
         emitEvent,
         addEventListener,
     };
-
+    const { privileges } = useUserBranchesContext();
     return (
         <EventEmitterContext.Provider value={contextValue}>
             <>
@@ -79,9 +80,13 @@ function JournalEntry() {
                         spacing={2}
                         sx={{ overflow: { md: "hidden" }, width: "100%" }}
                     >
-                        <AddJournalEntry />
+                        {privileges.misc.add_journal_entry && (
+                            <AddJournalEntry />
+                        )}
 
-                        <ViewJournalEntries />
+                        {privileges.misc.view_journal_entries && (
+                            <ViewJournalEntries />
+                        )}
                     </Grid>
                 </Box>
             </>

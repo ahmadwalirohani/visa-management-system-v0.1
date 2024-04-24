@@ -23,6 +23,7 @@ import {
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import ViewVisaSelection from "./ViewVisaSelection";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 type TType = "credit" | "debit";
 
@@ -63,6 +64,7 @@ const creditDebitTypes: Array<{
 let _currencies: Array<any> = [];
 
 function AddJournalEntry() {
+    const { privileges, selectedBranch } = useUserBranchesContext();
     const [useCreditAccounts, setCreditAccounts] = useState<Array<any>>([]);
     const [useDebitAccounts, setDebitAccounts] = useState<Array<any>>([]);
     const [useJournalForm, setJournalForm] = useState({
@@ -154,10 +156,17 @@ function AddJournalEntry() {
             }));
             axios
                 .get(
-                    SendResourceRequest({
-                        _class: "FinancialResources",
-                        _method_name: `get_${(value.name as string).toLowerCase()}_accounts`,
-                    }),
+                    SendResourceRequest(
+                        {
+                            _class: "FinancialResources",
+                            _method_name: `get_${(value.name as string).toLowerCase()}_accounts`,
+                        },
+                        {
+                            branch_id: selectedBranch,
+                            is_show_other_branches_data:
+                                privileges.misc.other_branches_control,
+                        },
+                    ),
                 )
                 .then((Accounts: AxiosResponse<Array<any>>) => {
                     if (type == "credit") setCreditAccounts(Accounts.data);

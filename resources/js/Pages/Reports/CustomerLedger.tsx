@@ -1,8 +1,10 @@
 import { Head } from "@inertiajs/react";
 import { Box, Grid } from "@mui/joy";
 import ViewCustomerLedger from "./Partials/ViewCustomerLedger";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 function CustomerLedger() {
+    const { privileges } = useUserBranchesContext();
     return (
         <>
             <Head title="مشتري کهاته" />
@@ -32,7 +34,9 @@ function CustomerLedger() {
                         alignItems: "flex-end",
                     }}
                 >
-                    <ViewCustomerLedger />
+                    {privileges.customer.reports.ledger && (
+                        <ViewCustomerLedger />
+                    )}
                 </Grid>
             </Box>
         </>

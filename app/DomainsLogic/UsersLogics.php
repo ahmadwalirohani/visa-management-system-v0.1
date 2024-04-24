@@ -63,4 +63,14 @@ class UsersLogics
             JsonResponse::HTTP_OK
         );
     }
+
+    public static function update_user_privileges(HttpRequest $request): JsonResponse
+    {
+        UserPrivilegeBranches::whereId($request->id)
+            ->update([
+                'privileges' =>  json_encode($request->privileges)
+            ]);
+
+        return response()->json([true], JsonResponse::HTTP_OK);
+    }
 }

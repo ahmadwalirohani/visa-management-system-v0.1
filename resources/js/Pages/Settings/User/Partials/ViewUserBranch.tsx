@@ -23,6 +23,7 @@ import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import Edit from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ViewUserPrivileges from "./ViewUserPrivilege";
 
 interface IUserInfo {
     id: number;
@@ -77,6 +78,21 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
     const [userPrivilegeBranches, setPrivilegeBranches] = useState<
         Array<object>
     >([]);
+    const [privilegesProps, setPrivilegesProps] = useState({
+        layout: undefined,
+        id: 0,
+        name: "",
+        email: "",
+        branch: "",
+        privileges: {},
+    });
+
+    const openPrivilegesDialog = (state: any): void => {
+        setPrivilegesProps((prev) => ({
+            ...prev,
+            layout: state,
+        }));
+    };
 
     const LoadData = async (): Promise<void> => {
         axios
@@ -196,6 +212,12 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
 
     useEffect(() => {
         LoadData();
+
+        setPrivilegesProps((prev) => ({
+            ...prev,
+            name: userInfo.name,
+            email: userInfo.email,
+        }));
     }, [userInfo]);
 
     return (
@@ -364,7 +386,28 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
                                                                         ? "غیر فعال"
                                                                         : "فعال"}
                                                                 </MenuItem>
-                                                                <MenuItem>
+                                                                <MenuItem
+                                                                    onClick={() => {
+                                                                        openPrivilegesDialog(
+                                                                            "center",
+                                                                        );
+                                                                        setPrivilegesProps(
+                                                                            (
+                                                                                prev,
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                branch: branch
+                                                                                    .branch
+                                                                                    .name,
+                                                                                id: branch.id,
+                                                                                privileges:
+                                                                                    JSON.parse(
+                                                                                        branch.privileges,
+                                                                                    ),
+                                                                            }),
+                                                                        );
+                                                                    }}
+                                                                >
                                                                     صلاحیتونه
                                                                 </MenuItem>
                                                             </Menu>
@@ -388,6 +431,11 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
                     </DialogContent>
                 </ModalDialog>
             </Modal>
+
+            <ViewUserPrivileges
+                infoProps={privilegesProps}
+                setLayoutState={openPrivilegesDialog}
+            />
         </>
     );
 }

@@ -5,6 +5,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface ISystemInfoEntity {
     company_ceo: string;
@@ -21,6 +22,7 @@ interface ISystemInfoEntity {
 }
 
 export default function SystemInfo() {
+    const { privileges } = useUserBranchesContext();
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         company_ceo: {
@@ -179,22 +181,24 @@ export default function SystemInfo() {
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddSystemInfo
-                    useSnackbar={useSnackbar}
-                    closeSnackbar={() =>
-                        setSnackbar((prevState) => ({
-                            ...prevState,
-                            is_open: false,
-                        }))
-                    }
-                    resetForm={resetForm}
-                    formRef={formRef}
-                    formInfo={useSystemInfo}
-                    onSubmit={onSubmit}
-                    formValidation={useFormValidation}
-                    preImage={useSystemInfo.company_logo}
-                    handleOnInputChange={handleOnInputChange}
-                />
+                {privileges.settings.system_infos.add && (
+                    <AddSystemInfo
+                        useSnackbar={useSnackbar}
+                        closeSnackbar={() =>
+                            setSnackbar((prevState) => ({
+                                ...prevState,
+                                is_open: false,
+                            }))
+                        }
+                        resetForm={resetForm}
+                        formRef={formRef}
+                        formInfo={useSystemInfo}
+                        onSubmit={onSubmit}
+                        formValidation={useFormValidation}
+                        preImage={useSystemInfo.company_logo}
+                        handleOnInputChange={handleOnInputChange}
+                    />
+                )}
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}></Sheet>

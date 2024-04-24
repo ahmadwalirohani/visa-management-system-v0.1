@@ -3,8 +3,14 @@ import Sheet from "@mui/joy/Sheet";
 
 import Input from "@mui/joy/Input";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { Option, Select } from "@mui/joy";
+import { usePage } from "@inertiajs/react";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 export default function Header() {
+    const { auth } = usePage().props;
+    const { selectBranch, selectedBranch } = useUserBranchesContext();
+
     return (
         <Sheet
             sx={{
@@ -41,11 +47,42 @@ export default function Header() {
       >
         <MenuIcon />
       </IconButton> */}
-            <Input
-                size="sm"
-                startDecorator={<SearchRoundedIcon />}
-                placeholder="پلټنه ..."
-            />
+            <Sheet
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "80%",
+                }}
+            >
+                <Input
+                    size="sm"
+                    startDecorator={<SearchRoundedIcon />}
+                    placeholder="پلټنه ..."
+                />
+
+                <Select
+                    size="sm"
+                    onChange={(e: any, newValue: any) =>
+                        selectBranch(newValue as number)
+                    }
+                    placeholder="Branch"
+                    value={selectedBranch}
+                >
+                    {(
+                        auth as {
+                            user: {
+                                privilege_branches: Array<any>;
+                            };
+                        }
+                    ).user.privilege_branches.map(
+                        (branch: any, index: number) => (
+                            <Option value={branch.branch_id} key={index}>
+                                {branch.branch.name}
+                            </Option>
+                        ),
+                    )}
+                </Select>
+            </Sheet>
         </Sheet>
     );
 }

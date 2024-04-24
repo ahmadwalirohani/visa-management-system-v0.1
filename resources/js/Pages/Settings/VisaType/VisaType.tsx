@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface IVisaTypeFields {
     name: string;
@@ -15,6 +16,8 @@ interface IVisaTypeFields {
 }
 
 export default function VisaType() {
+    const { privileges } = useUserBranchesContext();
+
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
@@ -192,30 +195,34 @@ export default function VisaType() {
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddVisaType
-                    useSnackbar={useSnackbar}
-                    closeSnackbar={() =>
-                        setSnackbar((prevState) => ({
-                            ...prevState,
-                            is_open: false,
-                        }))
-                    }
-                    resetForm={resetForm}
-                    formRef={formRef}
-                    formInfo={useFormFunctionalInfo}
-                    onSubmit={onSubmit}
-                    formValidation={useFormValidation}
-                />
+                {privileges.settings.visa_types.add && (
+                    <AddVisaType
+                        useSnackbar={useSnackbar}
+                        closeSnackbar={() =>
+                            setSnackbar((prevState) => ({
+                                ...prevState,
+                                is_open: false,
+                            }))
+                        }
+                        resetForm={resetForm}
+                        formRef={formRef}
+                        formInfo={useFormFunctionalInfo}
+                        onSubmit={onSubmit}
+                        formValidation={useFormValidation}
+                    />
+                )}
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewVisaType
-                        editVisaType={editVisaType}
-                        fetchLoading={fetchLoading}
-                        visa_types={rows}
-                        changeStatus={changeVTypeStatus}
-                        loadVisaTypes={LoadVisaTypes}
-                    />
+                    {privileges.settings.visa_types.list && (
+                        <ViewVisaType
+                            editVisaType={editVisaType}
+                            fetchLoading={fetchLoading}
+                            visa_types={rows}
+                            changeStatus={changeVTypeStatus}
+                            loadVisaTypes={LoadVisaTypes}
+                        />
+                    )}
                 </Sheet>
             </Grid>
         </Grid>

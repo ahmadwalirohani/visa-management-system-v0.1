@@ -43,6 +43,7 @@ import { MenuList } from "@mui/material";
 import VisaBookingModel from "./Partials/VisaBookingModel";
 import VisaOrderingModel from "./Partials/VisaOrderingModel";
 import VisaCancelModel from "./Partials/VisaCancelMode";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -104,6 +105,7 @@ interface Data extends IVisaProps {
 }
 
 export default function PendingVisa() {
+    const { privileges } = useUserBranchesContext();
     const [useRows, setRows] = React.useState<Data[]>([]);
     const [order, setOrder] = React.useState<Order>("desc");
     const [useFetchLoader, setFetchLoading] = React.useState<boolean>(false);
@@ -156,7 +158,7 @@ export default function PendingVisa() {
         React.useState<IVisaPendingFilterProps>({
             branch: 0,
             search: "",
-            status: "",
+            status: "registration",
             type: 0,
             customer: null,
         });
@@ -365,6 +367,7 @@ export default function PendingVisa() {
                                     id: visa.id,
                                 });
                             }}
+                            disabled={privileges.visa.actions.edit == false}
                         >
                             <Edit />
                             تغیر
@@ -399,7 +402,8 @@ export default function PendingVisa() {
                             }}
                             disabled={
                                 visa.status == "ordered" ||
-                                visa.status == "registration"
+                                visa.status == "registration" ||
+                                privileges.visa.actions.add_expense == false
                             }
                         >
                             <FactCheckIcon />
@@ -415,6 +419,7 @@ export default function PendingVisa() {
                                 }));
                                 openCancelDialog(true, false);
                             }}
+                            disabled={privileges.visa.actions.cancel == false}
                         >
                             <DoNotDisturbIcon />
                             کنسل
@@ -474,278 +479,290 @@ export default function PendingVisa() {
                     overflow: "auto",
                 }}
             >
-                <Card sx={{ m: 0, width: "100%", height: "88vh" }}>
-                    <div style={{ height: 2 }}>
-                        {useFetchLoader == true && <LinearProgress size="sm" />}
-                    </div>
+                {privileges.visa.reports.pending && (
+                    <Card sx={{ m: 0, width: "100%", height: "88vh" }}>
+                        <div style={{ height: 2 }}>
+                            {useFetchLoader == true && (
+                                <LinearProgress size="sm" />
+                            )}
+                        </div>
 
-                    <PendingVisaFilter
-                        onChange={handleOnChange}
-                        useFilter={useFilterOptions}
-                    />
+                        <PendingVisaFilter
+                            onChange={handleOnChange}
+                            useFilter={useFilterOptions}
+                        />
 
-                    <Sheet
-                        className="OrderTableContainer"
-                        variant="outlined"
-                        sx={{
-                            display: { xs: "none", sm: "initial" },
-                            width: "100%",
-                            borderRadius: "sm",
-                            flexShrink: 1,
-                            overflow: "auto",
-                            minHeight: 0,
-                        }}
-                    >
-                        <Table
-                            aria-labelledby="tableTitle"
-                            stickyHeader
-                            hoverRow
+                        <Sheet
+                            className="OrderTableContainer"
+                            variant="outlined"
                             sx={{
-                                "--TableCell-headBackground":
-                                    "var(--joy-palette-background-level1)",
-                                "--Table-headerUnderlineThickness": "1px",
-                                "--TableRow-hoverBackground":
-                                    "var(--joy-palette-background-level1)",
-                                "--TableCell-paddingY": "4px",
-                                "--TableCell-paddingX": "8px",
-                                "& tr > th": {
-                                    textAlign: "right",
-                                },
+                                display: { xs: "none", sm: "initial" },
+                                width: "100%",
+                                borderRadius: "sm",
+                                flexShrink: 1,
+                                overflow: "auto",
+                                minHeight: 0,
                             }}
                         >
-                            <thead>
-                                <tr>
-                                    <th
-                                        style={{
-                                            width: 48,
-                                            textAlign: "center",
-                                            padding: "12px 6px",
-                                        }}
-                                    ></th>
-                                    <th
-                                        style={{
-                                            width: 120,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        <Link
-                                            underline="none"
-                                            color="primary"
-                                            component="button"
-                                            onClick={() =>
-                                                setOrder(
-                                                    order === "asc"
-                                                        ? "desc"
-                                                        : "asc",
-                                                )
-                                            }
-                                            fontWeight="lg"
-                                            endDecorator={<ArrowDropDownIcon />}
-                                            sx={{
-                                                "& svg": {
-                                                    transition: "0.2s",
-                                                    transform:
-                                                        order === "desc"
-                                                            ? "rotate(0deg)"
-                                                            : "rotate(180deg)",
-                                                },
+                            <Table
+                                aria-labelledby="tableTitle"
+                                stickyHeader
+                                hoverRow
+                                sx={{
+                                    "--TableCell-headBackground":
+                                        "var(--joy-palette-background-level1)",
+                                    "--Table-headerUnderlineThickness": "1px",
+                                    "--TableRow-hoverBackground":
+                                        "var(--joy-palette-background-level1)",
+                                    "--TableCell-paddingY": "4px",
+                                    "--TableCell-paddingX": "8px",
+                                    "& tr > th": {
+                                        textAlign: "right",
+                                    },
+                                }}
+                            >
+                                <thead>
+                                    <tr>
+                                        <th
+                                            style={{
+                                                width: 48,
+                                                textAlign: "center",
+                                                padding: "12px 6px",
+                                            }}
+                                        ></th>
+                                        <th
+                                            style={{
+                                                width: 120,
+                                                padding: "12px 6px",
                                             }}
                                         >
-                                            شماره لییل
-                                        </Link>
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 160,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        تاریخ
-                                    </th>
-
-                                    <th
-                                        style={{
-                                            width: 240,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        شرکت / مشتري
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        نام و تخلص
-                                    </th>
-
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        پاسپورټ
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        حالت
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        پلیټ نمبر
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        قیمت
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        وظیفه
-                                    </th>
-
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        نوع ویزا
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        نوعیت دخول
-                                    </th>
-
-                                    <th
-                                        style={{
-                                            width: 140,
-                                            padding: "12px 6px",
-                                        }}
-                                    >
-                                        تفصیل
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stableSort(
-                                    useRows,
-                                    getComparator(order, "id"),
-                                ).map((row) => (
-                                    <tr key={row.id}>
-                                        <td>
-                                            <RowMenu visa={row as Data} />
-                                        </td>
-                                        <td>{row.visa_no}</td>
-                                        <td>
-                                            {row.created_at.substring(0, 10)}
-                                            <Typography
-                                                level="body-xs"
-                                                sx={{ display: "flex" }}
+                                            <Link
+                                                underline="none"
+                                                color="primary"
+                                                component="button"
+                                                onClick={() =>
+                                                    setOrder(
+                                                        order === "asc"
+                                                            ? "desc"
+                                                            : "asc",
+                                                    )
+                                                }
+                                                fontWeight="lg"
+                                                endDecorator={
+                                                    <ArrowDropDownIcon />
+                                                }
+                                                sx={{
+                                                    "& svg": {
+                                                        transition: "0.2s",
+                                                        transform:
+                                                            order === "desc"
+                                                                ? "rotate(0deg)"
+                                                                : "rotate(180deg)",
+                                                    },
+                                                }}
                                             >
-                                                {row.status !=
-                                                    "registration" && (
-                                                    <Chip size="sm">
-                                                        {row.booked_date?.substring(
-                                                            0,
-                                                            10,
-                                                        )}
-                                                    </Chip>
-                                                )}
-                                                {row.status == "ordered" && (
-                                                    <Chip
-                                                        color="primary"
-                                                        size="sm"
-                                                    >
-                                                        {row.ordered_date?.substring(
-                                                            0,
-                                                            10,
-                                                        )}
-                                                    </Chip>
-                                                )}
-                                            </Typography>
-                                        </td>
-                                        <td>{row.customer.name}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.passport_no}</td>
-                                        <td>
-                                            <Chip
-                                                variant="soft"
-                                                startDecorator={
-                                                    {
-                                                        registration: (
-                                                            <TaskAltIcon />
-                                                        ),
-                                                        ordered: (
-                                                            <PriceCheckIcon />
-                                                        ),
-                                                        booked: (
-                                                            <FactCheckIcon />
-                                                        ),
-                                                    }[row.status]
-                                                }
-                                                color={
-                                                    {
-                                                        registration: "success",
-                                                        ordered: "primary",
-                                                        booked: "neutral",
-                                                    }[
-                                                        row.status
-                                                    ] as ColorPaletteProp
-                                                }
-                                            >
-                                                {
-                                                    {
-                                                        registration: "راجسټر",
-                                                        booked: "ثبت شد",
-                                                        ordered: "دستور شد",
-                                                        completed: "جاري",
-                                                    }[row.status]
-                                                }
-                                            </Chip>
-                                        </td>
-                                        <td>{row.block_no}</td>
-                                        <td>
-                                            {new Intl.NumberFormat("en").format(
-                                                row.price,
-                                            )}{" "}
-                                            {(row.currency as any).symbol}
-                                        </td>
-                                        <td>{row.job}</td>
-                                        <td>{row.type.name}</td>
-                                        <td>{row.entrance_type.name}</td>
-                                        <td>{row.remarks}</td>
+                                                شماره لییل
+                                            </Link>
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 160,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            تاریخ
+                                        </th>
+
+                                        <th
+                                            style={{
+                                                width: 240,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            شرکت / مشتري
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            نام و تخلص
+                                        </th>
+
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            پاسپورټ
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            حالت
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            پلیټ نمبر
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            قیمت
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            وظیفه
+                                        </th>
+
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            نوع ویزا
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            نوعیت دخول
+                                        </th>
+
+                                        <th
+                                            style={{
+                                                width: 140,
+                                                padding: "12px 6px",
+                                            }}
+                                        >
+                                            تفصیل
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </Sheet>
-                    <TablePagination
-                        usePagination={usePagination}
-                        LoadRows={LoadRows}
-                    />
-                </Card>
+                                </thead>
+                                <tbody>
+                                    {stableSort(
+                                        useRows,
+                                        getComparator(order, "id"),
+                                    ).map((row) => (
+                                        <tr key={row.id}>
+                                            <td>
+                                                <RowMenu visa={row as Data} />
+                                            </td>
+                                            <td>{row.visa_no}</td>
+                                            <td>
+                                                {row.created_at.substring(
+                                                    0,
+                                                    10,
+                                                )}
+                                                <Typography
+                                                    level="body-xs"
+                                                    sx={{ display: "flex" }}
+                                                >
+                                                    {row.status !=
+                                                        "registration" && (
+                                                        <Chip size="sm">
+                                                            {row.booked_date?.substring(
+                                                                0,
+                                                                10,
+                                                            )}
+                                                        </Chip>
+                                                    )}
+                                                    {row.status ==
+                                                        "ordered" && (
+                                                        <Chip
+                                                            color="primary"
+                                                            size="sm"
+                                                        >
+                                                            {row.ordered_date?.substring(
+                                                                0,
+                                                                10,
+                                                            )}
+                                                        </Chip>
+                                                    )}
+                                                </Typography>
+                                            </td>
+                                            <td>{row.customer.name}</td>
+                                            <td>{row.name}</td>
+                                            <td>{row.passport_no}</td>
+                                            <td>
+                                                <Chip
+                                                    variant="soft"
+                                                    startDecorator={
+                                                        {
+                                                            registration: (
+                                                                <TaskAltIcon />
+                                                            ),
+                                                            ordered: (
+                                                                <PriceCheckIcon />
+                                                            ),
+                                                            booked: (
+                                                                <FactCheckIcon />
+                                                            ),
+                                                        }[row.status]
+                                                    }
+                                                    color={
+                                                        {
+                                                            registration:
+                                                                "success",
+                                                            ordered: "primary",
+                                                            booked: "neutral",
+                                                        }[
+                                                            row.status
+                                                        ] as ColorPaletteProp
+                                                    }
+                                                >
+                                                    {
+                                                        {
+                                                            registration:
+                                                                "راجسټر",
+                                                            booked: "ثبت شد",
+                                                            ordered: "دستور شد",
+                                                            completed: "جاري",
+                                                        }[row.status]
+                                                    }
+                                                </Chip>
+                                            </td>
+                                            <td>{row.block_no}</td>
+                                            <td>
+                                                {new Intl.NumberFormat(
+                                                    "en",
+                                                ).format(row.price)}{" "}
+                                                {(row.currency as any).symbol}
+                                            </td>
+                                            <td>{row.job}</td>
+                                            <td>{row.type.name}</td>
+                                            <td>{row.entrance_type.name}</td>
+                                            <td>{row.remarks}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </Sheet>
+                        <TablePagination
+                            usePagination={usePagination}
+                            LoadRows={LoadRows}
+                        />
+                    </Card>
+                )}
             </Box>
 
             <EditVisaInfo

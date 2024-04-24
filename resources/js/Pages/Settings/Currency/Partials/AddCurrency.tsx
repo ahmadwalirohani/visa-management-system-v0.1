@@ -10,6 +10,7 @@ import { ColorPaletteProp } from "@mui/joy/styles";
 import { Divider, Table } from "@mui/joy";
 import axios, { AxiosError } from "axios";
 import { SendActionRequest } from "@/Utils/helpers";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface FormElements extends HTMLFormControlsCollection {
     name: HTMLInputElement;
@@ -55,6 +56,7 @@ function AddCurrency({
     resetForm,
     currencies,
 }: FormProps) {
+    const { privileges } = useUserBranchesContext();
     const [useExchangeRates, setExchangeRates] = useState<Array<object>>([]);
     const [useLoading, setLoading] = useState<boolean>(false);
     // State to manage Snackbar (notification)
@@ -129,118 +131,136 @@ function AddCurrency({
                 اسعار او نرخونه
             </Typography>
 
-            <form
-                onSubmit={(
-                    event: React.FormEvent<CurrencyAdditionFormElement>,
-                ) => onSubmit(event)}
-                ref={formRef}
-                method="post"
-            >
-                <FormControl sx={{ mt: 2 }} error={formValidation.name.state}>
-                    <Input name="name" placeholder="اسعار نوم *" />
-                    {formValidation.name.state && (
-                        <FormHelperText>
-                            <InfoOutlined />
-                            {formValidation.name.msg}
-                        </FormHelperText>
-                    )}
-                </FormControl>
-                <FormControl sx={{ mt: 2 }} error={formValidation.symbol.state}>
-                    <Input name="symbol" placeholder="اسعار سمبول *" />
-                    {formValidation.symbol.state && (
-                        <FormHelperText>
-                            <InfoOutlined />
-                            {formValidation.symbol.msg}
-                        </FormHelperText>
-                    )}
-                </FormControl>
+            {privileges.settings.currencies.add && (
+                <form
+                    onSubmit={(
+                        event: React.FormEvent<CurrencyAdditionFormElement>,
+                    ) => onSubmit(event)}
+                    ref={formRef}
+                    method="post"
+                >
+                    <FormControl
+                        sx={{ mt: 2 }}
+                        error={formValidation.name.state}
+                    >
+                        <Input name="name" placeholder="اسعار نوم *" />
+                        {formValidation.name.state && (
+                            <FormHelperText>
+                                <InfoOutlined />
+                                {formValidation.name.msg}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
+                    <FormControl
+                        sx={{ mt: 2 }}
+                        error={formValidation.symbol.state}
+                    >
+                        <Input name="symbol" placeholder="اسعار سمبول *" />
+                        {formValidation.symbol.state && (
+                            <FormHelperText>
+                                <InfoOutlined />
+                                {formValidation.symbol.msg}
+                            </FormHelperText>
+                        )}
+                    </FormControl>
 
-                <Button
-                    type="submit"
-                    variant={formInfo.is_update ? "outlined" : "solid"}
-                    style={{ marginTop: 20 }}
-                    loading={formInfo.loading}
-                >
-                    {formInfo.is_update ? "تغیر" : "ثبت"}
-                </Button>
-                <Button
-                    type="reset"
-                    variant="soft"
-                    onClick={() => resetForm()}
-                    style={{ marginTop: 20, marginRight: 30 }}
-                >
-                    {" "}
-                    پاکول{" "}
-                </Button>
-            </form>
+                    <Button
+                        type="submit"
+                        variant={formInfo.is_update ? "outlined" : "solid"}
+                        style={{ marginTop: 20 }}
+                        loading={formInfo.loading}
+                    >
+                        {formInfo.is_update ? "تغیر" : "ثبت"}
+                    </Button>
+                    <Button
+                        type="reset"
+                        variant="soft"
+                        onClick={() => resetForm()}
+                        style={{ marginTop: 20, marginRight: 30 }}
+                    >
+                        {" "}
+                        پاکول{" "}
+                    </Button>
+                </form>
+            )}
 
             <Divider sx={{ mb: 2, mt: 3 }} />
 
-            <Table
-                variant="soft"
-                sx={{
-                    "& tr  > *": {
-                        textAlign: "center",
-                    },
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th style={{ width: 50 }}>#</th>
-                        <th>اسعار</th>
-                        <th>مبلغ</th>
-                        <th>معادل نرخ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {useExchangeRates.map((currency: any, index: number) => (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{currency.name}</td>
-                            <td>
-                                <Input
-                                    value={currency.amount}
-                                    size="sm"
-                                    type="number"
-                                    disabled={currency.is_default}
-                                    onChange={(
-                                        e: ChangeEvent<HTMLInputElement>,
-                                    ) =>
-                                        handleInputChange(
-                                            e.target.value,
-                                            index,
-                                            "amount",
-                                        )
-                                    }
-                                />
-                            </td>
-                            <td>
-                                <Input
-                                    value={currency.rate}
-                                    size="sm"
-                                    type="number"
-                                    disabled={currency.is_default}
-                                    onChange={(
-                                        e: ChangeEvent<HTMLInputElement>,
-                                    ) =>
-                                        handleInputChange(
-                                            e.target.value,
-                                            index,
-                                            "rate",
-                                        )
-                                    }
-                                />
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            {privileges.settings.currencies.add_exchange_rate && (
+                <>
+                    <Table
+                        variant="soft"
+                        sx={{
+                            "& tr  > *": {
+                                textAlign: "center",
+                            },
+                        }}
+                    >
+                        <thead>
+                            <tr>
+                                <th style={{ width: 50 }}>#</th>
+                                <th>اسعار</th>
+                                <th>مبلغ</th>
+                                <th>معادل نرخ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {useExchangeRates.map(
+                                (currency: any, index: number) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{currency.name}</td>
+                                        <td>
+                                            <Input
+                                                value={currency.amount}
+                                                size="sm"
+                                                type="number"
+                                                disabled={currency.is_default}
+                                                onChange={(
+                                                    e: ChangeEvent<HTMLInputElement>,
+                                                ) =>
+                                                    handleInputChange(
+                                                        e.target.value,
+                                                        index,
+                                                        "amount",
+                                                    )
+                                                }
+                                            />
+                                        </td>
+                                        <td>
+                                            <Input
+                                                value={currency.rate}
+                                                size="sm"
+                                                type="number"
+                                                disabled={currency.is_default}
+                                                onChange={(
+                                                    e: ChangeEvent<HTMLInputElement>,
+                                                ) =>
+                                                    handleInputChange(
+                                                        e.target.value,
+                                                        index,
+                                                        "rate",
+                                                    )
+                                                }
+                                            />
+                                        </td>
+                                    </tr>
+                                ),
+                            )}
+                        </tbody>
+                    </Table>
 
-            <Divider sx={{ mb: 2, mt: 3 }} />
+                    <Divider sx={{ mb: 2, mt: 3 }} />
 
-            <Button onClick={onRatesSubmit} loading={useLoading} variant="soft">
-                ثبت
-            </Button>
+                    <Button
+                        onClick={onRatesSubmit}
+                        loading={useLoading}
+                        variant="soft"
+                    >
+                        ثبت
+                    </Button>
+                </>
+            )}
 
             <Snackbar
                 variant="solid"

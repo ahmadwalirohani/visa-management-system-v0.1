@@ -126,6 +126,24 @@
             content: counter(page) ' of ' counter(pages);
         }
     }
+
+    .subBody {
+        padding: 8px;
+        padding-left: 48px;
+        box-shadow: inset 0 3px 7px 0 rgb(0 0 0 / 23%);
+
+    }
+
+    .sub-table th,
+    .sub-table td {
+        border-top: none !important;
+        border-right: none !important;
+        border-left: none !important;
+    }
+
+    .zero-pd {
+        padding: 0px !important;
+    }
 </style>
 
 <body>
@@ -185,51 +203,185 @@
                     <td><code>6782500 k</code></td>
                     <td></td>
                 </tr>
-                <tr class="subHeader">
-                    <th>#</th>
-                    <th>جنس</th>
-                    <th>تعداد / وزن</th>
-                    <th>نرخ</th>
-                    <th>جمله</th>
-                    <th> </th>
+                <tr class="subTr">
+                    <td colspan="6" class="zero-pd">
+                        <div class="subBody">
+                            <table class="financial-table sub-table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: transparent;">#</th>
+                                        <th style="background-color: transparent;">تاریخ</th>
+                                        <th style="background-color: transparent;">معاملي ډول</th>
+                                        <th style="background-color: transparent;">رسیدګي</th>
+                                        <th style="background-color: transparent;">بردګي</th>
+                                        <th style="background-color: transparent;">باقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1402-02-01</td>
+                                        <td>Visa-Charges</td>
+                                        <td>123</td>
+                                        <td>0</td>
+                                        <td>1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>محمدولي S-23</td>
+                    <td>
+                        602
+                    </td>
+                    <td>Tue Oct 24 2023</td>
+                    <td><code>6782500 k</code></td>
+                    <td></td>
                 </tr>
                 <tr class="subTr">
+                    <td colspan="6" class="zero-pd">
+                        <div class="subBody">
+                            <table class="financial-table sub-table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: transparent;">#</th>
+                                        <th style="background-color: transparent;">تاریخ</th>
+                                        <th style="background-color: transparent;">معاملي ډول</th>
+                                        <th style="background-color: transparent;">رسیدګي</th>
+                                        <th style="background-color: transparent;">بردګي</th>
+                                        <th style="background-color: transparent;">باقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1402-02-01</td>
+                                        <td>Visa-Charges</td>
+                                        <td>123</td>
+                                        <td>0</td>
+                                        <td>1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
                     <td>1</td>
-                    <td> Prudct 1</td>
-                    <td> 123 </td>
-                    <td> 123 </td>
-                    <td> 1234.2 </td>
-                    <td> no description </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>امان الله S0123</td>
+                    <td>محمدولي S-23</td>
                     <td>
-                        116
+                        602
                     </td>
                     <td>Tue Oct 24 2023</td>
-                    <td><code>2882040 k</code></td>
+                    <td><code>6782500 k</code></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td>3</td>
-                    <td>محمد نعیم S-123</td>
-                    <td>
-                        117
+                <tr class="subTr">
+                    <td colspan="6" class="zero-pd">
+                        <div class="subBody">
+                            <table class="financial-table sub-table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: transparent;">#</th>
+                                        <th style="background-color: transparent;">تاریخ</th>
+                                        <th style="background-color: transparent;">معاملي ډول</th>
+                                        <th style="background-color: transparent;">رسیدګي</th>
+                                        <th style="background-color: transparent;">بردګي</th>
+                                        <th style="background-color: transparent;">باقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1402-02-01</td>
+                                        <td>Visa-Charges</td>
+                                        <td>123</td>
+                                        <td>0</td>
+                                        <td>1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
-                    <td>Tue Oct 24 2023</td>
-                    <td><code>7733250 k</code></td>
-                    <td></td>
                 </tr>
                 <tr>
-                    <td>4</td>
-                    <td>فیض الله S-21</td>
+                    <td>1</td>
+                    <td>محمدولي S-23</td>
                     <td>
-                        118
+                        602
                     </td>
                     <td>Tue Oct 24 2023</td>
-                    <td><code>2585870 k</code></td>
+                    <td><code>6782500 k</code></td>
                     <td></td>
+                </tr>
+                <tr class="subTr">
+                    <td colspan="6" class="zero-pd">
+                        <div class="subBody">
+                            <table class="financial-table sub-table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: transparent;">#</th>
+                                        <th style="background-color: transparent;">تاریخ</th>
+                                        <th style="background-color: transparent;">معاملي ډول</th>
+                                        <th style="background-color: transparent;">رسیدګي</th>
+                                        <th style="background-color: transparent;">بردګي</th>
+                                        <th style="background-color: transparent;">باقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1402-02-01</td>
+                                        <td>Visa-Charges</td>
+                                        <td>123</td>
+                                        <td>0</td>
+                                        <td>1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>محمدولي S-23</td>
+                    <td>
+                        602
+                    </td>
+                    <td>Tue Oct 24 2023</td>
+                    <td><code>6782500 k</code></td>
+                    <td></td>
+                </tr>
+                <tr class="subTr">
+                    <td colspan="6" class="zero-pd">
+                        <div class="subBody">
+                            <table class="financial-table sub-table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: transparent;">#</th>
+                                        <th style="background-color: transparent;">تاریخ</th>
+                                        <th style="background-color: transparent;">معاملي ډول</th>
+                                        <th style="background-color: transparent;">رسیدګي</th>
+                                        <th style="background-color: transparent;">بردګي</th>
+                                        <th style="background-color: transparent;">باقي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>1402-02-01</td>
+                                        <td>Visa-Charges</td>
+                                        <td>123</td>
+                                        <td>0</td>
+                                        <td>1000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

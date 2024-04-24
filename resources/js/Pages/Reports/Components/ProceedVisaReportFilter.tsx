@@ -5,12 +5,19 @@ import {
     ButtonGroup,
     FormControl,
     FormLabel,
+    Input,
     Option,
     Select,
     ToggleButtonGroup,
 } from "@mui/joy";
 import SearchIcon from "@mui/icons-material/Search";
-import { SyntheticEvent, useEffect, useRef, useState } from "react";
+import {
+    ChangeEvent,
+    SyntheticEvent,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { GetCustomersAsItems, LoadCurrencies } from "@/Utils/FetchResources";
 import Print from "@mui/icons-material/Print";
 import { DatePicker } from "zaman";
@@ -26,6 +33,7 @@ interface IProps {
         start_date: string;
         end_date: string;
         currency: Array<any>;
+        type: string | null;
     };
     onChange(newValue: any, fieldName: string): void;
     onSearch(): void;
@@ -87,7 +95,7 @@ function ProceedVisaReportFilter({
                 alignItems: "flex-end",
                 gap: 1.5,
                 "& > *": {
-                    width: "260px",
+                    width: "200px",
                 },
             }}
         >
@@ -102,7 +110,6 @@ function ProceedVisaReportFilter({
                         round="x4"
                         position="center"
                         onChange={(e: any) => {
-                            console.log(e);
                             onChange(
                                 e?.value
                                     .toLocaleDateString("en-ZA")
@@ -150,6 +157,16 @@ function ProceedVisaReportFilter({
                 />
             </FormControl>
             <FormControl size="sm">
+                <FormLabel> پلټنه</FormLabel>
+                <Input
+                    size="sm"
+                    value={useFilter.search}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        onChange(e.target.value as any, "search");
+                    }}
+                />
+            </FormControl>
+            <FormControl size="sm">
                 <FormLabel> اسعار انتخاب</FormLabel>
                 <Select
                     size="sm"
@@ -170,10 +187,17 @@ function ProceedVisaReportFilter({
                 </Select>
             </FormControl>
 
-            <ToggleButtonGroup dir="ltr" color="primary" variant="soft">
-                <Button>تصفیه </Button>
-                <Button>نا تصفیه </Button>
-                <Button>ټولي </Button>
+            <ToggleButtonGroup
+                sx={{ width: 250 }}
+                dir="ltr"
+                color="primary"
+                value={useFilter.type}
+                onChange={(e, newValue) => onChange(newValue, "type")}
+                variant="soft"
+            >
+                <Button value="paid">تصفیه </Button>
+                <Button value="remaining">نا تصفیه </Button>
+                <Button value="all">ټولي </Button>
             </ToggleButtonGroup>
 
             <div style={{ width: "fit-content" }} dir="ltr">

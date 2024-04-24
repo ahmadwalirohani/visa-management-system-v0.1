@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface IBranchFields {
     name: string;
@@ -16,6 +17,7 @@ interface IBranchFields {
 }
 
 export default function Branch() {
+    const { privileges } = useUserBranchesContext();
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
@@ -225,30 +227,34 @@ export default function Branch() {
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddBranch
-                    useSnackbar={useSnackbar}
-                    closeSnackbar={() =>
-                        setSnackbar((prevState) => ({
-                            ...prevState,
-                            is_open: false,
-                        }))
-                    }
-                    resetForm={resetForm}
-                    formRef={formRef}
-                    formInfo={useFormFunctionalInfo}
-                    onSubmit={onSubmit}
-                    formValidation={useFormValidation}
-                />
+                {privileges.settings.branches.add && (
+                    <AddBranch
+                        useSnackbar={useSnackbar}
+                        closeSnackbar={() =>
+                            setSnackbar((prevState) => ({
+                                ...prevState,
+                                is_open: false,
+                            }))
+                        }
+                        resetForm={resetForm}
+                        formRef={formRef}
+                        formInfo={useFormFunctionalInfo}
+                        onSubmit={onSubmit}
+                        formValidation={useFormValidation}
+                    />
+                )}
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewBranch
-                        editBranch={editBranch}
-                        fetchLoading={fetchLoading}
-                        branches={rows}
-                        changeStatus={changeBranchStatus}
-                        changeToMain={changeBranchToMain}
-                    />
+                    {privileges.settings.branches.list && (
+                        <ViewBranch
+                            editBranch={editBranch}
+                            fetchLoading={fetchLoading}
+                            branches={rows}
+                            changeStatus={changeBranchStatus}
+                            changeToMain={changeBranchToMain}
+                        />
+                    )}
                 </Sheet>
             </Grid>
         </Grid>

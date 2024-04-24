@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { LoadCurrencies, GetTills } from "@/Utils/FetchResources";
 import Print from "@mui/icons-material/Print";
 import { DatePicker } from "zaman";
-import { getJournalBalancies } from "@/Utils/FetchReports";
+import { getTillOpenCloseBalancies } from "@/Utils/FetchReports";
 
 interface IProps {
     useFilter: {
@@ -44,14 +44,25 @@ function JournalReportFilter({
     usePrintLoader,
 }: IProps) {
     const [useCurrencies, setCurrencies] = useState<Array<object>>([]);
-    const [useTills, setTill] = useState<Array<object>>([]);
-    const [useBalancies, setBalancies] = useState<{
-        old_balancies: Array<any>;
-        current_balancies: Array<any>;
-    }>({
-        old_balancies: [],
-        current_balancies: [],
-    });
+    const [useTills, setTill] = useState<
+        Array<{
+            id: number;
+            name: string;
+            balancies: Array<any>;
+        }>
+    >([]);
+    const [useBalancies, setBalancies] = useState<
+        Array<{
+            till_id: number;
+            symbol: string;
+            name: string;
+            opened_balance: number;
+            credit_amount: number;
+            debit_amount: number;
+            current_balance: number;
+            currency_id: number;
+        }>
+    >([]);
     const action: SelectStaticProps["action"] = useRef(null);
     const StartDateRef = useRef(null);
     const EndDateRef = useRef(null);
@@ -59,43 +70,29 @@ function JournalReportFilter({
     const loadResources = () => {
         LoadCurrencies(function (currencies: Array<object>): void {
             setCurrencies(currencies);
-            const old_balancies: Array<any> = [];
-            const current_balancies: Array<any> = [];
 
             currencies.forEach((c: any) => {
-                old_balancies.push({
-                    id: c.id,
-                    symbol: c.symbol,
-                    balance: 0,
-                    credit: 0,
-                    debit: 0,
-                });
-                current_balancies.push({
-                    id: c.id,
-                    symbol: c.symbol,
-                    balance: 0,
-                    credit: 0,
-                    debit: 0,
-                });
-            });
-
-            setBalancies({
-                old_balancies: old_balancies,
-                current_balancies: current_balancies,
+                setBalancies((prev) => [
+                    ...prev,
+                    ...[
+                        {
+                            till_id: 0,
+                            credit_amount: 0,
+                            debit_amount: 0,
+                            current_balance: 0,
+                            opened_balance: 0,
+                            symbol: c.symbol,
+                            name: c.name,
+                            currency_id: c.id,
+                        },
+                    ],
+                ]);
             });
         });
 
         GetTills(function (tills: Array<any>): void {
-            setTill(tills);
-            // setBalancies((p)=>({
-            //     ...p,
-            //     current_balancies: p.current_balancies.map((pb:any)=>({
-
-            //     }))
-            // }))
+            setTill(tills.filter((t: any) => t.is_open == 1));
         });
-
-        getJournalBalancies(function ($balancies: Array<any>): void {});
     };
 
     useEffect(() => {
@@ -126,6 +123,42 @@ function JournalReportFilter({
         loadResources();
     }, []);
 
+    useEffect(() => {
+        getTillOpenCloseBalancies(
+            useFilter.till as number,
+            function (balancies: Array<any>): void {
+                const _balancies = [...useBalancies];
+                _balancies.forEach((b) => {
+                    // find index of fetched balancies array to match with exact currency
+                    const iOfRetrivedBalance = (
+                        balancies as any
+                    ).balancies.findIndex(
+                        (fb: any) => fb.currency_id == b.currency_id,
+                    );
+                    if (iOfRetrivedBalance !== -1) {
+                        b.credit_amount = (balancies as any).balancies[
+                            iOfRetrivedBalance
+                        ].credit_amount;
+                        b.debit_amount = (balancies as any).balancies[
+                            iOfRetrivedBalance
+                        ].debit_amount;
+                        b.opened_balance = (balancies as any).balancies[
+                            iOfRetrivedBalance
+                        ].opened_balance;
+                    }
+
+                    b.current_balance = useTills
+                        .filter((t: any) => t.id == useFilter.till)[0]
+                        ?.balancies.filter(
+                            (tb: any) => tb.currency_id == b.currency_id,
+                        )[0]?.balance;
+                });
+
+                setBalancies(_balancies);
+            },
+        );
+    }, [useFilter.till]);
+
     return (
         <>
             <Sheet
@@ -136,15 +169,11 @@ function JournalReportFilter({
             >
                 <Card
                     sx={{
-                        width: "50dvh",
+                        width: "60dvh",
                         borderWidth: 0,
                         pt: 0,
                     }}
                 >
-                    <Typography fontSize="sm" fontWeight="lg">
-                        زړه موجودي
-                    </Typography>
-
                     <Sheet
                         sx={{
                             bgcolor: "background.level1",
@@ -157,12 +186,12 @@ function JournalReportFilter({
                     >
                         <div>
                             <Typography level="body-xs" fontWeight="lg">
-                                مبلغ
+                                شروع بیلانس
                             </Typography>
-                            {useBalancies.old_balancies.map((b: any) => (
-                                <Typography key={b.id} fontWeight="lg">
+                            {useBalancies.map((b, index: number) => (
+                                <Typography key={index} fontWeight="lg">
                                     {new Intl.NumberFormat("en").format(
-                                        b.balance,
+                                        b.opened_balance,
                                     )}{" "}
                                     {b.symbol}
                                 </Typography>
@@ -172,63 +201,40 @@ function JournalReportFilter({
                             <Typography level="body-xs" fontWeight="lg">
                                 رسیدګي
                             </Typography>
-                            <Typography fontWeight="lg">980 ؋</Typography>
-                            <Typography fontWeight="lg">980 ؋</Typography>
-                            <Typography fontWeight="lg">980 ؋</Typography>
-                            <Typography fontWeight="lg">980 ؋</Typography>
+                            {useBalancies.map((b, index: number) => (
+                                <Typography key={index} fontWeight="lg">
+                                    {new Intl.NumberFormat("en").format(
+                                        b.credit_amount,
+                                    )}{" "}
+                                    {b.symbol}
+                                </Typography>
+                            ))}
                         </div>
                         <div>
                             <Typography level="body-xs" fontWeight="lg">
                                 بردګي
                             </Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                        </div>
-                    </Sheet>
-                </Card>
-                <Card
-                    sx={{
-                        width: "50dvh",
-                        borderWidth: 0,
-                        pt: 0,
-                    }}
-                >
-                    <Typography fontSize="sm" fontWeight="lg">
-                        اوسني موجودي
-                    </Typography>
-
-                    <Sheet
-                        sx={{
-                            bgcolor: "background.level1",
-                            borderRadius: "sm",
-                            p: 1,
-                            display: "flex",
-                            gap: 2,
-                            "& > div": { flex: 1 },
-                        }}
-                    >
-                        <div>
-                            <Typography level="body-xs" fontWeight="lg">
-                                مبلغ
-                            </Typography>
-                            <Typography fontWeight="lg">34</Typography>
+                            {useBalancies.map((b, index: number) => (
+                                <Typography key={index} fontWeight="lg">
+                                    {new Intl.NumberFormat("en").format(
+                                        b.debit_amount,
+                                    )}{" "}
+                                    {b.symbol}
+                                </Typography>
+                            ))}
                         </div>
                         <div>
                             <Typography level="body-xs" fontWeight="lg">
-                                رسیدګي
+                                اوسني بیلانس
                             </Typography>
-                            <Typography fontWeight="lg">980</Typography>
-                        </div>
-                        <div>
-                            <Typography level="body-xs" fontWeight="lg">
-                                بردګي
-                            </Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
-                            <Typography fontWeight="lg">8.9</Typography>
+                            {useBalancies.map((b, index: number) => (
+                                <Typography key={index} fontWeight="lg">
+                                    {new Intl.NumberFormat("en").format(
+                                        b.current_balance,
+                                    )}{" "}
+                                    {b.symbol}
+                                </Typography>
+                            ))}
                         </div>
                     </Sheet>
                 </Card>
@@ -255,7 +261,6 @@ function JournalReportFilter({
                             round="x4"
                             position="center"
                             onChange={(e: any) => {
-                                console.log(e);
                                 onChange(
                                     e?.value
                                         .toLocaleDateString("en-ZA")
@@ -355,7 +360,7 @@ function JournalReportFilter({
                 <FormControl size="sm">
                     <Select
                         size="sm"
-                        placeholder=" څانګه انتخاب"
+                        placeholder=" دخل انتخاب"
                         slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
                         value={useFilter.till}
                         onChange={(e: any, newValue: any | null) =>

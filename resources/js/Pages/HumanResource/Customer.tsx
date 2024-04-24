@@ -5,6 +5,7 @@ import AddCustomer from "./Partials/AddCustomer";
 import ViewCustomer from "./Partials/ViewCustomer";
 
 import { createContext, useContext, useState } from "react";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -33,6 +34,7 @@ export const useEventEmitter = () => {
 };
 
 function Customer() {
+    const { privileges } = useUserBranchesContext();
     const [eventListeners, setEventListeners] = useState<{
         [eventName: string]: Array<(eventData?: any) => void>;
     }>({});
@@ -90,8 +92,12 @@ function Customer() {
                                 }}
                             >
                                 <Grid container spacing={2}>
-                                    <AddCustomer />
-                                    <ViewCustomer />
+                                    {privileges.customer.actions.add && (
+                                        <AddCustomer />
+                                    )}
+                                    {privileges.customer.reports.list && (
+                                        <ViewCustomer />
+                                    )}
                                 </Grid>
                             </Box>
                         </Box>

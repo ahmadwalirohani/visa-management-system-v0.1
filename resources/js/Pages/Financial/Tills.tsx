@@ -5,6 +5,7 @@ import { Head } from "@inertiajs/react";
 import { createContext, useContext, useState } from "react";
 import AddTill from "./Partials/AddTill";
 import ViewTill from "./Partials/ViewTill";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -57,6 +58,7 @@ function Till() {
         addEventListener,
     };
 
+    const { privileges } = useUserBranchesContext();
     return (
         <EventEmitterContext.Provider value={contextValue}>
             <>
@@ -90,8 +92,10 @@ function Till() {
                                 }}
                             >
                                 <Grid container spacing={2}>
-                                    <AddTill />
-                                    <ViewTill />
+                                    {privileges.till.actions.add && <AddTill />}
+                                    {privileges.till.reports.list && (
+                                        <ViewTill />
+                                    )}
                                 </Grid>
                             </Box>
                         </Box>

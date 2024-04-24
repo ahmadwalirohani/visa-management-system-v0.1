@@ -78,10 +78,7 @@ interface Data {
         symbol: string;
     };
     remarks: string;
-    visa: {
-        id: number;
-        visa_no: number;
-    } | null;
+    visa: any;
     debit_type: string;
 }
 
@@ -234,19 +231,21 @@ function ViewCustomerLedger() {
                     Data: function () {
                         let _Rows = "";
 
-                        statements.forEach((entry: Data, index: number) => {
-                            _Rows += "<tr>";
-                            _Rows += `<td>${index + 1}</td>`;
-                            _Rows += `<td>${entry.created_at}</td>`;
-                            _Rows += `<td>${TransactionTypes[entry.transactionType as keyof typeof TransactionTypes]}</td>`;
-                            _Rows += `<td>${entry.visa?.visa_no ?? ""}</td>`;
-                            _Rows += `<td>${entry.remarks ?? ""}</td>`;
-                            _Rows += `<td>${entry.ex_currency.symbol}  ${entry.exchange_amount}  (${entry.exchange_rate})</td>`;
-                            _Rows += `<td>${new Intl.NumberFormat("en").format(entry.credit_amount)} ${entry.currency.symbol}</td>`;
-                            _Rows += `<td>${new Intl.NumberFormat("en").format(entry.debit_amount)} ${entry.currency.symbol}</td>`;
-                            _Rows += `<td>${new Intl.NumberFormat("en").format(entry.balance)} ${entry.currency.symbol}</td>`;
-                            _Rows += "</tr>";
-                        });
+                        (statements as any).ledger.forEach(
+                            (entry: Data, index: number) => {
+                                _Rows += "<tr>";
+                                _Rows += `<td>${index + 1}</td>`;
+                                _Rows += `<td>${entry.created_at}</td>`;
+                                _Rows += `<td>${TransactionTypes[entry.transactionType as keyof typeof TransactionTypes]}</td>`;
+                                _Rows += `<td>${entry.visa?.visa_no ?? ""}</td>`;
+                                _Rows += `<td>${entry.remarks ?? ""}</td>`;
+                                _Rows += `<td>${entry.ex_currency.symbol}  ${entry.exchange_amount}  (${entry.exchange_rate})</td>`;
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.credit_amount)} ${entry.currency.symbol}</td>`;
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.debit_amount)} ${entry.currency.symbol}</td>`;
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.balance)} ${entry.currency.symbol}</td>`;
+                                _Rows += "</tr>";
+                            },
+                        );
 
                         return _Rows;
                     },
@@ -256,6 +255,68 @@ function ViewCustomerLedger() {
         );
     };
 
+    const onCustomReportPrint = (): void => {
+        setPrintLoading(true);
+        getCustomerLedger(
+            useFilterOptions,
+            function (_response: Array<any>) {
+                const response = _response as any;
+                Printer("/print/customer-ledger-format", {
+                    body: function () {
+                        let _Rows = "";
+
+                        response.ledger.forEach(
+                            (entry: Data, index: number) => {
+                                _Rows += `<tr style="${entry.visa != null ? "" : "background-color: white !important;"}">`;
+                                _Rows += `<td>${index + 1}</td>`;
+                                _Rows += `<td>${entry.created_at.substring(0, 10)}</td>`;
+                                if (entry.visa == null)
+                                    _Rows += `<td colspan="9">${entry.remarks ?? ""}</td>`;
+                                else {
+                                    _Rows += `<td>${entry.visa?.name}</td>`;
+                                    _Rows += `<td>${entry.visa?.province}</td>`;
+                                    _Rows += `<td>${entry.visa?.remarks ?? ""}</td>`;
+                                    _Rows += `<td>${entry.visa?.passport_no}</td>`;
+                                    _Rows += `<td>${entry.visa?.block_no ?? ""}</td>`;
+                                    _Rows += `<td>${entry.visa?.type.name}</td>`;
+                                    _Rows += `<td>${entry.visa?.entrance_type.name}</td>`;
+                                    _Rows += `<td>${entry.visa?.proceed_visa?.serial_no}</td>`;
+                                    _Rows += `<td>${entry.visa?.proceed_visa?.residence}</td>`;
+                                }
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.credit_amount)} ${entry.currency.symbol}</td>`;
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.debit_amount)} ${entry.currency.symbol}</td>`;
+                                _Rows += `<td>${new Intl.NumberFormat("en").format(entry.balance)} ${entry.currency.symbol}</td>`;
+                                _Rows += "</tr>";
+                            },
+                        );
+
+                        return _Rows;
+                    },
+                    fromDate: moment(
+                        useFilterOptions.start_date.replaceAll("/", "-"),
+                        "YYYY-M-D",
+                    ).format("jYYYY/jM/jD"),
+                    toDate: moment(
+                        useFilterOptions.end_date.replaceAll("/", "-"),
+                        "YYYY-M-D",
+                    ).format("jYYYY/jM/jD"),
+                    totalAmount: response.balance?.balance,
+                    reminder: response.balance?.balance,
+                    totalCredit: response.ledger.reduce(
+                        (p: number, c: any) => p + Number(c.credit_amount),
+                        0,
+                    ),
+                    totalDebit: response.ledger.reduce(
+                        (p: number, c: any) => p + Number(c.debit_amount),
+                        0,
+                    ),
+                    visaCount: response.visa_totals[0].total_visa,
+                    visaAmount: response.visa_totals[0].total_amount,
+                }).then(() => setPrintLoading(false));
+            },
+            false,
+        );
+    };
     React.useEffect(() => {
         LoadRows();
     }, [useFilterOptions]);
@@ -280,6 +341,7 @@ function ViewCustomerLedger() {
                         onSearch={onReportFilter}
                         onPrint={onReportPrint}
                         usePrintLoader={usePrintLoader}
+                        onCustomPrint={onCustomReportPrint}
                     />
                     <Sheet
                         sx={{

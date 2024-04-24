@@ -4,6 +4,7 @@ import ProcessVisaPendingSection from "./Partials/ProcessVisaPendingSection";
 import ProcessVisaProcessingSection from "./Partials/ProcessVisaProcessingSection";
 
 import { createContext, useContext, useState } from "react";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -32,6 +33,7 @@ export const useEventEmitter = () => {
 };
 
 function ProcessVisa() {
+    const { privileges } = useUserBranchesContext();
     const [eventListeners, setEventListeners] = useState<{
         [eventName: string]: Array<(eventData?: any) => void>;
     }>({});
@@ -93,16 +95,18 @@ function ProcessVisa() {
                                     },
                                 }}
                             >
-                                <Grid
-                                    container
-                                    spacing={3}
-                                    sx={{
-                                        alignItems: "flex-end",
-                                    }}
-                                >
-                                    <ProcessVisaPendingSection />
-                                    <ProcessVisaProcessingSection />
-                                </Grid>
+                                {privileges.visa.actions.proceed && (
+                                    <Grid
+                                        container
+                                        spacing={3}
+                                        sx={{
+                                            alignItems: "flex-end",
+                                        }}
+                                    >
+                                        <ProcessVisaPendingSection />
+                                        <ProcessVisaProcessingSection />
+                                    </Grid>
+                                )}
                             </Box>
                         </Box>
                     </Card>

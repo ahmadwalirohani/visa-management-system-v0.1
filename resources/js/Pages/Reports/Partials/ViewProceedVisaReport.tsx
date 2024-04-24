@@ -21,6 +21,8 @@ import { getProceedVisaReport } from "@/Utils/FetchReports";
 import ProceedVisaReportFilter from "../Components/ProceedVisaReportFilter";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Printer from "@/Utils/Printer";
+import moment from "jalali-moment";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -84,6 +86,14 @@ interface Data extends IVisaProps {
     history: Array<any>;
 }
 
+const LocaleTransactionTypes = {
+    "VISA-CHARGES": "ویزي مصارف",
+    "VISA-DISCOUNT": "ویزي تخفیف",
+    "VISA-ADVANCE-PAYMENT": "ویزي پیشکي رسید",
+    "DEBIT-TO-TILL": "ویزي رسید دخل ته",
+    "DEBIT-TO-CREDIT": "ویزي رسید صرافي ته",
+};
+
 function ViewProceedVisaReport() {
     const [useReports, setRows] = React.useState<Data[]>([]);
     const [order, setOrder] = React.useState<Order>("desc");
@@ -113,6 +123,7 @@ function ViewProceedVisaReport() {
     const [useFilterOptions, setFilterOptions] = React.useState({
         customer: null,
         search: "",
+        type: "all",
         start_date: new Date().toLocaleDateString("en-ZA"),
         end_date: new Date().toLocaleDateString("en-ZA"),
         currency: [],
@@ -161,6 +172,84 @@ function ViewProceedVisaReport() {
 
     const onReportPrint = (): void => {
         setPrintLoading(true);
+        getProceedVisaReport(
+            useFilterOptions,
+            function (visas: any) {
+                Printer("/print/general-format", {
+                    title: `   ${useFilterOptions.type == "paid" ? "تصفیه سوي جاري " : useFilterOptions.type == "remaining" ? "ناتصفیه سوي جاري" : "ټولي جاري "} ویزو راپور`,
+                    info: `<div>
+                                <li>
+                                    <span class="i-title">از تاریخ</span> :-
+                                    <span class="i-value"> ${moment(useFilterOptions.start_date.replaceAll("/", "-"), "YYYY-M-D").format("jYYYY/jM/jD")} </span>
+                                </li>
+                                <li>
+                                    <span class="i-title">تا تاریخ</span> :-
+                                    <span class="i-value"> ${moment(useFilterOptions.end_date.replaceAll("/", "-"), "YYYY-M-D").format("jYYYY/jM/jD")} </span>
+                                </li>
+                            </div>
+                            <div>
+                                <li>
+                                    <span class="i-title">مشتري</span> :-
+                                    <span class="i-value"> ${(useFilterOptions.customer as any)?.name} </span>
+                                </li>
+                                <li>
+                                    <span class="i-title">جمله ویزي</span> :-
+                                    <span class="i-value"> ${useReports.length} </span>
+                                </li>
+                            </div>
+                            <div>
+                                <li>
+                                    <span class="i-title">جمله مبلغ</span> :-
+                                    <span class="i-value"> ${useReports.reduce((p, c) => p + Number(c.price), 0)} </span>
+                                </li>
+                                <li>
+                                    <span class="i-title">باقي مبلغ</span> :-
+                                    <span class="i-value"> ${useReports.reduce((p, c) => p + Number(c.price - c.paid_amount), 0)} </span>
+                                </li>
+                            </div>`,
+                    Header: function () {
+                        return "<tr><th> # </th><th> تاریخ </th><th>شرکت / مشتري</th><th>نام و تخلص</th><th>پاسپورټ</th><th>پلیټ نمبر</th><th>قیمت</th><th>تخفیف</th><th>ویزه نوع</th><th>نوع دخول</th><th>څانګه</th><th>ولایت</th><th>وظیفه</th><th>تفصیل</th></tr>";
+                    },
+                    Data: function () {
+                        let _Rows = "";
+                        (visas.data as Data[]).forEach((visa: Data) => {
+                            _Rows += "<tr>";
+                            _Rows += `<td>${visa.visa_no}</td>`;
+                            _Rows += `<td>${visa.created_at}</td>`;
+                            _Rows += `<td>${visa.customer.name}</td>`;
+                            _Rows += `<td>${visa.name}</td>`;
+                            _Rows += `<td>${visa.passport_no}</td>`;
+                            _Rows += `<td>${visa.block_no}</td>`;
+                            _Rows += `<td>${visa.price} ${(visa.currency as any).symbol}</td>`;
+                            _Rows += `<td>${visa.discount_amount} ${(visa.currency as any).symbol}</td>`;
+                            _Rows += `<td>${visa.type.name}</td>`;
+                            _Rows += `<td>${visa.entrance_type.name}</td>`;
+                            _Rows += `<td>${visa.branch.name}</td>`;
+                            _Rows += `<td>${visa.province}</td>`;
+                            _Rows += `<td>${visa.job}</td>`;
+                            _Rows += `<td>${visa.remarks}</td>`;
+                            _Rows += "</tr>";
+                            _Rows += `<tr class="subTr"><td colspan="14" class="zero-pd"><div class="subBody"><table class="financial-table sub-table"><thead><tr><th style="background-color: transparent;">#</th><th style="background-color: transparent;">تاریخ</th><th style="background-color: transparent;">معاملي ډول</th><th style="background-color: transparent;">رسیدګي</th><th style="background-color: transparent;">بردګي</th><th style="background-color: transparent;">باقي</th></tr></thead><tbody>`;
+                            visa.history.forEach(
+                                (record: any, index: number) => {
+                                    _Rows += "<tr>";
+                                    _Rows += `<td>${index + 1}</td>`;
+                                    _Rows += `<td>${record.created_at}</td>`;
+                                    _Rows += `<td>${LocaleTransactionTypes[record.transactionType as keyof typeof LocaleTransactionTypes]}</td>`;
+                                    _Rows += `<td>${new Intl.NumberFormat("en").format(record.credit_amount)} ${record.currency.symbol}</td>`;
+                                    _Rows += `<td>${new Intl.NumberFormat("en").format(record.debit_amount)} ${record.currency.symbol}</td>`;
+                                    _Rows += `<td>${new Intl.NumberFormat("en").format(visa.price - record.debit_amount)} ${record.currency.symbol}</td>`;
+                                    _Rows += "</tr>";
+                                },
+                            );
+                            _Rows += "</tbody></table></div></td></tr>";
+                        });
+                        return _Rows;
+                    },
+                }).finally(() => setPrintLoading(false));
+            },
+            true,
+        );
     };
 
     React.useEffect(() => {
@@ -264,7 +353,9 @@ function ViewProceedVisaReport() {
                                                     </td>
                                                     <td>
                                                         {
-                                                            historyRow.transactionType
+                                                            LocaleTransactionTypes[
+                                                                historyRow.transactionType as keyof typeof LocaleTransactionTypes
+                                                            ]
                                                         }
                                                     </td>
                                                     <td>

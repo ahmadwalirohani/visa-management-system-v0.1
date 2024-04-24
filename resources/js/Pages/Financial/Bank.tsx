@@ -5,6 +5,7 @@ import { Head } from "@inertiajs/react";
 import { createContext, useContext, useState } from "react";
 import AddBank from "./Partials/AddBank";
 import ViewBank from "./Partials/ViewBank";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -57,6 +58,8 @@ function Bank() {
         addEventListener,
     };
 
+    const { privileges } = useUserBranchesContext();
+
     return (
         <EventEmitterContext.Provider value={contextValue}>
             <>
@@ -90,8 +93,10 @@ function Bank() {
                                 }}
                             >
                                 <Grid container spacing={2}>
-                                    <AddBank />
-                                    <ViewBank />
+                                    {privileges.bank.actions.add && <AddBank />}
+                                    {privileges.bank.reports.list && (
+                                        <ViewBank />
+                                    )}
                                 </Grid>
                             </Box>
                         </Box>

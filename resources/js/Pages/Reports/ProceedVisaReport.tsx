@@ -1,8 +1,11 @@
 import { Head } from "@inertiajs/react";
 import { Box, Grid } from "@mui/joy";
 import ViewProceedVisaReport from "./Partials/ViewProceedVisaReport";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 function ProceedVisaReport() {
+    const { privileges } = useUserBranchesContext();
+
     return (
         <>
             <Head title="جاري ویزو راپور" />
@@ -32,7 +35,9 @@ function ProceedVisaReport() {
                         alignItems: "flex-end",
                     }}
                 >
-                    <ViewProceedVisaReport />
+                    {privileges.visa.reports.proceed && (
+                        <ViewProceedVisaReport />
+                    )}
                 </Grid>
             </Box>
         </>

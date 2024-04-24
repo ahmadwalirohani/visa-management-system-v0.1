@@ -3,9 +3,13 @@
 namespace App\Resources;
 
 use App\Models\Customer;
+use App\Models\CustomerAccount;
 use App\Models\CustomerLedger;
 use App\Models\Employee;
+use App\Models\EmployeeLedger;
+use App\Models\Visa;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class HRResources
 {
@@ -39,7 +43,21 @@ class HRResources
         return response()->json(
             $payload->is_paginate ?
                 CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50)
-                : CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->get(),
+                : [
+                    "ledger" => CustomerLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->get(),
+                    "balance" => CustomerAccount::whereCustomerId($payload->cu)->whereCurrencyId($payload->c[0])->first(),
+                    "visa_totals" => Visa::whereCustomerId($payload->cu)->whereCurrencyId($payload->c[0])->select(DB::raw('SUM(price) as total_amount, COUNT(id) as total_visa'))->get()
+                ],
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_employee_ledger(object $payload): JsonResponse
+    {
+        return response()->json(
+            $payload->is_paginate ?
+                EmployeeLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50)
+                : EmployeeLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->get(),
             JsonResponse::HTTP_OK
         );
     }

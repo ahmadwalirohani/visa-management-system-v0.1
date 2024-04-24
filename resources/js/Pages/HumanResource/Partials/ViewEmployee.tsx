@@ -39,6 +39,7 @@ import Edit from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ChangeResourceStatus from "@/Utils/ChangeResourceStatus";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface Data {
     id: number;
@@ -343,10 +344,11 @@ function EnhancedTableToolbar() {
 }
 
 export default function ViewEmployee() {
+    const { privileges } = useUserBranchesContext();
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<keyof Data>("id");
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [rows, setRows] = React.useState<Data[]>([]);
     const [useFetchLoader, setFetchLoading] = React.useState<boolean>(false);
     // State to manage Snackbar (notification)
@@ -526,6 +528,11 @@ export default function ViewEmployee() {
                                                                 row,
                                                             )
                                                         }
+                                                        disabled={
+                                                            privileges.employee
+                                                                .actions.edit ==
+                                                            false
+                                                        }
                                                     >
                                                         <Edit />
                                                         تغیر
@@ -550,7 +557,14 @@ export default function ViewEmployee() {
                                                     </MenuItem>
 
                                                     <Divider />
-                                                    <MenuItem color="danger">
+                                                    <MenuItem
+                                                        disabled={
+                                                            privileges.employee
+                                                                .actions
+                                                                .delete == false
+                                                        }
+                                                        color="danger"
+                                                    >
                                                         <DeleteIcon />
                                                         حذف
                                                     </MenuItem>

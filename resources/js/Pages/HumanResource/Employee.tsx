@@ -5,6 +5,7 @@ import AddEmployee from "./Partials/AddEmployee";
 import ViewEmployee from "./Partials/ViewEmployee";
 
 import { createContext, useContext, useState } from "react";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 // Define the context
 interface EventEmitterContextType {
@@ -33,6 +34,7 @@ export const useEventEmitter = () => {
 };
 
 function Employee() {
+    const { privileges } = useUserBranchesContext();
     const [eventListeners, setEventListeners] = useState<{
         [eventName: string]: Array<(eventData?: any) => void>;
     }>({});
@@ -90,8 +92,12 @@ function Employee() {
                                 }}
                             >
                                 <Grid container spacing={2}>
-                                    <AddEmployee />
-                                    <ViewEmployee />
+                                    {privileges.employee.actions.add && (
+                                        <AddEmployee />
+                                    )}
+                                    {privileges.employee.reports.list && (
+                                        <ViewEmployee />
+                                    )}
                                 </Grid>
                             </Box>
                         </Box>

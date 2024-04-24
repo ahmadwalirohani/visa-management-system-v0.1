@@ -15,6 +15,7 @@ import { SendActionRequest } from "@/Utils/helpers";
 import axios from "axios";
 import { AxiosError } from "axios";
 import Printer from "@/Utils/Printer";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface ICurrency {
     id: number;
@@ -49,6 +50,8 @@ function AddVisa() {
         name: "",
         remarks: "",
         visa_qty: 1,
+        booked_date: "",
+        ordered_date: "",
     });
 
     const [useAdvancePayment, setAdvancePayment] = useState({
@@ -132,10 +135,12 @@ function AddVisa() {
                         name: useVisaForm.name,
                         customer: useVisaForm.customer?.name,
                         type: `${
-                            useVisaTypes.filter(
-                                (t: any) => t.id == useVisaForm.visa_type,
-                            )[0]?.name
-                        } ${useVisaForm.visa_entrance_type?.name}`,
+                            (
+                                useVisaTypes.filter(
+                                    (t: any) => t.id == useVisaForm.visa_type,
+                                )[0] as any
+                            )?.name
+                        } ${(useVisaForm.visa_entrance_type as any)?.name}`,
                         dynamic_type: useVisaForm.block_no ? "بلاک" : "تفصیل",
                         dynamic_value: useVisaForm.block_no
                             ? useVisaForm.block_no
@@ -181,6 +186,8 @@ function AddVisa() {
         });
     };
 
+    const { privileges } = useUserBranchesContext();
+
     useEffect(() => {
         fetchCustomers();
         fetchVisaTypes();
@@ -205,66 +212,73 @@ function AddVisa() {
                     overflow: "auto",
                 }}
             >
-                <Card sx={{ flex: 1, width: "100%" }}>
-                    <Box
-                        sx={{
-                            position: "sticky",
-                            top: { md: 5 },
-                            bgcolor: "background.body",
-                        }}
-                    >
+                {privileges.visa.actions.add && (
+                    <Card sx={{ flex: 1, width: "100%" }}>
                         <Box
                             sx={{
-                                height: "85dvh",
-                                overflow: {
-                                    md: "hidden",
-                                    sm: "auto",
-                                    xl: "hidden",
-                                },
+                                position: "sticky",
+                                top: { md: 5 },
+                                bgcolor: "background.body",
                             }}
                         >
-                            <Grid
-                                container
-                                spacing={3}
+                            <Box
                                 sx={{
-                                    alignItems: "flex-end",
+                                    height: "85dvh",
+                                    overflow: {
+                                        md: "hidden",
+                                        sm: "auto",
+                                        xl: "hidden",
+                                    },
                                 }}
                             >
-                                <AddVisaInfo
-                                    formData={useVisaForm}
-                                    onChange={handleInputChange}
-                                    loading={usePostLoading}
-                                    customers={useCustomers}
-                                    visa_types={useVisaTypes}
-                                    currencies={useCurrencies}
-                                    onSubmit={onSubmit}
-                                />
-                                <AddVisaAdvancePayment
-                                    formData={useAdvancePayment}
-                                    onChange={handleInputChange}
-                                    selectedCurrency={useVisaForm.currency}
-                                    selectedCustomer={
-                                        useVisaForm.customer as number
-                                    }
-                                    price={useVisaForm.price}
-                                />
-                                <AddVisaPrintPreview
-                                    formData={useVisaForm}
-                                    visaId={useVisaId}
-                                    visaType={
-                                        useVisaTypes.filter(
-                                            (t: any) =>
-                                                t.id == useVisaForm.visa_type,
-                                        )[0]?.name
-                                    }
-                                    visaEntranceType={
-                                        useVisaForm.visa_entrance_type?.name
-                                    }
-                                />
-                            </Grid>
+                                <Grid
+                                    container
+                                    spacing={3}
+                                    sx={{
+                                        alignItems: "flex-end",
+                                    }}
+                                >
+                                    <AddVisaInfo
+                                        formData={useVisaForm}
+                                        onChange={handleInputChange}
+                                        loading={usePostLoading}
+                                        customers={useCustomers}
+                                        visa_types={useVisaTypes}
+                                        currencies={useCurrencies}
+                                        onSubmit={onSubmit}
+                                    />
+                                    <AddVisaAdvancePayment
+                                        formData={useAdvancePayment}
+                                        onChange={handleInputChange}
+                                        selectedCurrency={useVisaForm.currency}
+                                        selectedCustomer={
+                                            useVisaForm.customer as number
+                                        }
+                                        price={useVisaForm.price}
+                                    />
+                                    <AddVisaPrintPreview
+                                        formData={useVisaForm}
+                                        visaId={useVisaId}
+                                        visaType={
+                                            (
+                                                useVisaTypes.filter(
+                                                    (t: any) =>
+                                                        t.id ==
+                                                        useVisaForm.visa_type,
+                                                )[0] as any
+                                            )?.name
+                                        }
+                                        visaEntranceType={
+                                            (
+                                                useVisaForm.visa_entrance_type as any
+                                            )?.name
+                                        }
+                                    />
+                                </Grid>
+                            </Box>
                         </Box>
-                    </Box>
-                </Card>
+                    </Card>
+                )}
             </Box>
 
             <Snackbar

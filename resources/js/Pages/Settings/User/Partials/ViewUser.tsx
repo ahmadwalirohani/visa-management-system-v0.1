@@ -11,6 +11,7 @@ import { IconButton, ModalDialogProps } from "@mui/joy";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import { useState } from "react";
 import ViewUserBranch from "./ViewUserBranch";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 const resolveStatus = (status: number | boolean) => {
     if (status)
@@ -52,6 +53,8 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
         ModalDialogProps["layout"] | undefined
     >(undefined);
 
+    const { privileges } = useUserBranchesContext();
+
     const openBranchesViewDialog = (state: any, user: any): void => {
         setLayout(state);
         userInfo = user as IUserInfo;
@@ -92,6 +95,10 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
                                                 row,
                                             )
                                         }
+                                        disabled={
+                                            privileges.settings.users
+                                                .branch_control == false
+                                        }
                                         title="یوزر و څانګي ته اضافه کول"
                                     >
                                         <AddToPhotosIcon />
@@ -112,7 +119,13 @@ function ViewUser({ users, fetchLoading, editUser, changeStatus }: IViewProps) {
                                         {row.status == 1 && <VisibilityOff />}
                                         {row.status == 0 && <Visibility />}
                                     </Button>
-                                    <Button onClick={() => editUser(row)}>
+                                    <Button
+                                        disabled={
+                                            privileges.settings.users.edit ==
+                                            false
+                                        }
+                                        onClick={() => editUser(row)}
+                                    >
                                         <Edit />
                                     </Button>
                                 </ButtonGroup>

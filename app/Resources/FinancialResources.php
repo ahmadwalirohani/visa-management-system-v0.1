@@ -36,31 +36,39 @@ class FinancialResources
         return response()->json(Bank::withBalancies()->withBranch()->get(), JsonResponse::HTTP_OK);
     }
 
-    public static function get_till_accounts(): JsonResponse
+    public static function get_till_accounts(object $payload): JsonResponse
     {
-        return response()->json(Till::withBalancies()->whereStatus(true)->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
+        return response()->json(Till::withBalancies()->whereStatus(true)->when($payload->is_show_other_branches_data == false, function ($query) use ($payload) {
+            $query->whereBranchId($payload->branch_id);
+        })->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
     }
 
-    public static function get_bank_accounts(): JsonResponse
+    public static function get_bank_accounts(object $payload): JsonResponse
     {
-        return response()->json(Bank::withBalancies()->whereStatus(true)->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
+        return response()->json(Bank::withBalancies()->whereStatus(true)->when($payload->is_show_other_branches_data == false, function ($query) use ($payload) {
+            $query->whereBranchId($payload->branch_id);
+        })->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
     }
 
-    public static function get_customer_accounts(): JsonResponse
+    public static function get_customer_accounts(object $payload): JsonResponse
     {
-        return response()->json(Customer::withBalancies()->whereStatus(true)->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
+        return response()->json(Customer::withBalancies()->whereStatus(true)->when($payload->is_show_other_branches_data == false, function ($query) use ($payload) {
+            $query->whereBranchId($payload->branch_id);
+        })->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
     }
-    public static function get_income_accounts(): JsonResponse
+    public static function get_income_accounts(object $payload): JsonResponse
     {
         return response()->json(EICodes::whereType('INCOME')->whereStatus(true)->get(['id',  'name as label', 'code']), JsonResponse::HTTP_OK);
     }
 
-    public static function get_employee_accounts(): JsonResponse
+    public static function get_employee_accounts(object $payload): JsonResponse
     {
-        return response()->json(Employee::withBalancies()->whereStatus(true)->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
+        return response()->json(Employee::withBalancies()->whereStatus(true)->when($payload->is_show_other_branches_data == false, function ($query) use ($payload) {
+            $query->whereBranchId($payload->branch_id);
+        })->get(['id', 'branch_id', 'name as label', 'code']), JsonResponse::HTTP_OK);
     }
 
-    public static function get_expense_accounts(): JsonResponse
+    public static function get_expense_accounts(object $payload): JsonResponse
     {
         return response()->json(EICodes::whereType('EXPENSE')->whereStatus(true)->get(['id', 'name as label', 'code']), JsonResponse::HTTP_OK);
     }
@@ -71,8 +79,10 @@ class FinancialResources
             $payload->is_paginate == true ? JournalEntry::getJournalRelations()
                 ->filter($payload)
                 ->orderByDesc('created_at')
+                ->whereTillId($payload->ti)
                 ->paginate(50) : JournalEntry::getJournalRelations()
                 ->filter($payload)
+                ->whereTillId($payload->ti)
                 ->orderByDesc('created_at')
                 ->get(),
             JsonResponse::HTTP_OK
@@ -112,6 +122,53 @@ class FinancialResources
         }
         return response()->json(
             $report,
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_bank_ledger(object $payload): JsonResponse
+    {
+        return response()->json(
+            $payload->is_paginate ?
+                JournalEntry::filter($payload)->getJournalRelations()->whereBankId($payload->ba)->orderByDesc('created_at')->paginate(50)
+                : JournalEntry::filter($payload)->getJournalRelations()->whereBankId($payload->ba)->orderByDesc('created_at')->get(),
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_code_ledger(object $payload): JsonResponse
+    {
+        return response()->json(
+            $payload->is_paginate ?
+                JournalEntry::filter($payload)->getJournalRelations()->whereCodeId($payload->code)->orderByDesc('created_at')->paginate(50)
+                : JournalEntry::filter($payload)->getJournalRelations()->whereCodeId($payload->code)->orderByDesc('created_at')->get(),
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_loans_report(object $payload): JsonResponse
+    {
+        $CustomerAccount = Customer::whereBranchId($payload->b)->with([
+            'balancies' => function ($query) use ($payload) {
+                return $query->whereIn('currency_id', $payload->c)
+                    ->where('balance', $payload->t == 'on_loans' ? '<' : '>', 0);
+            }
+        ])->whereStatus(true)->selectRaw('id, name , code , "مشتري" as type')->get();
+        $EmployeeAccount = Employee::whereBranchId($payload->b)->with([
+            'balancies' => function ($query) use ($payload) {
+                return $query->whereIn('currency_id', $payload->c)
+                    ->where('balance', $payload->t == 'on_loans' ? '<' : '>', 0);
+            }
+        ])->whereStatus(true)->selectRaw('id, name , code , "کارمند" as type')->get();
+        $bankAccount = Bank::whereBranchId($payload->b)->with([
+            'balancies' => function ($query) use ($payload) {
+                return $query->whereIn('currency_id', $payload->c)
+                    ->where('balance', $payload->t == 'on_loans' ? '<' : '>', 0);
+            }
+        ])->whereStatus(true)->selectRaw('id, name , code , "صرافي / بانک" as type')->get();
+
+        return response()->json(
+            collect($CustomerAccount)->merge($bankAccount)->merge($EmployeeAccount),
             JsonResponse::HTTP_OK
         );
     }

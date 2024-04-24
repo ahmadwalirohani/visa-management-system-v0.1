@@ -66,7 +66,7 @@ class CustomerLedger extends Model
 
     public function visa(): BelongsTo
     {
-        return $this->belongsTo(Visa::class);
+        return $this->belongsTo(Visa::class)->withType()->withEntranceType()->withProceedVisa();
     }
 
     public function scopeGetLedgerRelations($query): void

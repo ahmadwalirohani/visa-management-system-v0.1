@@ -10,13 +10,13 @@ import {
 } from "@mui/joy";
 import SearchIcon from "@mui/icons-material/Search";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
-import { GetCustomersAsItems, LoadCurrencies } from "@/Utils/FetchResources";
+import { GetBanks, LoadCurrencies } from "@/Utils/FetchResources";
 import Print from "@mui/icons-material/Print";
 import { DatePicker } from "zaman";
 
 interface IProps {
     useFilter: {
-        customer: null | {
+        bank: null | {
             id: number;
             name: string;
             branch_id: number;
@@ -42,7 +42,7 @@ function BankLedgerFilter({
     usePrintLoader,
 }: IProps) {
     const [useCurrencies, setCurrencies] = useState<Array<object>>([]);
-    const [useCustomers, setCustomers] = useState<Array<any>>([]);
+    const [useBanks, setBanks] = useState<Array<any>>([]);
     const StartDateRef = useRef(null);
     const EndDateRef = useRef(null);
 
@@ -51,8 +51,8 @@ function BankLedgerFilter({
             setCurrencies(currencies);
         });
 
-        GetCustomersAsItems(function (customers: Array<any>) {
-            setCustomers(customers);
+        GetBanks(function (Banks: Array<any>) {
+            setBanks(Banks);
         });
     };
 
@@ -135,16 +135,15 @@ function BankLedgerFilter({
                 </div>
             </div>
             <FormControl size="sm">
-                <FormLabel>مشتري</FormLabel>
+                <FormLabel>صرافي / بانک</FormLabel>
                 <Autocomplete
-                    placeholder="شرکت"
                     size="sm"
-                    options={useCustomers}
+                    options={useBanks}
                     getOptionLabel={(option: any) => option.name}
                     getOptionKey={(option: any) => option.id}
-                    value={useFilter.customer}
+                    value={useFilter.bank}
                     onChange={(e: SyntheticEvent | null, newValue: any) => {
-                        onChange(newValue, "customer");
+                        onChange(newValue, "bank");
                     }}
                 />
             </FormControl>

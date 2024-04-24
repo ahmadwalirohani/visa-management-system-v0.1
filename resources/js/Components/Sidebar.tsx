@@ -298,9 +298,24 @@ export default function Sidebar({ user }: any) {
                                     </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>
-                                        کارمند کهاته
-                                    </ListItemButton>
+                                    <Link
+                                        href={route(
+                                            "human_resource.employee_ledger",
+                                        )}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "human_resource.employee_ledger"
+                                            }
+                                        >
+                                            کارمند کهاته
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                             </List>
                         </Toggler>
@@ -425,38 +440,14 @@ export default function Sidebar({ user }: any) {
                                         }}
                                     >
                                         <ListItemButton
-                                            role="menuitem"
-                                            component="a"
                                             selected={
                                                 route().current() ==
-                                                "reports.till_ledger"
-                                            }
-                                        >
-                                            دخل کهاته
-                                        </ListItemButton>
-                                    </Link>
-                                </ListItem>
-                                <ListItem>
-                                    <Link
-                                        href={route("reports.till_ledger")}
-                                        style={{
-                                            width: "100%",
-                                        }}
-                                    >
-                                        <ListItemButton
-                                            selected={
-                                                route().current() ==
-                                                "reports.till_ledger"
+                                                "reports.bank_ledger"
                                             }
                                         >
                                             صرافي کهاته
                                         </ListItemButton>
                                     </Link>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>
-                                        کنسل ویزو راپور
-                                    </ListItemButton>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>
@@ -483,15 +474,37 @@ export default function Sidebar({ user }: any) {
                                     </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>پورونه</ListItemButton>
+                                    <Link
+                                        href={route("reports.loans_report")}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "reports.loans_report"
+                                            }
+                                        >
+                                            پورونه
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>بیلانس شیټ</ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>
-                                        عاید او مصارف کهاته
-                                    </ListItemButton>
+                                    <Link
+                                        href={route("reports.ei_codes_report")}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "reports.ei_codes_report"
+                                            }
+                                        >
+                                            عاید او مصارف کهاته
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                             </List>
                         </Toggler>

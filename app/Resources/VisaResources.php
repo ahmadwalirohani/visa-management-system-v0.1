@@ -60,10 +60,9 @@ class VisaResources
 
     public static function get_proceed_visa_report(object $payload): JsonResponse
     {
-
         return response()->json(
             Visa::getProcessed()
-                // ->filter($payload)
+                ->filter($payload)
                 ->withCustomer()
                 ->withCurrency()
                 ->withType()
@@ -71,6 +70,9 @@ class VisaResources
                 ->withEntranceType()
                 ->withHistory()
                 ->orderByDesc("created_at")
+                ->when($payload->is_show_other_branches_data == false, function ($query) use ($payload) {
+                    $query->whereBranchId($payload->branch_id);
+                })
                 ->paginate(50),
             JsonResponse::HTTP_OK
         );

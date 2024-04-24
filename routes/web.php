@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ModelActivisionController;
 use App\Http\Controllers\RequestGatewayController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,6 +20,7 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
 
     Route::get('/', function () {
+
         return Inertia::render('Dashboard');
     })->middleware(['verified'])->name('dashboard');
 
@@ -74,9 +76,9 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Reports/CustomerLedger');
     })->name('human_resource.customer_ledger');
 
-    Route::get('/reports/till-ledger', function () {
-        return Inertia::render('Reports/TillLedger');
-    })->name('reports.till_ledger');
+    Route::get('/human-resource/employee-ledger', function () {
+        return Inertia::render('Reports/EmployeeLedger');
+    })->name('human_resource.employee_ledger');
 
     Route::get('/reports/bank-ledger', function () {
         return Inertia::render('Reports/BankLedger');
@@ -85,6 +87,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/proceed-visa-report', function () {
         return Inertia::render('Reports/ProceedVisaReport');
     })->name('reports.proceed_visa_report');
+
+    Route::get('/reports/ei-codes-report', function () {
+        return Inertia::render('Reports/EICodesReport');
+    })->name('reports.ei_codes_report');
+
+    Route::get('/reports/loans-report', function () {
+        return Inertia::render('Reports/LoansReport');
+    })->name('reports.loans_report');
 });
 
 require __DIR__ . '/auth.php';

@@ -6,6 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface IUserFields {
     name: string;
@@ -17,6 +18,8 @@ interface IUserFields {
 }
 
 export default function User() {
+    const { privileges } = useUserBranchesContext();
+
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
@@ -222,31 +225,35 @@ export default function User() {
     return (
         <Grid container spacing={2}>
             <Grid xs={4} md={4} sm={12}>
-                <AddUser
-                    useSnackbar={useSnackbar}
-                    closeSnackbar={() =>
-                        setSnackbar((prevState) => ({
-                            ...prevState,
-                            is_open: false,
-                        }))
-                    }
-                    resetForm={resetForm}
-                    formRef={formRef}
-                    formInfo={useFormFunctionalInfo}
-                    onSubmit={onSubmit}
-                    formValidation={useFormValidation}
-                    preImage={useFormFunctionalInfo.image}
-                    onImageUpload={PreviewUploadImg}
-                />
+                {privileges.settings.users.add && (
+                    <AddUser
+                        useSnackbar={useSnackbar}
+                        closeSnackbar={() =>
+                            setSnackbar((prevState) => ({
+                                ...prevState,
+                                is_open: false,
+                            }))
+                        }
+                        resetForm={resetForm}
+                        formRef={formRef}
+                        formInfo={useFormFunctionalInfo}
+                        onSubmit={onSubmit}
+                        formValidation={useFormValidation}
+                        preImage={useFormFunctionalInfo.image}
+                        onImageUpload={PreviewUploadImg}
+                    />
+                )}
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewUser
-                        editUser={editUser}
-                        fetchLoading={fetchLoading}
-                        users={rows}
-                        changeStatus={changeUserStatus}
-                    />
+                    {privileges.settings.users.list && (
+                        <ViewUser
+                            editUser={editUser}
+                            fetchLoading={fetchLoading}
+                            users={rows}
+                            changeStatus={changeUserStatus}
+                        />
+                    )}
                 </Sheet>
             </Grid>
         </Grid>

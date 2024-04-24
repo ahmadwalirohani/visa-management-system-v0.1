@@ -7,6 +7,7 @@ import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { ColorPaletteProp, Snackbar } from "@mui/joy";
+import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
 
 interface ICurrencyFields {
     name: string;
@@ -16,6 +17,7 @@ interface ICurrencyFields {
 }
 
 export default function Currency() {
+    const { privileges } = useUserBranchesContext();
     // State to manage form validation
     const [useFormValidation, setFormValidation] = useState({
         name: {
@@ -235,13 +237,15 @@ export default function Currency() {
             </Grid>
             <Grid xs={8} md={8} sm={12}>
                 <Sheet sx={{ height: "65vh", overflow: "auto" }}>
-                    <ViewCurrency
-                        editCurrency={editCurrency}
-                        fetchLoading={fetchLoading}
-                        currencies={rows}
-                        changeStatus={changeCurrencyStatus}
-                        changeToDefault={changeCurrencyToDefault}
-                    />
+                    {privileges.settings.currencies.list && (
+                        <ViewCurrency
+                            editCurrency={editCurrency}
+                            fetchLoading={fetchLoading}
+                            currencies={rows}
+                            changeStatus={changeCurrencyStatus}
+                            changeToDefault={changeCurrencyToDefault}
+                        />
+                    )}
                 </Sheet>
             </Grid>
 
