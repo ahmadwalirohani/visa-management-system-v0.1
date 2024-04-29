@@ -8,6 +8,7 @@ use App\Models\EICodes;
 use App\Models\ExchangeRates;
 use App\Models\SystemInfo;
 use App\Models\User;
+use App\Models\UserLogs;
 use App\Models\UserPrivilegeBranches;
 use App\Models\VisaType;
 use Illuminate\Http\JsonResponse;
@@ -61,6 +62,20 @@ class SettingResources
         return response()->json(
             ExchangeRates::getLatest()->get(),
             JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_user_logs_report(object $payload): JsonResponse
+    {
+        return response()->json(
+            UserLogs::filter((object)[
+                'sd' => substr(now(), 0, 10),
+                'ed' => substr(now(), 0, 10),
+            ])
+                ->withBranch()
+                ->withUser()
+                ->get(),
+            200,
         );
     }
 }

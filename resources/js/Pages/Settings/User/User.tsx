@@ -7,6 +7,7 @@ import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IUserFields {
     name: string;
@@ -111,7 +112,7 @@ export default function User() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .postForm(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
@@ -189,7 +190,7 @@ export default function User() {
     const changeUserStatus = (user: IUserFields): void => {
         setFetchLoading(true);
 
-        axios
+        axiosInstance
             .post("change_resource_status", {
                 id: user.id,
                 model: "User",

@@ -4,6 +4,7 @@ namespace App\DomainsLogic;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
+use App\Models\UserLogs;
 use App\Models\UserPrivilegeBranches;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request as HttpRequest;
@@ -58,6 +59,9 @@ class UsersLogics
 
         ($request->is_update ? UserPrivilegeBranches::find($request->id) : new UserPrivilegeBranches)->setData((object) $validated)->save();
 
+
+        //static::create_user_record();
+
         return response()->json(
             UserPrivilegeBranches::whereUserId($request->userId)->withBranch()->get(),
             JsonResponse::HTTP_OK
@@ -72,5 +76,16 @@ class UsersLogics
             ]);
 
         return response()->json([true], JsonResponse::HTTP_OK);
+    }
+
+    public static function create_user_record(string $type, int $branch, string $action_type, string | null $details, object | array | null $payload = null): void
+    {
+        (new UserLogs())->setData((object)[
+            'type' => $type,
+            'branch' => $branch,
+            'action_type' => $action_type,
+            'details' => $details,
+            'action_details' => json_encode($payload ?? '{}'),
+        ])->save();
     }
 }

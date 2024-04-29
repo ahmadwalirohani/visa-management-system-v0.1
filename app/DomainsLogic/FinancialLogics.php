@@ -45,6 +45,12 @@ class FinancialLogics
                         );
                 }
             }
+
+            UsersLogics::create_user_record(
+                $request->branch,
+                $request->is_update ? 'دخل تغیر' : 'نوی دخل اضافه',
+                $till->name,
+            );
         } catch (\Exception $th) {
 
             DB::rollBack();
@@ -80,6 +86,12 @@ class FinancialLogics
                         );
                 }
             }
+
+            UsersLogics::create_user_record(
+                $request->branch,
+                $request->is_update ? 'بانک / صرافي تغیر' : 'نوی بانک / صرافي اضافه',
+                $bank->name,
+            );
         } catch (\Exception $th) {
 
             DB::rollBack();
@@ -107,6 +119,13 @@ class FinancialLogics
             DB::rollBack();
             throw $th;
         }
+
+        UsersLogics::create_user_record(
+            $request->branch,
+            'د روزنامچي انټري',
+            'Debit Type from ' . $request->debitType . ' To Credit Type of ' . $request->creditType,
+            $request->all()
+        );
 
         DB::commit();
         return response()->json([true], JsonResponse::HTTP_OK);
@@ -136,6 +155,12 @@ class FinancialLogics
                     'debit_amount' => $balance['debit_amount'],
                 ])->save();
             }
+
+            UsersLogics::create_user_record(
+                $request->branch,
+                'دخل خلاسول',
+                Till::whereId($request->id)->first()->name,
+            );
         } catch (\Exception $th) {
 
             DB::rollBack();
@@ -168,6 +193,12 @@ class FinancialLogics
                     'debit_amount' => $balance['debit_amount'],
                 ])->save();
             }
+
+            UsersLogics::create_user_record(
+                $request->branch,
+                'دخل بندول',
+                Till::whereId($request->id)->first()->name,
+            );
         } catch (\Exception $th) {
 
             DB::rollBack();

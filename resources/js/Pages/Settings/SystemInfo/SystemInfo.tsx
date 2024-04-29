@@ -6,6 +6,7 @@ import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface ISystemInfoEntity {
     company_ceo: string;
@@ -132,7 +133,7 @@ export default function SystemInfo() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .postForm(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form

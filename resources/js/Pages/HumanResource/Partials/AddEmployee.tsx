@@ -3,7 +3,7 @@ import Snackbar from "@mui/joy/Snackbar";
 import Button from "@mui/joy/Button";
 import React, { useEffect } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { SendActionRequest } from "@/Utils/helpers";
 import { ValidateCustomForm } from "@/Utils/Validation";
@@ -15,6 +15,7 @@ import {
     LoadCurrencies,
 } from "@/Utils/FetchResources";
 import { useEventEmitter } from "../Employee";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IEmployeeFormFields {
     name: string;
@@ -132,7 +133,7 @@ function AddEmployee() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .post(Config.url, Config.payload)
                     .then((Response: AxiosResponse<any>): any => {
                         // Handling success by updating the Snackbar state and resetting the form

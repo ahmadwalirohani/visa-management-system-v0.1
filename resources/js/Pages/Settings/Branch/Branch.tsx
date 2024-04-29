@@ -7,6 +7,7 @@ import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IBranchFields {
     name: string;
@@ -100,7 +101,7 @@ export default function Branch() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .post(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
@@ -180,7 +181,7 @@ export default function Branch() {
     const changeBranchStatus = (branch: IBranchFields): void => {
         setFetchLoading(true);
 
-        axios
+        axiosInstance
             .post("change_resource_status", {
                 id: branch.id,
                 model: "Branch",
@@ -211,7 +212,7 @@ export default function Branch() {
             },
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

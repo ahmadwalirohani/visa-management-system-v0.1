@@ -1,3 +1,4 @@
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 import { getProcessedVisas } from "@/Utils/FetchResources";
 import { SendActionRequest } from "@/Utils/helpers";
 import Search from "@mui/icons-material/Search";
@@ -14,7 +15,7 @@ import {
     Button,
 } from "@mui/joy";
 import { Table } from "@mui/joy";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface IVisa {
@@ -142,7 +143,7 @@ function ViewVisaSelection({
                 },
             );
             setLoader(true);
-            axios
+            axiosInstance
                 .post(Config.url, Config.payload)
                 .then(() => {
                     setSnackbar("success", true, "عملیه په بریالي سره ثبت سول");
@@ -206,7 +207,7 @@ function ViewVisaSelection({
                                         ) => setDiscount(e.target.value as any)}
                                     />
                                     <Input
-                                        placeholder="  توضیحات"
+                                        placeholder="  توزیعات"
                                         type="text"
                                         size="sm"
                                         value={useRemarks}

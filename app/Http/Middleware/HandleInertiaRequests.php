@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Currency;
+use App\Models\SystemInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -36,6 +38,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => User::whereId(auth()->hasUser() ? $request->user()->id : null)->with('privilegeBranches')->first(),
             ],
+            "system_info" => [
+                'info' => SystemInfo::find(1),
+                'default_currency' => Currency::getDefault()->first()
+            ]
         ];
     }
 }

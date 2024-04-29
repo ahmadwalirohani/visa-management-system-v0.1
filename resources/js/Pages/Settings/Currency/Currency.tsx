@@ -8,6 +8,7 @@ import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { ColorPaletteProp, Snackbar } from "@mui/joy";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface ICurrencyFields {
     name: string;
@@ -96,7 +97,7 @@ export default function Currency() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .post(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
@@ -172,7 +173,7 @@ export default function Currency() {
     const changeCurrencyStatus = (currency: ICurrencyFields): void => {
         setFetchLoading(true);
 
-        axios
+        axiosInstance
             .post("change_resource_status", {
                 id: currency.id,
                 model: "Currency",
@@ -203,7 +204,7 @@ export default function Currency() {
             },
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

@@ -37,6 +37,7 @@ return new class extends Migration
             $table->dateTime('ordered_date')->nullable();
             $table->dateTime('completed_date')->nullable();
             $table->text('cancel_reason')->nullable();
+            $table->boolean('is_commited')->default(false);
             $table->timestamps();
         });
     }

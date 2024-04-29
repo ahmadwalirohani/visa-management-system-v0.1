@@ -317,6 +317,26 @@ export default function Sidebar({ user }: any) {
                                         </ListItemButton>
                                     </Link>
                                 </ListItem>
+                                <ListItem>
+                                    <Link
+                                        href={route(
+                                            "human_resource.employee_payroll",
+                                        )}
+                                        style={{
+                                            width: "100%",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "human_resource.employee_payroll"
+                                            }
+                                        >
+                                            معاشاتو توزیع
+                                        </ListItemButton>
+                                    </Link>
+                                </ListItem>
                             </List>
                         </Toggler>
                     </ListItem>
@@ -450,9 +470,21 @@ export default function Sidebar({ user }: any) {
                                     </Link>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton>
-                                        تسلیم ویزو راپور
-                                    </ListItemButton>
+                                    <Link
+                                        href={route("reports.committed_visas")}
+                                        style={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <ListItemButton
+                                            selected={
+                                                route().current() ==
+                                                "reports.committed_visas"
+                                            }
+                                        >
+                                            تسلیم ویزو راپور
+                                        </ListItemButton>
+                                    </Link>
                                 </ListItem>
                                 <ListItem>
                                     <Link

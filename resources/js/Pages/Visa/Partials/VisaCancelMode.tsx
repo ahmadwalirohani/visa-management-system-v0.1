@@ -7,9 +7,9 @@ import DialogActions from "@mui/joy/DialogActions";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
-import axios from "axios";
 import { SendActionRequest } from "@/Utils/helpers";
 import { FormControl, FormLabel, Textarea } from "@mui/joy";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IProps {
     openState: boolean;
@@ -43,7 +43,7 @@ export default function VisaCancelModel({
             useData,
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setOpenState(false, true);

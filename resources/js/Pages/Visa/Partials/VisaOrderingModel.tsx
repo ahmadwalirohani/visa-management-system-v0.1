@@ -1,3 +1,4 @@
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 import { LoadCurrencies } from "@/Utils/FetchResources";
 import { SendActionRequest } from "@/Utils/helpers";
 import {
@@ -10,7 +11,6 @@ import {
     Stack,
 } from "@mui/joy";
 import { Table } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface IProps {
@@ -48,7 +48,7 @@ function VisaOrderingModel({ openState, setOpenState, id }: IProps) {
             Object.assign({}, useData, { expenses: useCurrencies }),
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setOpenState(false, true);

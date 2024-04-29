@@ -24,6 +24,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import ViewVisaSelection from "./ViewVisaSelection";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 type TType = "credit" | "debit";
 
@@ -276,7 +277,7 @@ function AddJournalEntry() {
             loading: true,
         }));
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

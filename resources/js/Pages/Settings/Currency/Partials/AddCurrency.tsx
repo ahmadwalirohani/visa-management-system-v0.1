@@ -8,9 +8,10 @@ import Button from "@mui/joy/Button";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
 import { Divider, Table } from "@mui/joy";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { SendActionRequest } from "@/Utils/helpers";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface FormElements extends HTMLFormControlsCollection {
     name: HTMLInputElement;
@@ -80,7 +81,7 @@ function AddCurrency({
             },
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

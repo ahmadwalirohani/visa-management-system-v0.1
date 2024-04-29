@@ -1,3 +1,4 @@
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 import { SendActionRequest } from "@/Utils/helpers";
 import {
     Button,
@@ -9,7 +10,6 @@ import {
     ModalDialog,
     Stack,
 } from "@mui/joy";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Calendar, CalendarProvider } from "zaman";
 
@@ -41,7 +41,7 @@ function VisaBookingModel({ openState, setOpenState, id }: IProps) {
             useData,
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setOpenState(false, true);

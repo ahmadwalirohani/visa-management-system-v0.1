@@ -7,6 +7,7 @@ use App\Models\CustomerAccount;
 use App\Models\CustomerLedger;
 use App\Models\Employee;
 use App\Models\EmployeeLedger;
+use App\Models\Payroll;
 use App\Models\Visa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,14 @@ class HRResources
                 EmployeeLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->paginate(50)
                 : EmployeeLedger::filter($payload)->getLedgerRelations()->orderByDesc('created_at')->get(),
             JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_payrolls(): JsonResponse
+    {
+        return response()->json(
+            Payroll::withDetails()->paginate(50),
+            200
         );
     }
 }

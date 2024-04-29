@@ -2,9 +2,11 @@
 
 namespace App\Resources;
 
+use App\Enums\VisaStatus;
 use App\Models\SystemInfo;
 use App\Models\Till;
 use App\Models\Visa;
+use App\Models\VisaCommit;
 use Illuminate\Http\JsonResponse;
 
 class VisaResources
@@ -75,6 +77,39 @@ class VisaResources
                 })
                 ->paginate(50),
             JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_un_committed_visas(): JsonResponse
+    {
+        return response()->json(
+            Visa::withType()
+                ->withEntranceType()
+                ->whereStatus(VisaStatus::COMPLETED)
+                ->select([
+                    'id',
+                    'branch_id',
+                    'customer_id',
+                    'type_id',
+                    'entrance_type_id',
+                    'visa_no',
+                    'name',
+                    'passport_no'
+                ])
+                ->get(),
+            JsonResponse::HTTP_OK
+        );
+    }
+
+    public static function get_commited_visa_report(): JsonResponse
+    {
+
+        return response()->json(
+            VisaCommit::withCommitedVisas()
+                ->withCustomer()
+                ->orderByDesc('created_at')
+                ->get(),
+            200
         );
     }
 }

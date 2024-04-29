@@ -23,7 +23,8 @@ import { GetTills, LoadCurrencies } from "@/Utils/FetchResources";
 import Row from "../Components/Row";
 import Printer from "@/Utils/Printer";
 import { SendActionRequest } from "@/Utils/helpers";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IExpenseType {
     id: number;
@@ -340,7 +341,7 @@ function ProcessVisaProcessingSection() {
 
         setDataModel((prevState) => ({ ...prevState, loading: true }));
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

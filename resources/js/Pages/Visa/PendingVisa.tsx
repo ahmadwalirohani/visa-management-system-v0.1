@@ -44,6 +44,7 @@ import VisaBookingModel from "./Partials/VisaBookingModel";
 import VisaOrderingModel from "./Partials/VisaOrderingModel";
 import VisaCancelModel from "./Partials/VisaCancelMode";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "../Plugins/axiosIns";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -288,7 +289,7 @@ export default function PendingVisa() {
         );
         setFetchLoading(true);
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then((): void => {
                 setSnackbar({

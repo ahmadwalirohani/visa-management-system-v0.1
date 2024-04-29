@@ -7,6 +7,7 @@ import { ValidateNativeForm } from "@/Utils/Validation";
 import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import axios, { AxiosResponse } from "axios";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IEICodeFields {
     name: string;
@@ -113,7 +114,7 @@ export default function EICode() {
                 );
 
                 // Making a POST request to submit the form data
-                axios
+                axiosInstance
                     .post(Config.url, Config.payload)
                     .then((): any => {
                         // Handling success by updating the Snackbar state and resetting the form
@@ -191,7 +192,7 @@ export default function EICode() {
     const changeEICodeStatus = (eicode: IEICodeFields): void => {
         setFetchLoading(true);
 
-        axios
+        axiosInstance
             .post("change_resource_status", {
                 id: eicode.id,
                 model: "ExpenseIncomeCode",

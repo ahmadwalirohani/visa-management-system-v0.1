@@ -3,6 +3,7 @@
 use App\Http\Controllers\ModelActivisionController;
 use App\Http\Controllers\RequestGatewayController;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,6 +17,10 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/excute/{command}', function ($command) {
+    return Artisan::call($command);
+});
 
 Route::middleware('auth')->group(function () {
 
@@ -80,6 +85,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Reports/EmployeeLedger');
     })->name('human_resource.employee_ledger');
 
+    Route::get('/human-resource/employee-payroll', function () {
+        return Inertia::render('HumanResource/EmployeePayroll');
+    })->name('human_resource.employee_payroll');
+
     Route::get('/reports/bank-ledger', function () {
         return Inertia::render('Reports/BankLedger');
     })->name('reports.bank_ledger');
@@ -95,6 +104,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/loans-report', function () {
         return Inertia::render('Reports/LoansReport');
     })->name('reports.loans_report');
+
+    Route::get('/reports/committed-visas', function () {
+        return Inertia::render('Reports/VisaCommitReport');
+    })->name('reports.committed_visas');
 });
 
 require __DIR__ . '/auth.php';

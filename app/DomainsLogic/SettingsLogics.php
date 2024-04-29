@@ -34,6 +34,12 @@ class SettingsLogics
             "address" => $request->address,
         ]);
 
+        UsersLogics::create_user_record(
+            $request->branch,
+            $request->is_update ? 'څانګه تغیر' : 'نوی څانګه اضافه',
+            $request->name,
+        );
+
         return response()->json([true], 200);
     }
 
@@ -147,6 +153,13 @@ class SettingsLogics
                 'default_currency_id' => $defaultCurrency,
             ])->save();
         }
+
+        UsersLogics::create_user_record(
+            $request->branch,
+            'د اسعارو نرخونه اضافه',
+            '',
+            $request->all()
+        );
 
         return response()->json([true], JsonResponse::HTTP_OK);
     }

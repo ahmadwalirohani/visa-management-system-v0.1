@@ -4,9 +4,11 @@ namespace App\Actions;
 
 use App\Enums\VisaStatus;
 use App\Enums\VisaType;
+use App\Models\CommittedVisas;
 use App\Models\Currency;
 use App\Models\SystemInfo;
 use App\Models\Visa;
+use App\Models\VisaCommit;
 use App\Models\VisaExpense;
 use App\Services\VisaService;
 use Illuminate\Database\Eloquent\Model;
@@ -243,5 +245,28 @@ class VisaActions extends VisaService
             );
 
         return $this;
+    }
+
+    public function commitVisaToCustomer(int $customer, string $name, array | object $visas, int $visa_count, string | null $image, string | null $remarks): void
+    {
+
+        $committed  = (new VisaCommit())->setData((object)[
+            'customer' => $customer,
+            'name' => $name,
+            'image' => $image,
+            'remarks' => $remarks,
+        ]);
+        $committed->save();
+
+        foreach ($visas as $visa) {
+            (new CommittedVisas())->setData((object)[
+                'id' => $committed->id,
+                'visa_id' => $visa
+            ])->save();
+
+            Visa::whereId($visa)->update([
+                'is_commited' => true
+            ]);
+        }
     }
 }

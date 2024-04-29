@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->text('remarks')->nullable();
             $table->string('phone')->nullable();
+            $table->foreignId('created_user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

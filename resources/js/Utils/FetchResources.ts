@@ -70,7 +70,26 @@ const GetCustomers = async (callback: JsonCallback): Promise<void> => {
                 Response.data.filter(
                     (c: any) =>
                         privileges.misc.other_branches_control ||
-                        c.id == selectedBranch,
+                        c.branch_id == selectedBranch,
+                ),
+            );
+        });
+};
+
+const getUncommittedVisas = async (callback: JsonCallback): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest({
+                _class: "VisaResources",
+                _method_name: "get_un_committed_visas",
+            }),
+        )
+        .then((Response: AxiosResponse<Array<object>>): void => {
+            callback(
+                Response.data.filter(
+                    (c: any) =>
+                        privileges.misc.other_branches_control ||
+                        c.branch_id == selectedBranch,
                 ),
             );
         });
@@ -102,7 +121,7 @@ const GetEmployees = async (callback: JsonCallback): Promise<void> => {
                 Response.data.filter(
                     (c: any) =>
                         privileges.misc.other_branches_control ||
-                        c.id == selectedBranch,
+                        c.branch_id == selectedBranch,
                 ),
             );
         });
@@ -224,7 +243,7 @@ const GetBanks = async (callback: JsonCallback): Promise<void> => {
                 Response.data.filter(
                     (c: any) =>
                         privileges.misc.other_branches_control ||
-                        c.id == selectedBranch,
+                        c.branch_id == selectedBranch,
                 ),
             );
         });
@@ -294,6 +313,25 @@ const getPendingVisas = async (
         });
 };
 
+const getPayrolls = async (
+    filter: any,
+    callback: JsonCallback,
+): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest(
+                {
+                    _class: "HRResources",
+                    _method_name: "get_payrolls",
+                },
+                {},
+            ),
+        )
+        .then((Response: AxiosResponse): void => {
+            callback(Response.data);
+        });
+};
+
 export {
     LoadCurrencies,
     GetCustomerLatestID,
@@ -312,4 +350,6 @@ export {
     GetBanks,
     getProcessedVisas,
     GetEICodesAsItems,
+    getUncommittedVisas,
+    getPayrolls,
 };

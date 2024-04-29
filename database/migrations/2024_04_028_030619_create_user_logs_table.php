@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('user_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('');
+            $table->string('action_type');
+            $table->string('type');
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
+            $table->text('details')->nullable();
+            $table->json('action_details')->default('{}');
             $table->timestamps();
         });
     }

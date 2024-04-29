@@ -23,7 +23,8 @@ import { SendActionRequest, SendResourceRequest } from "@/Utils/helpers";
 import Edit from "@mui/icons-material/Edit";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import ViewUserPrivileges from "./ViewUserPrivilege";
+import ViewUserPrivilege from "./ViewUserPrivilege";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IUserInfo {
     id: number;
@@ -161,7 +162,7 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
             },
         );
         setLoading(true);
-        axios
+        axiosInstance
             .post(RConfig.url, RConfig.payload)
             .then((Response: AxiosResponse): void => {
                 setSnackbar({
@@ -192,7 +193,7 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
     const changeUserStatus = (id: number, status: number): void => {
         setLoading(true);
 
-        axios
+        axiosInstance
             .post("change_resource_status", {
                 id,
                 model: "UserPrivilegeBranch",
@@ -432,7 +433,7 @@ function ViewUserBranch({ setLayoutState, layout, userInfo }: IModalProps) {
                 </ModalDialog>
             </Modal>
 
-            <ViewUserPrivileges
+            <ViewUserPrivilege
                 infoProps={privilegesProps}
                 setLayoutState={openPrivilegesDialog}
             />

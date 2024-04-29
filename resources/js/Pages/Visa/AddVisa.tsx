@@ -12,10 +12,10 @@ import {
 } from "@/Utils/FetchResources";
 import { IVisaProps } from "@/types";
 import { SendActionRequest } from "@/Utils/helpers";
-import axios from "axios";
 import { AxiosError } from "axios";
 import Printer from "@/Utils/Printer";
 import { useUserBranchesContext } from "@/Layouts/SysDefaultLayout";
+import axiosInstance from "../Plugins/axiosIns";
 
 interface ICurrency {
     id: number;
@@ -120,7 +120,7 @@ function AddVisa() {
         );
         setPostLoading(true);
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then((): void => {
                 setSnackbar({

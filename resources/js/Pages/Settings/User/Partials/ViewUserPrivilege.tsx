@@ -16,8 +16,8 @@ import {
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { Card } from "@mui/joy";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { SendActionRequest } from "@/Utils/helpers";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IInfo {
     id: number;
@@ -32,7 +32,6 @@ interface IModalProps {
     setLayoutState(state: ModalDialogProps["layout"] | undefined): void;
     infoProps: IInfo;
 }
-
 function ViewUserPrivilege({ setLayoutState, infoProps }: IModalProps) {
     const [usePrivileges, setPrivileges] = useState<any>({
         visa: {
@@ -184,7 +183,7 @@ function ViewUserPrivilege({ setLayoutState, infoProps }: IModalProps) {
             },
         );
 
-        axios
+        axiosInstance
             .post(Config.url, Config.payload)
             .then(() => {
                 setSnackbar({

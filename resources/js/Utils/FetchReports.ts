@@ -162,6 +162,25 @@ const getEmployeeLedger = async (
         });
 };
 
+const getCommitedVisas = async (
+    filter: any,
+    callback: JsonCallback,
+): Promise<void> => {
+    axios
+        .get(
+            SendResourceRequest(
+                {
+                    _class: "VisaResources",
+                    _method_name: "get_commited_visa_report",
+                },
+                {},
+            ),
+        )
+        .then((Response: AxiosResponse): void => {
+            callback(Response.data);
+        });
+};
+
 const getBankLedger = async (
     filter: {
         bank: null | {
@@ -316,6 +335,7 @@ const getLoansReport = async (
             callback(Response.data);
         });
 };
+
 export {
     getJournalEntries,
     getCustomerLedger,
@@ -326,4 +346,5 @@ export {
     getBankLedger,
     getEICodeLedger,
     getLoansReport,
+    getCommitedVisas,
 };

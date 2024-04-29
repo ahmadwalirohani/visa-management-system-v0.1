@@ -4,6 +4,7 @@ namespace App\DomainsLogic;
 
 use App\Actions\VisaActions;
 use App\Http\Requests\CreateVisaRequest;
+use App\Models\SystemInfo;
 use App\Models\Visa;
 use App\Models\VisaExpense;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +36,21 @@ class VisaLogics
                     $request->premarks,
                 )
                 ->updateVisaNo();
+
+            UsersLogics::create_user_record(
+                'ADD-NEW-VISA',
+                $request->branch,
+                'د نوي ویزي ثبت',
+                '',
+                (object)[
+                    'visa_no' => SystemInfo::whereId(1)->first()->visa_no - 1,
+                    'customer' => $request->customer['name'],
+                    'passport_no' => $request->passport_no,
+                    'basis_type' => $request->basis_type,
+                    'name' => $request->name,
+                    'visa_entrance_type' => $request->visa_entrance_type['name'],
+                ],
+            );
         } catch (\Exception $th) {
 
             DB::rollBack();
@@ -158,5 +174,46 @@ class VisaLogics
 
         DB::commit();
         return response()->json([true], JsonResponse::HTTP_OK);
+    }
+
+    public static function commit_visas(Request $request): JsonResponse
+    {
+        $request->validate([
+            'visa_count' => 'required|numeric|min:1',
+            'customer' => 'required',
+            'image' => 'required|image',
+            'selectedVisas' => 'required|array',
+        ]);
+
+
+        DB::beginTransaction();
+
+        try {
+            $imageName = null;
+            if ($request->hasFile("image")) {
+                $uploadedImage = $request->file('image');
+                $imageName =  uniqid('image_') . '.' . $uploadedImage->getClientOriginalExtension();
+                $request->file("image")->move("agents_images", $imageName);
+            }
+
+            (new VisaActions(new Visa()))
+                ->commitVisaToCustomer(
+                    $request->customer,
+                    $request->name,
+                    $request->selectedVisas,
+                    0,
+                    '/agents_images/' . $imageName,
+                    $request->remarks
+                );
+        } catch (\Exception $th) {
+
+            DB::rollBack();
+
+            throw $th;
+        }
+
+        DB::commit();
+
+        return response()->json([true], 200);
     }
 }

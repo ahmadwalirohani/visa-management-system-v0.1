@@ -123,7 +123,7 @@
                 <span id="date">2023-09-23</span>
             </div>
             <div class="row nazanin-bold">
-                <span class="label">توضیحات:</span>
+                <span class="label">توزیعات:</span>
                 <span id="remarks"> سشی شسیشسیشسیشسیشسیش شسی شسی شسی شسیسی شسی </span>
             </div>
 

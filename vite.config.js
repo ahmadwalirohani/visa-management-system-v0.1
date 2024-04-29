@@ -9,6 +9,7 @@ export default defineConfig({
                 "resources/js/app.tsx",
                 "resources/js/Pages/Dashboard.tsx",
                 "resources/js/Pages/Settings/Settings.tsx",
+                "resources/js/Pages/Auth/Login.tsx",
             ],
             refresh: true,
         }),

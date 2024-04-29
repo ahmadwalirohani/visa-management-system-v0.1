@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/Pages/Plugins/axiosIns";
 
 interface IParameters {
     model: string;
@@ -11,7 +11,7 @@ interface IParameters {
 export default function (resource: IParameters): void {
     resource.onSend();
 
-    axios
+    axiosInstance
         .post("/change_resource_status", {
             id: resource.id,
             model: resource.model,
